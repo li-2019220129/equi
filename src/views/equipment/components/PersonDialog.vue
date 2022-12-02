@@ -77,6 +77,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    selection: {
+      type: Array,
+      default: () => [],
+    },
     sendType: {
       type: String,
       default: "register",
@@ -123,10 +127,10 @@ export default {
     findParticipators() {
       try {
         this.loading = true;
-        const secret = this.formLine.secret
-          ? this.formLine.secret
-          : this.pArams.secret;
-
+        const secret = this.pArams.secret
+          ? this.pArams.secret
+          : this.formLine.secret;
+        // const secret = this.formLine.secret;
         const params = {
           type: this.type,
           flag: 1,
@@ -146,10 +150,26 @@ export default {
         this.$message.info("请先选中送审人员");
         return;
       }
-
-      const params = {
-        id: this.pArams.id, //任务主键
-        reason: this.formLine.reason, //原因用途
+      let params = {};
+      console.log(this.selection,'selection')
+      let paramsArray = this.selection?.map((item) => {
+        return {
+          id: item.id,
+          reason: item.reason, //原因用途
+          applyUserId: this.$store.state.login.loginData.userId, //申请人主键
+          applyUserName: this.$store.state.login.loginData.userName, //申请人名称
+          nodeId: this.nodeId, //节点主键
+          toUserId: this.form.id, //审批人主键
+          toUserName: this.form.caption,
+        };
+      });
+      console.log(paramsArray,'11111')
+      params = {
+        // id: this.pArams.id, //任务主键
+        id: Object.keys(this.pArams).length ? this.pArams.id : this.formLine.id,
+        reason: Object.keys(this.pArams).length
+          ? this.pArams.reason
+          : this.formLine.reason, //原因用途
         applyUserId: this.$store.state.login.loginData.userId, //申请人主键
         applyUserName: this.$store.state.login.loginData.userName, //申请人名称
         nodeId: this.nodeId, //节点主键
@@ -157,7 +177,7 @@ export default {
         toUserName: this.form.caption,
       };
       if (this.sendType === "register") {
-        this.applyByType(apply(params));
+        this.applyByType(apply(paramsArray));
         this.$store.dispatch("login/getRegisterBadge"); ////获取设备登记角标
       } else if (this.sendType === "borrow") {
         this.applyByType(submit(params));
@@ -174,6 +194,7 @@ export default {
       }
     },
     async applyByType(promise) {
+
       const res = await promise;
       this.$message.success(res.msg);
       this.$store.dispatch("login/getAuditBadge"); //获取设备待审批角标
@@ -198,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./headerScss.scss" scoped ></style>
+<style lang="scss" src="./headerScss.scss" scoped></style>
 
 <style lang="scss" scoped>
 @import "~@/styles/index.scss";

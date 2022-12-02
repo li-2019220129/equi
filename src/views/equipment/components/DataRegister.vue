@@ -150,8 +150,9 @@
       @row-click="changeRadio"
       :height="'75vh'"
       ref="leadalTable"
+      :selection.sync="selection"
     >
-      <template slot="radio">
+      <!-- <template slot="radio">
         <el-table-column
           label=""
           header-align="center"
@@ -168,7 +169,7 @@
             >
           </template>
         </el-table-column>
-      </template>
+      </template> -->
     </leadal-table>
 
     <leadal-dialog
@@ -184,6 +185,7 @@
           :is="registerDialog.name"
           :formLine="formLine"
           :pArams="pArams"
+          :selection="selection"
           :sendType="'register'"
           @handleParams="handleParams"
           @close="handleClose"
@@ -219,6 +221,7 @@ export default {
   data() {
     return {
       activeTab: 1,
+      selection:[],
       keyWord: "", //输入框
       tableObj: {
         tableData: [],

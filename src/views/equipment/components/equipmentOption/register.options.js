@@ -1,5 +1,6 @@
 export const commTableOptions = [
   { type: "slot", name: "radio" },
+  { type: "selection", name: "checkout" },
   { type: "index", label: "序号" },
 ];
 

@@ -342,7 +342,7 @@ export default {
     formLine: {
       immediate: true,
       handler() {
-        if (JSON.stringify(this.formLine) !== "{}") {
+        if (this.formLine&&JSON.stringify(this.formLine) !== "{}") {
           try {
             this.loading = true;
             if (this.infoId) {
@@ -421,6 +421,7 @@ export default {
             classify: this.form.classify, //设备类别
             ownerOrganId: this.$store.state.login.loginData.organId, //所属部门
             tab: this.form.tab, //设备标签
+            reason: this.form.reason,
             extList: [
               {
                 fieldName: "enabledTime", //英文名称

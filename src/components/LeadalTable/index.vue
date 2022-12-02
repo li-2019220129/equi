@@ -388,6 +388,7 @@ export default {
     },
 
     handleSelectChange(selection) {
+      console.log(selection,'999976666666')
       this.$emit("update:selection", selection);
     },
     //表格单击

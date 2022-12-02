@@ -113,6 +113,7 @@ export function apply(data) {
   return service({
     url: "stockin/apply",
     method: "post",
+    arrType:true,
     data,
   });
 }

@@ -12,14 +12,17 @@ export const service = axios.create({
   // : window.location.origin + "/api/",
   // baseURL: window.location.contextPath + "/api/",
   // baseURL: "http://127.0.0.1:8080/api/",
-  baseURL: process.env.VUE_APP_BASE_API + "/api/",
+  // baseURL: process.env.VUE_APP_BASE_API + "/api/",
   // baseURL:
-  timeout: 50000, // request timeout
+  // timeout: 50000, // request timeout
 });
 
 // request interceptor
 service.interceptors.request.use(
   (config) => {
+    if (config.arrType) {
+      return config;
+    }
     if (config.method === "post") {
       config.data = {
         ...config.data,
@@ -85,8 +88,8 @@ export const service2 = axios.create({
   // baseURL: Vue.prototype.$DataUrl,
   // baseURL: window.location.contextPath + "/api/",
   // baseURL: "http://127.0.0.1:8070/api/",
-  baseURL: process.env.VUE_APP_BASE_API_DATA + "/api/",
-  timeout: 50000, // request timeout
+  // baseURL: process.env.VUE_APP_BASE_API_DATA + "/api/",
+  // timeout: 50000, // request timeout
 });
 
 // request interceptor

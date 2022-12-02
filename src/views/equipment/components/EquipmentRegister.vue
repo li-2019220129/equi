@@ -165,6 +165,7 @@
         </el-select>
       </el-form-item>
     </el-form>
+    <!-- @row-click="changeRadio" -->
 
     <leadal-table
       :data="tableObj.tableData"
@@ -173,14 +174,15 @@
       :total="tableObj.total"
       :page="tableObj.page"
       :size="tableObj.size"
+      :key="keyEl"
       v-loading="tableObj.loading"
       @page-change="handleChangePage"
       @handleRowDblCick="handleRowDblCick"
-      @row-click="changeRadio"
       :height="'calc(70vh - 25px)'"
       ref="leadalTable"
+      :selection.sync="selection"
     >
-      <template slot="radio">
+      <!-- <template slot="radio">
         <el-table-column
           label=""
           header-align="center"
@@ -197,7 +199,7 @@
             >
           </template>
         </el-table-column>
-      </template>
+      </template> -->
     </leadal-table>
 
     <leadal-dialog
@@ -211,10 +213,11 @@
       <template #content>
         <component
           :is="registerDialog.name"
-          :formLine="formLine"
+          :formLine="selectFrom"
           :treeData="treeData"
           @handleParams="handleParams"
           @close="handleClose"
+          :selection="selection"
           :pArams="pArams"
           :type="type"
           :key="keys"
@@ -264,10 +267,12 @@ export default {
   },
   data() {
     return {
+      keyEl: +new Date().getTime(),
       activeTab: 1,
       isDetail: false, //是否已审批状态编辑
       keyWord: "", //输入框
       treeData: [],
+      selection: [],
       tableObj: {
         tableData: [],
         tableOptions: [],
@@ -313,6 +318,9 @@ export default {
     this.getDeviceKindTreeData();
   },
   watch: {
+    selection(val) {
+      console.log(val, "watch");
+    },
     activeTab: {
       immediate: true,
       handler(val) {
@@ -334,13 +342,18 @@ export default {
     auditedNum() {
       return this.$store.state.login.equipmentRegisterBadge;
     },
+    selectFrom() {
+      return Object.keys(this.formLine).length
+        ? this.formLine
+        : this.selection[0];
+    },
   },
   methods: {
-    changeRadio(row) {
-      this.radio = row.deviceRecordId;
-      this.formLine = row;
-      this.pArams = row;
-    },
+    // changeRadio(row) {
+    //   this.radio = row.deviceRecordId;
+    //   this.formLine = row;
+    //   this.pArams = row;
+    // },
 
     handleActiveTab(num) {
       this.activeTab = num;
@@ -362,7 +375,12 @@ export default {
       if ([2, 3].includes(this.activeTab)) {
         this.isDetail = true;
       }
-      this.handleEdit();
+      this.type = "edit";
+      this.registerDialog = {
+        name: "AddEquipment",
+        title: "编辑设备",
+        visible: true,
+      };
     },
 
     //消息标记已读
@@ -421,6 +439,7 @@ export default {
     //新增
     add() {
       this.formLine = {};
+      this.$refs.leadalTable.clearSelection();
       this.keys = Date.now();
       this.type = "add";
       this.radio = "";
@@ -432,7 +451,8 @@ export default {
     },
 
     handleSendApproval() {
-      this.keys = Date.now();
+      // this.keys = Date.now();
+      this.keyEl = +new Date().getTime();
       this.registerDialog = {
         name: "PersonDialog",
         title: "人员选择",
@@ -442,10 +462,15 @@ export default {
 
     //送审
     sendApproval() {
-      if (JSON.stringify(this.formLine) === "{}") {
+      // console.log(this.formLine, "line");
+      if (!this.selection.length) {
         this.$message.info("请先选中数据");
         return;
       }
+      // if (JSON.stringify(this.formLine) === "{}") {
+      //   this.$message.info("请先选中数据");
+      //   return;
+      // }
       this.handleSendApproval();
     },
 
@@ -456,10 +481,15 @@ export default {
     },
 
     handleEdit() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
+      this.formLine = {};
+      if (this.selection.length !== 1) {
+        this.$message.info("请选择一条数据进行编辑！");
         return;
       }
+      // if (JSON.stringify(this.formLine) === "{}") {
+      //   this.$message.info("请先选中数据");
+      //   return;
+      // }
       this.type = "edit";
       this.registerDialog = {
         name: "AddEquipment",
@@ -470,6 +500,10 @@ export default {
 
     //删除
     deleteRecord() {
+      if (!this.selection.length) {
+        this.$message.warning("请选择一条数据进行删除!");
+        return;
+      }
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -477,7 +511,7 @@ export default {
       })
         .then(async () => {
           const params = {
-            idStr: this.formLine.id,
+            idStr: this.selection.map((item) => item.id).join(","),
           };
           const res = await deleteRecord(params);
           this.$message.success(res.msg);
