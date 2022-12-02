@@ -1,0 +1,149 @@
+<template>
+  <div>
+    <div class="drawer-header">
+      <div class="drawer-header title">{{ drawerTitle }}申请</div>
+      <div class="equipment-button">
+        <div class="equipment-button_btn" @click="handleSave">
+          <img src="@/assets/icon/保存@2x.png" />
+          <span>保存</span>
+        </div>
+        <div class="equipment-button_btn" @click="send">
+          <img src="@/assets/icon/发送@2x.png" />
+          <span>发送</span>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-container">
+      <div class="drawer-left"></div>
+      <div class="drawer-right">
+        <div class="equipment-header">
+          <div class="equipment-header-left">
+            <div
+              :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
+              @click="activeTab = 1"
+            >
+              基础信息
+            </div>
+            <div
+              :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
+              @click="activeTab = 2"
+            >
+              相关文件
+            </div>
+            <div
+              :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
+              @click="activeTab = 3"
+            >
+              办理过程
+            </div>
+          </div>
+        </div>
+        <component
+          :is="componentName"
+          v-bind="$attrs"
+          :applyId="applyId"
+          ref="borrowMessage"
+          @saveBorrow="saveBorrow"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import DataBorrowMessage from "./DataBorrowMessage.vue";
+import RelativeFile from "./RelativeFile.vue";
+import HandleProcess from "./HandleProcess.vue";
+import { saveDraftBorrow } from "@/api/data";
+export default {
+  name: "BorrowDrawer",
+  components: {
+    DataBorrowMessage,
+    RelativeFile,
+    HandleProcess,
+  },
+  props: {
+    drawerTitle: {
+      type: String,
+      default: "",
+    },
+    applyId: {
+      type: String,
+      default: "",
+    },
+  },
+  created() {},
+  data() {
+    return {
+      activeTab: 1,
+      componentName: "DataBorrowMessage",
+      params: {},
+      saveStatus: 0,
+    };
+  },
+  watch: {
+    activeTab(val) {
+      switch (val) {
+        case 1:
+          this.componentName = "DataBorrowMessage";
+          break;
+        case 2:
+          this.componentName = "RelativeFile";
+          break;
+        case 3:
+          this.componentName = "HandleProcess";
+          break;
+      }
+    },
+  },
+
+  methods: {
+    //保存
+    handleSave() {
+      this.$refs.borrowMessage.saveBorrow();
+    },
+
+    saveBorrow(params) {
+      this.params = params;
+      console.log(params);
+      saveDraftBorrow(params).then((res) => {
+        if (res.status === 200) {
+          this.$message.success(res.msg);
+          this.saveStatus = 1;
+          this.$emit("reloadData");
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
+
+    //发送
+    send() {
+      if (this.saveStatus === 0) {
+        this.$message.error("请先保存再进行送审！");
+        return;
+      }
+      this.$emit("handleParams", this.params);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.drawer-container {
+  display: flex;
+  height: calc(90vh - 20px);
+  .drawer-left {
+    width: 52%;
+    height: 100%;
+    margin-right: 30px;
+    margin-top: 10px;
+    overflow-y: scroll;
+    border: 1px solid rgba(231, 231, 231, 1);
+  }
+  .drawer-right {
+    margin-top: 10px;
+    width: 48%;
+  }
+}
+</style>

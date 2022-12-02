@@ -1,0 +1,49 @@
+.dialog-btn-layout {
+  display: flex;
+  position: absolute;
+  right: 85px;
+  top: 65px;
+  .handle {
+    position: relative;
+    font-size: 18px;
+    color: #3d464c;
+    letter-spacing: 0;
+    font-weight: 400;
+    cursor: pointer;
+    &::before {
+      content: "";
+      background-size: 100%;
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      left: -25px;
+      top: 0;
+    }
+  }
+
+  .send {
+    margin-left: -120px;
+    &::before {
+      background-image: url("~@/assets/icon/保存并送审@2x.png");
+      background-size: 100% 100%;
+    }
+  }
+  .save {
+    margin-left: 50px;
+    width: 50px;
+    &::before {
+      background-image: url("~@/assets/icon/保存@2x.png");
+      background-size: 100% 100%;
+    }
+  }
+  .sure {
+    &::before {
+      margin-left: -8px;
+      background-image: url("~@/assets/icon/确认选择@2x.png");
+      background-size: 100% 100%;
+    }
+  }
+}
+hr {
+  margin-top: 50px;
+}

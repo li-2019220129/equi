@@ -1,0 +1,570 @@
+div {
+ // font-family: SourceHanSansCN-Medium;
+  font-weight: 400;
+}
+
+span {
+  font-family: SourceHanSansCN-Medium;
+  font-weight: 400;
+}
+
+.comm-number-family {
+  font-family: HiraginoSansCNS-W3;
+}
+
+// 去除下拉树两边背景色
+.tree-no-background {
+  margin: 0 -20px;
+  padding: 0 5px;
+}
+
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  color: #ffffff;
+  background-color: #3984e8;
+  border-color: #1890ff;
+  width: 60px;
+  font-size: 16px;
+  font-family: SourceHanSansCN-Medium;
+}
+
+.el-radio-button--small .el-radio-button__inner {
+  padding: 9px 15px;
+  font-size: 12px;
+  background: #edeeef;
+  width: 60px;
+  font-size: 16px;
+  font-family: SourceHanSansCN-Medium;
+}
+
+// 修改日历控件公共样式
+
+.fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0 !important;
+  height: 0 !important;
+}
+
+.fc th {
+  height: 50px;
+  line-height: 50px;
+  background-color: #f7f7f7;
+  border-style: none !important;
+  font-family: SourceHanSansCN-Medium;
+  font-size: 20px;
+  color: #3d464c;
+  letter-spacing: 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.fc td {
+  font-family: HiraginoSansCNS-W6;
+  font-size: 20px;
+  color: #3d464c;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
+  float: left !important;
+}
+
+.el-calendar-table .el-calendar-day {
+  height: 144px !important;
+  position: relative;
+  /* width: 172px; */
+}
+
+.el-calendar__header {
+  display: none;
+}
+
+.el-calendar-table thead {
+  background: #f7f7f7;
+  height: 50px;
+}
+
+.el-calendar-table thead th:before {
+  content: "星期";
+}
+
+.el-calendar-table thead th {
+  font-family: SourceHanSansCN-Medium;
+  font-size: 20px;
+  color: #3d464c;
+  letter-spacing: 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+// 对 vue-scroll 去除系统的横向滚动条
+.__panel {
+  overflow: hidden !important;
+}
+
+// 按钮样式
+
+.cancel-btn {
+  // 取消按钮
+  background: #e7e7e7;
+  border: 1px solid rgba(184, 184, 184, 1);
+  border-radius: 8px;
+  width: 100px;
+  line-height: 10px;
+  height: 30px;
+  .btn-style {
+    margin-top: -3px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+.submit-btn {
+  // 确定按钮
+  background: #3984e8 !important;
+  border-radius: 8px;
+  width: 100px;
+  height: 30px;
+  line-height: 10px;
+  color: white;
+  .btn-style {
+    margin-top: -3px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 12px !important;
+  height: 7px !important;
+  background-color: #f1f1f1 !important;
+  cursor: pointer !important;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+  border-radius: 10px;
+  background-color: #f1f1f1;
+  cursor: pointer !important;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1); */
+  background-color: #e7e7e7;
+  cursor: pointer !important;
+}
+
+// 表单
+.el-form-item__label,
+.el-form--label-left .el-form-item__label,
+.el-form-item__label {
+  color: #3b3b3b !important;
+  font-weight: 400;
+  font-size: 16px !important;
+  // margin-left: 2px !important;
+}
+.el-input__inner,
+.el-date-editor .el-range-input,
+.el-textarea__inner {
+  color: #3d464c;
+  font-size: 16px;
+}
+.el-radio__label,
+.el-checkbox__label {
+  font-size: 16px;
+}
+.el-radio__inner,
+.el-checkbox__inner {
+  width: 18px;
+  height: 18px;
+}
+.el-checkbox__inner::after {
+  width: 4px !important;
+  height: 10px !important;
+  left: 6px;
+}
+.common-width {
+  width: 100%;
+}
+.el-form-item--medium .el-form-item__content {
+  line-height: 35px;
+}
+.el-tag {
+  font-size: 16px;
+}
+.el-form-item__error {
+  font-size: 16px;
+}
+.el-icon-edit,
+.el-icon-delete {
+  cursor: pointer;
+}
+
+.el-radio__input.is-checked + .el-radio__label {
+  color: #1890ff;
+  font-family: SourceHanSansCN-Normal;
+  font-size: 16px;
+  color: #3b3b3b !important;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.el-radio__label,
+.el-checkbox__label {
+  font-family: SourceHanSansCN-Normal;
+  font-size: 16px;
+  color: #3b3b3b !important;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before,
+.el-form-item.is-required:not(.is-no-asterisk)
+  .el-form-item__label-wrap
+  > .el-form-item__label:before {
+  content: "✱";
+  color: #f35353;
+  font-size: 18px;
+  // position: absolute;
+  margin-left: -18px;
+  margin-top: 0px;
+}
+
+.el-form--label-top .el-form-item__label {
+  padding-bottom: 1px;
+}
+
+.el-tag.el-tag--info .el-tag__close {
+  display: none;
+}
+
+/* 弹窗通用样式 */
+.el-dialog {
+  border-radius: 4px;
+}
+.el-dialog__headerbtn {
+  font-size: 20px;
+  top: 8px;
+  right: 14px;
+}
+.el-dialog__header {
+  background: #454c52;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px !important;
+  border-radius: 4px 4px 0 0;
+}
+.el-dialog__title {
+  color: #fff;
+  font-size: 20px;
+  line-height: 40px;
+}
+.el-dialog__body {
+  padding: 14px;
+}
+.dialog-cancel-btn {
+  color: #3b3b3b;
+  border-color: #b8b8b8;
+  background-color: #e7e7e7;
+}
+.dialog-submit-btn {
+  background-color: #3984e8;
+  border: none;
+}
+
+.el-dialog__footer {
+  padding: 20px 14px 20px 20px;
+}
+
+.el-button {
+  font-size: 16px;
+}
+
+.dialog-footer .el-button {
+  padding: 0;
+  width: 100px;
+  height: 30px;
+  line-height: 26px;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 8px;
+  margin-left: 19px;
+}
+.dialog-footer .el-checkbox {
+  float: left;
+}
+.dialog-common-tip {
+  font-size: 20px;
+  color: #3b3b3b;
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 45px;
+}
+
+.dialog-common-form {
+  margin: 30px;
+}
+
+.dialogSle {
+  // 解决弹窗表格有分页的时候 造成
+  margin-bottom: 50px;
+}
+
+// 弹窗表格
+
+.dialogSlot .el-table th {
+  background: #e7e7e7;
+  font-size: 18px !important;
+  color: #3d464c !important;
+  font-weight: bold;
+  line-height: 31px !important;
+  padding: 0;
+  height: 32px !important;
+}
+
+.dialogSlot .el-table td {
+  font-family: SourceHanSansCN-Normal !important;
+  font-size: 18px !important;
+  color: #3d464c !important;
+  letter-spacing: 0 !important;
+  font-weight: 400 !important;
+  height: 40px !important;
+}
+
+//
+.el-select-dropdown__item {
+  font-size: 16px !important;
+}
+
+.el-select-dropdown__list {
+  background: white !important;
+}
+
+.el-select-dropdown__list {
+  margin-bottom: 5px !important;
+}
+
+// ========================================================================
+
+/**
+  tabs 公共样式修改
+*/
+
+.el-tabs__item {
+  font-size: 20px;
+  font-family: SourceHanSansCN-Medium;
+  font-weight: 500;
+  color: #303131;
+}
+
+/**
+日期公共样式
+*/
+
+.el-date-table td.disabled div {
+  background: none !important;
+}
+
+.el-date-table td span {
+  font-family: HiraginoSansCNS-W3 !important;
+}
+
+.el-date-picker__header-label {
+  font-family: HiraginoSansCNS-W3 !important;
+}
+
+// // 分割线统一样式
+// .leader-line {
+//   width: 100%;
+//   border-top: 1px #b4b4b4 solid;
+// }
+
+/* 头部 */
+
+.equipment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 54px;
+  border-bottom: 1px solid #b4b4b4;
+  &.drawer{
+    height:40px
+  }
+}
+.equipment-body {
+  height: calc(100% - 64px);
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* 顶部标签 */
+.table-menu-item {
+  display: inline-block;
+  font-size: 22px;
+  margin-right: 40px;
+  color: #9b9b9b;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.table-menu-item.selected {
+  color: #3984e8;
+}
+
+
+// 树的样式 修改大集合
+
+
+
+
+.el-tree-node__content > label.el-checkbox {
+  margin-right: -18px;
+  margin-left: 20px;
+  margin-top: -3px;
+}
+
+
+// 对树的样式进行修改
+.el-tree-node__content {
+  height: 38px;
+  // padding-left: 20px !important;
+}
+
+.custom-tree-node{
+  width: 100%;
+  height: 100%;
+}
+
+.tree-slot-node{
+  line-height: 100%;
+  height: 38px;
+  padding-top: 8px;
+  // line-height: 38px;
+}
+
+// 树形控件
+
+.leadal-menu-tree .el-tree {
+  color: #3b3b3b;
+}
+.leadal-menu-tree .el-tree-node__label {
+  font-size: 20px;
+}
+.leadal-menu-tree .el-tree-node__content:hover {
+  background-color: #dff1ff;
+}
+.leadal-menu-tree
+  .el-tree--highlight-current
+  .el-tree-node.is-current
+  > .el-tree-node__content {
+  background-color: #dff1ff;
+}
+
+// 树样式
+
+.el-tree-node__expand-icon {
+  display: none;
+}
+
+// .el-tree-node__content {
+//   margin-left: 20px;
+// }
+
+.parent-triangle {
+  color: #3984e8;
+  margin-left: -20px;
+  transition: all 0.3s;
+  font-size: 20px;
+  &.rodge {
+    transform: rotate(90deg);
+  }
+  &.treeTriangle {
+    margin: 0 30px !important;
+    margin-left: -50px !important;
+  }
+  &.treeTriangleSelect{
+    margin: 0 30px !important;
+    margin-left: -40px !important;
+  }
+}
+
+.child-triangle {
+  transition: all 0.3s;
+  margin-left: -20px;
+  &.rodge {
+    transform: rotate(90deg);
+  }
+  &.treeTriangle {
+    margin: 0 30px !important;
+    margin-left: -50px !important;
+  }
+  &.treeTriangleSelect{
+    margin: 0 30px !important;
+    margin-left: -40px !important;
+  }
+}
+
+.el-tree-node__loading-icon {
+  /* margin-right: 8px; */
+  font-size: 14px;
+  margin: 0 0 0 3px;
+  color: #c0c4cc;
+  position: absolute;
+  // left: 0;
+}
+
+
+.drawer-header {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #b4b4b4;
+  .title {
+    font-family: SourceHanSansCN-Medium;
+    font-size: 22px;
+    color: #3d464c;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+}
+
+//单选框样式修改
+.el-radio__input.is-checked .el-radio__inner{
+  border-color: #409EFF;
+  background:#FFF;
+}
+.el-radio__inner::after{
+  width: 10px;
+  height: 10px;
+  background-color: #409EFF;
+}
+
+/*
+标记样式
+*/
+.badge-item {
+  position: relative;
+  top: 10%;
+  transform: translate(0, -9%);
+}
+
+.el-badge__content{
+  height:20px;
+}
+
+//禁止状态文字颜色
+.el-input.is-disabled .el-input__inner {
+  color:#3d464c;
+}
+.el-textarea.is-disabled .el-textarea__inner{
+  color:#3d464c;
+}
+.el-range-editor.is-disabled input{
+  color:#3d464c;
+}
