@@ -363,6 +363,8 @@ export default {
     },
 
     handleClose() {
+      this.keyEl = +new Date().getTime()
+      this.selection =[]
       this.registerDialog.visible = false;
       this.pagePersonData();
     },
@@ -499,7 +501,8 @@ export default {
     },
 
     //删除
-    deleteRecord() {
+   deleteRecord() {
+
       if (!this.selection.length) {
         this.$message.warning("请选择一条数据进行删除!");
         return;
@@ -515,6 +518,8 @@ export default {
           };
           const res = await deleteRecord(params);
           this.$message.success(res.msg);
+          this.selection = []
+          this.keyEl = +new Date().getTime()
           this.pagePersonData();
         })
         .catch(() => {
@@ -527,10 +532,14 @@ export default {
 
     //撤回
     recall() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
+      if (!this.selection.length) {
+        this.$message.warning("请选择一条数据进行删除!");
         return;
       }
+      // if (JSON.stringify(this.formLine) === "{}") {
+      //   this.$message.info("请先选中数据");
+      //   return;
+      // }
       this.$confirm("是否撤回该审批?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -538,10 +547,12 @@ export default {
       })
         .then(async () => {
           const params = {
-            idStr: this.formLine.id,
+            idStr:  this.selection.map((item) => item.id).join(","),
           };
           const res = await recallStockin(params);
           this.$message.success(res.msg);
+          this.selection = []
+          this.keyEl = +new Date().getTime()
           this.pagePersonData();
         })
         .catch(() => {
@@ -574,7 +585,7 @@ export default {
       // "http://32.20.33.23:80/device/api/device/register/uploadSmFile",
       axios
         .post(
-          `http://http://32.20.33.84/dev/api/device/register/uploadSmFile`,
+          `http://32.20.33.84/dev/api/device/register/uploadSmFile`,
           // `http://151.9.130.157/dev/api/device/register/uploadSmFile`,
           // "https://8dc1-240e-467-f78-ae3-24c1-dd67-ad8c-eaef.jp.ngrok.io/api/device/register/uploadSmFile",
           // "http://32.20.33.23:80/device/api/device/register/uploadSmFile",

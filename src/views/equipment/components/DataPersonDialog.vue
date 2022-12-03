@@ -77,6 +77,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    selection: {
+      type: Array,
+      default: () => [],
+    },
     sendType: {
       type: String,
       default: "register",
@@ -147,14 +151,24 @@ export default {
         nodeId: this.nodeId, //节点主键
       };
       if (this.sendType === "register") {
-        const params1 = {
-          ...common,
+        let paramsArray = this.selection?.map((item) => {
+        return {
+          id: item.id,
           createUserId: this.$store.state.login.loginData.userId, //申请人主键
           createUserName: this.$store.state.login.loginData.userName, //申请人名称
+          nodeId: this.nodeId, //节点主键
           auditUserId: this.form.id, //审批人主键
           auditUserName: this.form.caption,
         };
-        this.applyByType(sendAuditMedia(params1));
+      });
+        // const params1 = {
+        //   ...common,
+        //   createUserId: this.$store.state.login.loginData.userId, //申请人主键
+        //   createUserName: this.$store.state.login.loginData.userName, //申请人名称
+        //   auditUserId: this.form.id, //审批人主键
+        //   auditUserName: this.form.caption,
+        // };
+        this.applyByType(sendAuditMedia(paramsArray));
       } else if (this.sendType === "borrow") {
         const params2 = {
           ...common,

@@ -144,6 +144,7 @@
       :total="tableObj.total"
       :page="tableObj.page"
       :size="tableObj.size"
+      :key="keyEl"
       v-loading="tableObj.loading"
       @page-change="handleChangePage"
       @handleRowDblCick="handleRowDblCick"
@@ -183,7 +184,7 @@
       <template #content>
         <component
           :is="registerDialog.name"
-          :formLine="formLine"
+          :formLine="selectFrom"
           :pArams="pArams"
           :selection="selection"
           :sendType="'register'"
@@ -221,6 +222,7 @@ export default {
   data() {
     return {
       activeTab: 1,
+      keyEl: +new Date().getTime(),
       selection:[],
       keyWord: "", //输入框
       tableObj: {
@@ -288,6 +290,11 @@ export default {
     auditedNum() {
       return this.$store.state.login.dataRegisterBadge;
     },
+    selectFrom() {
+      return Object.keys(this.formLine).length
+        ? this.formLine
+        : this.selection[0];
+    },
   },
   methods: {
     //分页切换
@@ -315,7 +322,11 @@ export default {
       if (this.activeTab === 3) {
         this.messageLookRegister(row.id);
       }
-      this.edit();
+      this.registerDialog = {
+        name: "AddData",
+        title: "编辑资料",
+        visible: true,
+      };
     },
 
     //消息标记已读
@@ -377,6 +388,8 @@ export default {
 
     //新增
     add() {
+      this.formLine = {};
+      this.$refs.leadalTable.clearSelection();
       this.registerDialog = {
         name: "AddData",
         title: "新增资料",
@@ -386,14 +399,19 @@ export default {
 
     //送审
     sendApproval() {
-      if (JSON.stringify(this.formLine) === "{}") {
+      if (!this.selection.length) {
         this.$message.info("请先选中数据");
         return;
       }
+      // if (JSON.stringify(this.formLine) === "{}") {
+      //   this.$message.info("请先选中数据");
+      //   return;
+      // }
       this.handleSendApproval();
     },
 
     handleSendApproval() {
+      this.keyEl = +new Date().getTime();
       this.registerDialog = {
         name: "DataPersonDialog",
         title: "人员选择",
@@ -403,10 +421,15 @@ export default {
 
     //编辑
     edit() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
+      this.formLine = {};
+      if (this.selection.length !== 1) {
+        this.$message.info("请选择一条数据进行编辑！");
         return;
       }
+      // if (JSON.stringify(this.formLine) === "{}") {
+      //   this.$message.info("请先选中数据");
+      //   return;
+      // }
       this.registerDialog = {
         name: "AddData",
         title: "编辑资料",
@@ -427,7 +450,7 @@ export default {
       })
         .then(async () => {
           const params = {
-            idStr: this.formLine.id,
+            idStr:  this.selection.map((item) => item.id).join(","),
           };
           const res = await deleteByIdStr(params);
           this.$message.success(res.msg);

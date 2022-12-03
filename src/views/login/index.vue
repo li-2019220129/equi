@@ -110,6 +110,11 @@ export default {
                 // if (res) {
                 //   this.$router.push({ path: "/equipment" });
                 // }
+                // this.$store.dispatch("login/userAuth").then((res) => {
+                //       if (res?.length > 0) {
+                //         this.$router.push({ path: "/equipment" });
+                //       }
+                //     });
                 this.$store.dispatch("login/loginAction").then((res) => {
                   if (res) {
                     this.$store.dispatch("login/userAuth").then((res) => {

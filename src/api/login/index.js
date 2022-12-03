@@ -13,6 +13,18 @@ export function loginApi(params) {
   });
 }
 
+/**
+ * 登录
+ * @param {} param
+ * @returns
+ */
+//  export function loginApi(data) {
+//   return service({
+//     url: "/login",
+//     method: "post",
+//     data,
+//   });
+// }
 // system/menu/find
 /**
  * 获取系统名称

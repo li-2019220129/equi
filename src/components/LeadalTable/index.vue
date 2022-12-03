@@ -242,6 +242,7 @@ export default {
   },
 
   watch: {
+
     //显示与隐藏表格栏
     rowHeader: {
       immediate: true,

@@ -177,7 +177,7 @@ export default {
         toUserName: this.form.caption,
       };
       if (this.sendType === "register") {
-        this.applyByType(apply(paramsArray));
+        this.applyByType(apply(Object.keys(this.pArams).length?[params]:paramsArray));
         this.$store.dispatch("login/getRegisterBadge"); ////获取设备登记角标
       } else if (this.sendType === "borrow") {
         this.applyByType(submit(params));

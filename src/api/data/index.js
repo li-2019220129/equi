@@ -1,7 +1,7 @@
 import { service2 } from "@/utils/request";
 
 const devUrl = process.env.NODE_ENV === "development" ? "/api1/api" : "";
-
+// const devUrl = process.env.NODE_ENV === "development" ? "/api1" : "";
 // 公共
 
 //审批人查询
@@ -111,6 +111,7 @@ export function sendAuditMedia(data) {
   return service2({
     url: `${devUrl}/media/media/sendAudit`,
     method: "post",
+    arrTye:true,
     data,
   });
 }
