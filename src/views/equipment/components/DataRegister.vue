@@ -57,7 +57,11 @@
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 2">
+          <div
+            class="equipment-button_btn"
+            @click="recall"
+            v-if="activeTab === 2"
+          >
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
           </div>
@@ -209,6 +213,7 @@ import {
   pageCreateAudited,
   deleteByIdStr,
   messageLookMedia,
+  recallApi
 } from "@/api/data";
 export default {
   name: "EquipmentRegister",
@@ -223,7 +228,7 @@ export default {
     return {
       activeTab: 1,
       keyEl: +new Date().getTime(),
-      selection:[],
+      selection: [],
       keyWord: "", //输入框
       tableObj: {
         tableData: [],
@@ -297,6 +302,43 @@ export default {
     },
   },
   methods: {
+    //撤回
+    recall() {
+      if (!this.selection.length) {
+        this.$message.warning("请选择一条数据进行删除!");
+        return;
+      }
+
+      // if (JSON.stringify(this.formLine) === "{}") {
+      //   this.$message.info("请先选中数据");
+      //   return;
+      // }
+      this.$confirm("是否撤回该审批?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          console.log('232323')
+          const params = {
+            idStr:  this.selection.map((item) => item.id).join(","),
+          };
+
+          console.log(params)
+          const res = await recallApi(params);
+          console.log(res)
+          this.$message.success(res.msg);
+          this.selection = []
+          this.keyEl = +new Date().getTime()
+          this.getData();
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消撤回",
+          });
+        });
+    },
     //分页切换
     handleChangePage(pageNum, pageSize) {
       this.tableObj.page = pageNum;
@@ -314,6 +356,8 @@ export default {
     },
 
     handleClose() {
+      this.keyEl = +new Date().getTime();
+      this.selection = [];
       this.registerDialog.visible = false;
       this.getData();
     },
@@ -376,6 +420,8 @@ export default {
       }
     },
     handleClose() {
+      this.keyEl = +new Date().getTime();
+      this.selection = [];
       this.registerDialog.visible = false;
       this.getData();
     },
@@ -439,8 +485,8 @@ export default {
 
     //删除
     deleteRegister() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
+      if (!this.selection.length) {
+        this.$message.info("请选择一条数据进行编辑！");
         return;
       }
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
@@ -450,10 +496,12 @@ export default {
       })
         .then(async () => {
           const params = {
-            idStr:  this.selection.map((item) => item.id).join(","),
+            idStr: this.selection.map((item) => item.id).join(","),
           };
           const res = await deleteByIdStr(params);
           this.$message.success(res.msg);
+          this.keyEl = +new Date().getTime();
+          this.selection = [];
           this.getData();
         })
         .catch(() => {
@@ -467,5 +515,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

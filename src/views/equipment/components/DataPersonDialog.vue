@@ -152,15 +152,27 @@ export default {
       };
       if (this.sendType === "register") {
         let paramsArray = this.selection?.map((item) => {
-        return {
-          id: item.id,
-          createUserId: this.$store.state.login.loginData.userId, //申请人主键
-          createUserName: this.$store.state.login.loginData.userName, //申请人名称
-          nodeId: this.nodeId, //节点主键
-          auditUserId: this.form.id, //审批人主键
-          auditUserName: this.form.caption,
-        };
-      });
+          return {
+            id: item.id,
+            createUserId: this.$store.state.login.loginData.userId, //申请人主键
+            createUserName: this.$store.state.login.loginData.userName, //申请人名称
+            nodeId: this.nodeId, //节点主键
+            auditUserId: this.form.id, //审批人主键
+            auditUserName: this.form.caption,
+          };
+        });
+        if (Object.keys(this.pArams).length) {
+          paramsArray = [
+            {
+              id: this.pArams.id,
+              createUserId: this.$store.state.login.loginData.userId, //申请人主键
+              createUserName: this.$store.state.login.loginData.userName, //申请人名称
+              nodeId: this.nodeId, //节点主键
+              auditUserId: this.form.id, //审批人主键
+              auditUserName: this.form.caption,
+            },
+          ];
+        }
         // const params1 = {
         //   ...common,
         //   createUserId: this.$store.state.login.loginData.userId, //申请人主键
@@ -230,7 +242,7 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./headerScss.scss" scoped ></style>
+<style lang="scss" src="./headerScss.scss" scoped></style>
 
 <style lang="scss" scoped>
 @import "~@/styles/index.scss";

@@ -111,7 +111,7 @@ export function sendAuditMedia(data) {
   return service2({
     url: `${devUrl}/media/media/sendAudit`,
     method: "post",
-    arrTye:true,
+    arrType:true,
     data,
   });
 }
@@ -868,5 +868,14 @@ export function messageLookAudit(params) {
     url: `${devUrl}/media/media/messageLook`,
     method: "post",
     params,
+  });
+}
+// 资料撤回
+
+export function recallApi(data) {
+  return service2({
+    url: `${devUrl}/media/media/recall`,
+    method: "post",
+    params:data,
   });
 }

@@ -364,7 +364,7 @@ export default {
 
     handleClose() {
       this.keyEl = +new Date().getTime()
-      this.selection =[]
+      this.selection = []
       this.registerDialog.visible = false;
       this.pagePersonData();
     },

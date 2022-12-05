@@ -95,6 +95,9 @@ export const service2 = axios.create({
 // request interceptor
 service2.interceptors.request.use(
   (config) => {
+    if(config.arrType){
+      return config
+    }
     if (config.method === "post") {
       config.data = {
         ...config.data,

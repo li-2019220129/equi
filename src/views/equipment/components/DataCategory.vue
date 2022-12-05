@@ -264,7 +264,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteCategory({ ids: parmas }).then((res) => {
+          deleteCategory({ idStr: parmas }).then((res) => {
             this.$message.success(res.msg);
             this.$refs["leadalTable"].clearSelection();
             // this.loadCategory({ id: this.parentId });
