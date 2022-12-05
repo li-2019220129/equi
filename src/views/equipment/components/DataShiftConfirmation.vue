@@ -95,6 +95,7 @@ export default {
           saveDataKind(params).then((res) => {
             this.$message.success(res.msg);
             this.$emit("closeDialog", false);
+            
           });
         }
       });

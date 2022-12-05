@@ -19,6 +19,7 @@
         node-key="id"
         ref="navTree"
         lazy
+        :key="keyEl"
         :load="loadNode"
         @node-click="loadCategory"
       >
@@ -121,6 +122,7 @@ export default {
       _node:null,
       _resolve:null,
       activeTab: 1,
+      keyEl:+new Date().getTime(),
       keyWord: "", //输入框
       tableObj: {
         tableData: [],
@@ -164,13 +166,27 @@ export default {
     add() {
       this.title = "新增种类";
       this.parentId = null;
+      this.deviceKindData={
+        name: "",
+        sequence: 0,
+        id: "",
+        enabled: true, //是否启用
+      }
       this.visible = true;
+
     },
 
     addDataKind(data) {
       this.title = "新增种类";
       this.parentId = data.id;
+      this.deviceKindData={
+        name: "",
+        sequence: 0,
+        id: "",
+        enabled: true, //是否启用
+      }
       this.visible = true;
+
     },
 
     //获取资料种类树
@@ -191,10 +207,11 @@ export default {
     //保存关闭弹窗
     closeDialog(visible) {
       this.visible = visible;
-      const node = {
-        id: this.parentId,
-      };
-      this.loadNode(node);
+      this.keyEl = +new Date().getTime()
+      // const node = {
+      //   id: this.parentId,
+      // };
+      // this.loadNode(node);
     },
 
     //编辑设备种类
@@ -216,6 +233,7 @@ export default {
         .then(() => {
           deleteCategory({ idStr: data.id }).then((res) => {
             this.$message.success(res.msg);
+            this.keyEl = +new Date().getTime()
           });
         })
         .catch(() => {
@@ -254,6 +272,12 @@ export default {
         return;
       }
       this.title = "新增分类";
+       this.deviceKindData={
+        name: "",
+        sequence: 0,
+        id: "",
+        enabled: true, //是否启用
+      }
       this.visible = true;
     },
 
