@@ -118,6 +118,8 @@ export default {
   },
   data() {
     return {
+      _node:null,
+      _resolve:null,
       activeTab: 1,
       keyWord: "", //输入框
       tableObj: {
@@ -175,6 +177,10 @@ export default {
     loadNode(node, resolve) {
       //加载用户数据
       if (node.level > 1) return;
+      if (node.level === 0) {
+        this._node = node;
+        this._resolve = resolve;
+      }
       treeView({
         id: node.level === 0 ? null : node.data.id,
       }).then((res) => {
