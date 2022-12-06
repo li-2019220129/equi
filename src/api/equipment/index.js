@@ -725,4 +725,38 @@ export function batchDestoryDisAgree(data) {
 
 
 
+// 设备借用上传
+export function uploadApi(id,type,data) {
+  return service({
+    url: `device/upload?id=${id}&type=${type}`,
+    method: "post",
+    data,
+    arrType:true
+  });
+}
 
+// 设备借用上传
+export function templateApi(id) {
+  return service({
+    url: `device/template?id=${id}`,
+    method: "post",
+  });
+}
+
+// 设备借用下栽
+export function downLoadApi(id) {
+  return service({
+    url: `device/downLoad?id=${id}`,
+    method: "post",
+    download:true,
+    responseType:'blob'
+  });
+}
+
+// 设备借用上传
+export function deleteFileApi(id) {
+  return service({
+    url: `device/deleteFile?id=${id}`,
+    method: "post",
+  });
+}

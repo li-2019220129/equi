@@ -161,6 +161,7 @@
           :applyId="applyId"
           @handleParams="handleParams"
           @saveApply="getData(type)"
+          :mode="mode"
         />
       </template>
     </leadal-drawer>
@@ -240,6 +241,7 @@ export default {
       type: 0, //0申请 3待接收  4已接收
       radio: "",
       isDetail: false,
+      mode: "", //是否编辑模式
     };
   },
   created() {
@@ -360,6 +362,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
+      this.mode = "add";
       this.applyDrawerVisible = true;
     },
 
@@ -378,6 +381,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode = ''
       this.applyDrawerVisible = true;
     },
 

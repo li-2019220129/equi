@@ -8,17 +8,18 @@
         :http-request="handleUpload"
         class="upload-demo"
         action=""
+        accept=".doc"
       >
         <el-button size="small">上传</el-button>
       </el-upload>
     </div>
     <div class="borrow-file-main">
       <el-scrollbar style="height: 200px">
-        <div class="list-item">
-          <span>1.设备借用申请单</span>
+        <div v-for="(item,index) in mainList" :key="index" class="list-item">
+          <span>{{index+1}}，{{item.fileName}}</span>
           <div class="icon">
-            <i class="el-icon-download icon-i"></i>
-            <i class="el-icon-delete-solid icon-i"></i>
+            <i @click="downClick(item)" class="el-icon-download icon-i"></i>
+            <i @click="deleteClick(item)" class="el-icon-delete-solid icon-i"></i>
           </div>
         </div>
       </el-scrollbar>
@@ -28,59 +29,109 @@
       <el-upload
         style="display: inline-block; margin-left: 100px"
         :show-file-list="false"
-        :http-request="handleUpload"
+        :http-request="handleUploadanner"
         class="upload-demo"
         action=""
+        accept=".doc"
       >
         <el-button size="small">上传</el-button>
       </el-upload>
     </div>
     <div class="borrow-file-main">
       <el-scrollbar style="height: 200px">
-        <div class="list-item">
-          <span>1.设备借用申请单</span>
+        <div v-for="(item,index) in annexList" :key="index" class="list-item">
+          <span>{{index+1}}，{{item.fileName}}</span>
           <div class="icon">
-            <i class="el-icon-download icon-i"></i>
-            <i class="el-icon-delete-solid icon-i"></i>
+            <i @click="downClick(item)"  class="el-icon-download icon-i"></i>
+            <i  @click="deleteClick(item)" class="el-icon-delete-solid icon-i"></i>
           </div>
         </div>
       </el-scrollbar>
     </div>
   </div>
-  <!-- <div>
-    <div class="borrow-file-title">
-      正文
-      <el-upload
-        style="display: inline-block; margin-left: 100px"
-        :show-file-list="false"
-        :http-request="handleUpload"
-        class="upload-demo"
-        action=""
-      >
-        <el-button size="small">上传</el-button>
-      </el-upload>
-    </div>
-    <div class="borrow-file-main"></div>
-    <div class="borrow-file-title">
-      附件
-      <el-upload
-        style="display: inline-block; margin-left: 100px"
-        :show-file-list="false"
-        :http-request="handleUpload"
-        class="upload-demo"
-        action=""
-      >
-        <el-button size="small">上传</el-button>
-      </el-upload>
-    </div>
-  </div> -->
+  
 </template>
 
 <script>
+import {uploadApi,templateApi,downLoadApi,deleteFileApi} from '@/api/equipment/index'
+import {mucuploadApi,muctemplateApi,mucdownLoadApi,mucdeleteFileApi} from '@/api/data/index'
 export default {
   name: "BorrowFile",
+  props:{
+    id: {
+      type: String,
+      default: "",
+    },
+    applyId:{
+      type: String,
+      default: "",
+    },
+    mode:{
+      type:String,
+      default:'设备'
+    }
+  },
+  data(){
+      return {
+        mainList:[],
+        annexList:[],
+        upId:null
+      }
+  },
+  mounted(){
+    this.upId = this.applyId || this.id
+    this.getList()
+    
+  },
   methods: {
-    handleUpload() {},
+   async deleteClick(item){
+    const {status} = await (this.mode==='设备'?deleteFileApi(item.id):mucdeleteFileApi(item.id))
+    if(status===200){
+      this.$message.success('删除成功！')
+      this.getList()
+    }
+    },
+    async downClick(item){
+    const res =  await (this.mode==='设备'?downLoadApi(item.id):mucdownLoadApi(item.id))
+    let blob = new Blob([res],{
+      type:'application/msword'
+    }) 
+    let objectUrl = URL.createObjectURL(blob)
+    let a = document.createElement('a')
+    a.href = objectUrl
+    a.download = `${item.fileName}`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    },
+    async getList(){
+      const {status,data}= await (this.mode==='设备'?templateApi(this.upId):muctemplateApi(this.upId))
+      if(status==200){
+        this.mainList = data.filter(item=>item.type===1)
+        this.annexList = data.filter(item=>item.type===2)
+      }
+    },
+   async handleUpload(file) {
+    let formData = new FormData()
+    console.log(file.file,'9999')
+    formData.append("uploadFile",file.file)
+    const {status} = await (this.mode==='设备'?uploadApi(this.upId,1,formData):mucuploadApi(this.upId,1,formData))
+    console.log(status,'909090')
+    if(status==200){
+      this.$message.success('上传成功！')
+      this.getList()
+    }
+    },
+    async handleUploadanner(file) {
+    let formData = new FormData()
+    console.log(file.file,'9999')
+    formData.append("uploadFile",file.file)
+    const {status} =  await (this.mode==='设备'?uploadApi(this.upId,2,formData):mucuploadApi(this.upId,2,formData))
+    if(status==200){
+      this.$message.success('上传成功！')
+      this.getList()
+    }
+    },
   },
 };
 </script>
@@ -103,6 +154,7 @@ export default {
   justify-content: space-between;
   font-size: 16px;
   padding: 0 30px;
+  margin-top: 10px;
   align-items: center;
   background-color: rgba(237, 249, 255);
   .icon {

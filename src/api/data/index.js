@@ -743,7 +743,7 @@ export function pageOtherAudit(data) {
   });
 }
 
-//审批同意
+//消息ss审批同意
 export function auditAgree(data) {
   return service2({
     url: `${devUrl}/integration/auditAgree`,
@@ -751,13 +751,33 @@ export function auditAgree(data) {
     data,
   });
 }
-
+//
 //审批不同意
 export function auditDisAgree(data) {
   return service2({
     url: `${devUrl}/integration/auditDisAgree`,
     method: "post",
     data,
+  });
+}
+
+//消息ss审批同意
+export function auditAgreeBatch(data) {
+  return service2({
+    url: `${devUrl}/integration/auditAgreeBatch`,
+    method: "post",
+    data,
+    arrType:true
+  });
+}
+//
+//审批不同意
+export function auditDisAgreeBatch(data) {
+  return service2({
+    url: `${devUrl}/integration/auditDisAgreeBatch`,
+    method: "post",
+    data,
+    arrType:true
   });
 }
 
@@ -877,5 +897,39 @@ export function recallApi(data) {
     url: `${devUrl}/media/media/recall`,
     method: "post",
     params:data,
+  });
+}
+// 设备借用上传
+export function muctemplateApi(id) {
+  return service2({
+    url: `${devUrl}/muc/template?id=${id}`,
+    method: "post",
+  });
+}
+
+// 设备借用下栽
+export function mucdownLoadApi(id) {
+  return service2({
+    url: `${devUrl}/muc/downLoad?id=${id}`,
+    method: "post",
+    download:true,
+    responseType:'blob'
+  });
+}
+
+// 设备借用上传
+export function mucdeleteFileApi(id) {
+  return service2({
+    url: `${devUrl}/muc/deleteFile?id=${id}`,
+    method: "post",
+  });
+}
+// 设备借用上传
+export function mucuploadApi(id,type,data) {
+  return service2({
+    url: `${devUrl}/muc/upload?id=${id}&type=${type}`,
+    method: "post",
+    data,
+    arrType:true
   });
 }

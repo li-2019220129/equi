@@ -47,7 +47,7 @@
             </div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
-              @click="activeTab = 2"
+              @click="papers"
             >
               相关文件
             </div>
@@ -64,6 +64,7 @@
             :is="componentName"
             v-bind="$attrs"
             :applyId="applyId"
+            :id="id"
             ref="borrowMessage"
             @saveBorrow="saveBorrow"
             :devIds.sync="devIds"
@@ -92,6 +93,10 @@ export default {
       type: String,
       default: "",
     },
+    mode:{
+     type: String,
+     default: "",
+    }
   },
 
   data() {
@@ -127,6 +132,13 @@ export default {
   },
 
   methods: {
+    papers(){
+        if (!this.preserve&&this.mode=='add') {
+        this.$message.warning("请先保存后在进行操作！");
+        return;
+      }
+      this.activeTab = 2
+    },
     //保存
     handleSave() {
       if (this.preserve) {

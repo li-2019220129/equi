@@ -178,10 +178,12 @@
     <LeadalDrawer :visible.sync="borrowDrawer.visible">
       <template #content>
         <data-borrow-drawer
+          :applyId="applyId"
           :drawerTitle="borrowDrawer.title"
           @reloadData="getData"
           @handleParams="handleParams"
           :formLine="formLine"
+          :mode="mode"
         />
       </template>
     </LeadalDrawer>
@@ -249,6 +251,7 @@ export default {
   },
   data() {
     return {
+      mode:'',
       title: "借阅",
       drawerTitle: "资料借阅",
       activeTab: 1,
@@ -407,6 +410,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
+      this.mode = 'add'
       this.borrowDrawer = {
         title: "资料借阅",
         visible: true,
@@ -426,6 +430,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode= ''
       this.borrowDrawer = {
         title: "资料借阅",
         visible: true,

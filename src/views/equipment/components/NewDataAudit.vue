@@ -88,6 +88,8 @@ import {
   auditAgree,
   auditDisAgree,
   messageLookAudit,
+  auditDisAgreeBatch,
+  auditAgreeBatch
 } from "@/api/data";
 import { mapState } from "vuex";
 export default {
@@ -162,17 +164,25 @@ export default {
       }
     },
     handleSubmit() {
-      const id = this.selection.map((item) => item.applyId).join(",");
-      const nodeId = this.selection.map((item) => item.nodeId).join(",");
-      const params = {
-        id, //申请ID
-        nodeId, //审批节点id
+      // const id = this.selection.map((item) => item.applyId).join(",");
+      // const nodeId = this.selection.map((item) => item.nodeId).join(",");
+      // const params = {
+      //   id, //申请ID
+      //   nodeId, //审批节点id
+      //   reason: this.ruleForm.desc, //原因
+      //   currentUserId: this.$store.state.login.loginData.userId, //当前用户主键
+      // };
+      let paramsArray = this.selection.map(item=>{
+        return {
+        id:item.applyId, //申请ID
+        nodeId:item.nodeId, //审批节点id
         reason: this.ruleForm.desc, //原因
         currentUserId: this.$store.state.login.loginData.userId, //当前用户主键
-      };
+        }
+      })
       this.ruleForm.agree
-        ? this.agreeOrDisAgree(auditAgree(params))
-        : this.agreeOrDisAgree(auditDisAgree(params));
+        ? this.agreeOrDisAgree(auditAgreeBatch(paramsArray))
+        : this.agreeOrDisAgree(auditDisAgreeBatch(paramsArray));
     },
 
     async agreeOrDisAgree(promise) {

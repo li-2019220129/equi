@@ -155,6 +155,7 @@
           :formLine="formLine"
           :applyId="applyId"
           @saveApply="getData()"
+          :mode="mode"
           @handleParams="handleParams"
         />
       </template>
@@ -214,6 +215,7 @@ export default {
   data() {
     return {
       title: "销毁",
+      mode:null,
       drawerTitle: "资料销毁",
       activeTab: 1,
       keyWord: "", //输入框
@@ -346,6 +348,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
+      this.mode= 'add'
       this.applyDrawerVisible = true;
     },
 
@@ -379,6 +382,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode=''
       this.applyDrawerVisible = true;
     },
 

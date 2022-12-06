@@ -26,7 +26,7 @@
             </div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
-              @click="activeTab = 2"
+              @click="papers"
             >
               相关文件
             </div>
@@ -42,6 +42,7 @@
           :is="componentName"
           v-bind="$attrs"
           :applyId="applyId"
+          :id="id"
           ref="borrowMessage"
           @saveBorrow="saveBorrow"
         />
@@ -71,10 +72,16 @@ export default {
       type: String,
       default: "",
     },
+    mode:{
+     type: String,
+     default: "",
+    }
   },
   created() {},
   data() {
     return {
+      preserve: false,
+      id:null,
       activeTab: 1,
       componentName: "DataBorrowMessage",
       params: {},
@@ -98,6 +105,13 @@ export default {
   },
 
   methods: {
+     papers(){
+        if (!this.preserve&&this.mode=='add') {
+        this.$message.warning("请先保存后在进行操作！");
+        return;
+      }
+      this.activeTab = 2
+    },
     //保存
     handleSave() {
       this.$refs.borrowMessage.saveBorrow();
@@ -110,6 +124,8 @@ export default {
         if (res.status === 200) {
           this.$message.success(res.msg);
           this.saveStatus = 1;
+          this.preserve = true
+          this.id = res.data.id
           this.$emit("reloadData");
         } else {
           this.$message.error(res.msg);

@@ -161,6 +161,7 @@
           :applyId="applyId"
           @handleParams="handleParams"
           @saveApply="getData(status)"
+          :mode="mode"
         />
       </template>
     </LeadalDrawer>
@@ -222,6 +223,7 @@ export default {
   data() {
     return {
       title: "销毁",
+      mode:'',
       drawerTitle: "设备销毁",
       activeTab: 1,
       keyWord: "", //输入框
@@ -354,6 +356,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
+      this.mode = 'add'
       this.applyDrawerVisible = true;
     },
 
@@ -387,6 +390,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode=''
       this.applyDrawerVisible = true;
     },
 

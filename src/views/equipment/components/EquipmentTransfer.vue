@@ -162,6 +162,7 @@
           :applyId="applyId"
           @saveApply="getData(type)"
           @handleParams="handleParams"
+          :mode="mode"
         />
       </template>
     </LeadalDrawer>
@@ -225,6 +226,7 @@ export default {
       title: "移交",
       drawerTitle: "设备移交",
       activeTab: 1,
+      mode:'',
       keyWord: "", //输入框
       tableObj: {
         tableData: [],
@@ -355,6 +357,7 @@ export default {
     transferApply() {
       this.formLine = {};
       this.radio = "";
+      this.mode= 'add'
       this.applyId = "";
       this.applyDrawerVisible = true;
     },
@@ -389,6 +392,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode= ''
       this.applyDrawerVisible = true;
     },
 

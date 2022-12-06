@@ -154,6 +154,7 @@
           :visible.sync="applyDrawerVisible"
           :formLine="formLine"
           :applyId="applyId"
+          :mode="mode"
           @saveApply="getData()"
           @handleParams="handleParams"
         />
@@ -237,6 +238,7 @@ export default {
       status: 1, //审批状态
       applyId: "", //申请id
       content: "", //标题输入框
+      mode:''
     };
   },
 
@@ -315,9 +317,11 @@ export default {
     },
     //申请
     transferApply() {
+      console.log('90909009098765543')
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
+      this.mode = 'add'
       this.applyDrawerVisible = true;
     },
 
@@ -351,6 +355,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode = ''
       this.applyDrawerVisible = true;
     },
 

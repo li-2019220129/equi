@@ -26,7 +26,7 @@
             </div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
-              @click="activeTab = 2"
+              @click="papers"
             >
               相关文件
             </div>
@@ -42,6 +42,7 @@
           :is="componentName"
           v-bind="$attrs"
           :applyId="applyId"
+          :id="id"
           ref="applyMessage"
           @saveApply="saveApply"
           :mediaData.sync="mediaData"
@@ -68,11 +69,17 @@ export default {
       type: String,
       default: "",
     },
+     mode:{
+     type: String,
+     default: "",
+    }
   },
   inject: ["root"],
   created() {},
   data() {
     return {
+      id:true,
+      preserve: false,
       drawerTitle: this.root.drawerTitle,
       activeTab: 1,
       componentName: "DataApplyMessage",
@@ -101,6 +108,14 @@ export default {
     },
   },
   methods: {
+     papers(){
+      console.log(this.mode,this.preserve,'89898')
+        if (!this.preserve&&this.mode=='add') {
+        this.$message.warning("请先保存后在进行操作！");
+        return;
+      }
+      this.activeTab = 2
+    },
     //保存
     save() {
       this.$refs.applyMessage.saveApply();
@@ -166,6 +181,8 @@ export default {
       if (res.status === 200) {
         this.$message.success("保存成功！");
         this.saveStatus = 1;
+        this.id = res.data.id
+        this.preserve = true;
         this.$emit("saveApply");
       } else {
         this.$message.error(res.msg);

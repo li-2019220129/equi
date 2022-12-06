@@ -156,6 +156,7 @@
           :applyId="applyId"
           @saveApply="getData()"
           @handleParams="handleParams"
+          :mode="mode"
         />
       </template>
     </LeadalDrawer>
@@ -213,6 +214,7 @@ export default {
     return {
       title: "外送",
       drawerTitle: "资料外送",
+      mode:'',
       activeTab: 1,
       keyWord: "", //输入框
       tableObj: {
@@ -316,6 +318,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
+      this.mode='add'
       this.applyDrawerVisible = true;
     },
 
@@ -349,6 +352,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
+      this.mode = ''
       this.applyDrawerVisible = true;
     },
 
