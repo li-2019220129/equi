@@ -35,7 +35,9 @@
       </div>
     </div>
     <div class="drawer-container">
-      <div class="drawer-left"></div>
+      <div class="drawer-left">
+        <pdf :src="pdfSrc"  style="width:100%;height:100%"></pdf>
+      </div>
       <div class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
@@ -67,6 +69,8 @@
             :id="id"
             ref="borrowMessage"
             @saveBorrow="saveBorrow"
+            @pdfSrcDelete="pdfSrcDelete"
+            @pdfSrcSuccess="pdfSrcSuccess"
             :devIds.sync="devIds"
           />
         </keep-alive>
@@ -80,12 +84,14 @@ import BorrowMessage from "./BorrowMessage.vue";
 import RelativeFile from "./RelativeFile.vue";
 import HandleProcess from "./HandleProcess.vue";
 import { applyBorrow, xtsBorrow } from "@/api/equipment";
+import pdf from "vue-pdf"
 export default {
   name: "BorrowDrawer",
   components: {
     BorrowMessage,
     RelativeFile,
     HandleProcess,
+    pdf
   },
   inject: ["root"],
   props: {
@@ -110,6 +116,7 @@ export default {
       activeTab: 1,
       componentName: "BorrowMessage",
       params: {},
+      pdfSrc:null,
       saveStatus: 0, //是否已保存
       id: "", //申请主键
       devIds: "", //设备id
@@ -132,6 +139,13 @@ export default {
   },
 
   methods: {
+    pdfSrcDelete(){
+      this.pdfSrc = null
+    },
+    pdfSrcSuccess(src){
+      console.log(src,'6654553')
+      this.pdfSrc = src
+    },
     papers(){
         if (!this.preserve&&this.mode=='add') {
         this.$message.warning("请先保存后在进行操作！");

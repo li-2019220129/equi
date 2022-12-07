@@ -162,6 +162,7 @@ export default {
     formLine: {
       immediate: true,
       handler() {
+        console.log(this.formLine)
         if (JSON.stringify(this.formLine) !== "{}") {
           const params = {
             id: this.formLine.id,

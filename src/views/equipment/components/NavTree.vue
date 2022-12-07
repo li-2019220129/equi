@@ -165,17 +165,18 @@ export default {
               parentId: "4",
               code: "xtsGlobal",
             },
-            // {
-            //   id: "4-5",
-            //   label: "审批单配置",
-            //   parentId: "4",
-            // },
             {
-              id: "4-6",
-              label: "设备分类",
+              id: "4-5",
+              label: "审批单配置",
               parentId: "4",
-              code: "xtsType",
+              code:"xtsAudit"
             },
+            // {
+            //   id: "4-6",
+            //   label: "设备分类",
+            //   parentId: "4",
+            //   code: "xtsType",
+            // },
           ],
         },
       ],

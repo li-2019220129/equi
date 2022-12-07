@@ -14,38 +14,38 @@
       </div>
     </div>
     <div class="drawer-container">
-      <div class="drawer-left"></div>
+      <div class="drawer-left">
+        <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
+      </div>
       <div class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
             <div
               :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
               @click="activeTab = 1"
-            >
-              基础信息
-            </div>
+            >基础信息</div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
               @click="papers"
-            >
-              相关文件
-            </div>
+            >相关文件</div>
             <div
               :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
               @click="activeTab = 3"
-            >
-              办理过程
-            </div>
+            >办理过程</div>
           </div>
         </div>
-        <component
+        <keepAlive>
+          <component
           :is="componentName"
           v-bind="$attrs"
           :applyId="applyId"
           :id="id"
           ref="borrowMessage"
           @saveBorrow="saveBorrow"
+          @pdfSrcDelete="pdfSrcDelete"
+          @pdfSrcSuccess="pdfSrcSuccess"
         />
+        </keepAlive>
       </div>
     </div>
   </div>
@@ -55,6 +55,7 @@
 import DataBorrowMessage from "./DataBorrowMessage.vue";
 import RelativeFile from "./RelativeFile.vue";
 import HandleProcess from "./HandleProcess.vue";
+import pdf from "vue-pdf";
 import { saveDraftBorrow } from "@/api/data";
 export default {
   name: "BorrowDrawer",
@@ -62,30 +63,32 @@ export default {
     DataBorrowMessage,
     RelativeFile,
     HandleProcess,
+    pdf
   },
   props: {
     drawerTitle: {
       type: String,
-      default: "",
+      default: ""
     },
     applyId: {
       type: String,
-      default: "",
+      default: ""
     },
-    mode:{
-     type: String,
-     default: "",
+    mode: {
+      type: String,
+      default: ""
     }
   },
   created() {},
   data() {
     return {
       preserve: false,
-      id:null,
+      id: null,
       activeTab: 1,
       componentName: "DataBorrowMessage",
       params: {},
       saveStatus: 0,
+      pdfSrc: null
     };
   },
   watch: {
@@ -101,16 +104,23 @@ export default {
           this.componentName = "HandleProcess";
           break;
       }
-    },
+    }
   },
 
   methods: {
-     papers(){
-        if (!this.preserve&&this.mode=='add') {
+    pdfSrcDelete() {
+      this.pdfSrc = null;
+    },
+    pdfSrcSuccess(src) {
+      console.log(src, "6654553");
+      this.pdfSrc = src;
+    },
+    papers() {
+      if (!this.preserve && this.mode == "add") {
         this.$message.warning("请先保存后在进行操作！");
         return;
       }
-      this.activeTab = 2
+      this.activeTab = 2;
     },
     //保存
     handleSave() {
@@ -120,12 +130,12 @@ export default {
     saveBorrow(params) {
       this.params = params;
       console.log(params);
-      saveDraftBorrow(params).then((res) => {
+      saveDraftBorrow(params).then(res => {
         if (res.status === 200) {
           this.$message.success(res.msg);
           this.saveStatus = 1;
-          this.preserve = true
-          this.id = res.data.id
+          this.preserve = true;
+          this.id = res.data.id;
           this.$emit("reloadData");
         } else {
           this.$message.error(res.msg);
@@ -140,8 +150,8 @@ export default {
         return;
       }
       this.$emit("handleParams", this.params);
-    },
-  },
+    }
+  }
 };
 </script>
 

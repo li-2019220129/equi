@@ -14,45 +14,46 @@
       </div>
     </div>
     <div class="drawer-container">
-      <div class="drawer-left"></div>
+      <div class="drawer-left">
+        <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
+      </div>
       <div class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
             <div
               :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
               @click="activeTab = 1"
-            >
-              基础信息
-            </div>
+            >基础信息</div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
               @click="papers"
-            >
-              相关文件
-            </div>
+            >相关文件</div>
             <div
               :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
               @click="activeTab = 3"
-            >
-              办理过程
-            </div>
+            >办理过程</div>
           </div>
         </div>
-        <component
-          :is="componentName"
-          v-bind="$attrs"
-          :applyId="applyId"
-          :id="id"
-          ref="applyMessage"
-          :drawerTitle="drawerTitle"
-          @saveApply="saveApply"
-        />
+        <keepAlive>
+          <component
+            :is="componentName"
+            v-bind="$attrs"
+            :applyId="applyId"
+            :id="id"
+            ref="applyMessage"
+            @pdfSrcDelete="pdfSrcDelete"
+            @pdfSrcSuccess="pdfSrcSuccess"
+            :drawerTitle="drawerTitle"
+            @saveApply="saveApply"
+          />
+        </keepAlive>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import pdf from "vue-pdf";
 import ApplyMessage from "./ApplyMessage.vue";
 import RelativeFile from "./RelativeFile.vue";
 import HandleProcess from "./HandleProcess.vue";
@@ -63,15 +64,16 @@ export default {
     ApplyMessage,
     RelativeFile,
     HandleProcess,
+    pdf
   },
   props: {
     applyId: {
       type: String,
-      default: "",
+      default: ""
     },
-    mode:{
-     type: String,
-     default: "",
+    mode: {
+      type: String,
+      default: ""
     }
   },
   inject: ["root"],
@@ -83,6 +85,7 @@ export default {
       title: this.root.title,
       isDetail: this.root.isDetail,
       activeTab: 1,
+      pdfSrc: null,
       componentName: "ApplyMessage",
       saveStatus: 0, //是否可发送
       applyOrganId: this.$store.state.login.loginData.organId, //申请部门id
@@ -90,7 +93,7 @@ export default {
       deliverParams: {}, //外送参数
       destoryParams: {}, //销毁参数
       id: "", //编辑id
-      secret: "", //设备密级
+      secret: "" //设备密级
     };
   },
   watch: {
@@ -106,15 +109,22 @@ export default {
           this.componentName = "HandleProcess";
           break;
       }
-    },
+    }
   },
   methods: {
-    papers(){
-        if (!this.preserve&&this.mode=='add') {
+    pdfSrcDelete() {
+      this.pdfSrc = null;
+    },
+    pdfSrcSuccess(src) {
+      console.log(src, "6654553");
+      this.pdfSrc = src;
+    },
+    papers() {
+      if (!this.preserve && this.mode == "add") {
         this.$message.warning("请先保存后在进行操作！");
         return;
       }
-      this.activeTab = 2
+      this.activeTab = 2;
     },
     //保存
     save() {
@@ -141,7 +151,7 @@ export default {
         reason: p.reason,
         toUserId: p.toUserId,
         toUserName: p.toUserName,
-        secret: p.secret,
+        secret: p.secret
       };
       //如果有申请人id，代表是编辑
       if (this.applyId) {
@@ -154,7 +164,7 @@ export default {
           devId: p.devId,
           modifyType: p.modifyType,
           modifyUserId: p.modifyUserId,
-          modifyUserName: p.modifyUserName,
+          modifyUserName: p.modifyUserName
         };
         this.saveTheApply(saveDeviceModify(this.transferParams));
       } else if (this.drawerTitle === "设备外送") {
@@ -162,7 +172,7 @@ export default {
           ...params,
           deviceIdStr: p.devId,
           receiveUserId: p.modifyUserId,
-          receiveUserName: p.modifyUserName,
+          receiveUserName: p.modifyUserName
         };
         this.saveTheApply(saveTakeout(this.deliverParams));
       } else if (this.drawerTitle === "设备销毁") {
@@ -170,7 +180,7 @@ export default {
           ...params,
           deviceIdStr: p.devId,
           receiveUserId: p.modifyUserId,
-          receiveUserName: p.modifyUserName,
+          receiveUserName: p.modifyUserName
         };
         this.saveTheApply(saveDestory(this.destoryParams));
       }
@@ -180,7 +190,7 @@ export default {
       if (res.status === 200) {
         this.$message.success("保存成功！");
         this.saveStatus = 1;
-        this.preserve  = true
+        this.preserve = true;
         this.id = res.data;
         this.$emit("saveApply");
       } else {
@@ -204,8 +214,8 @@ export default {
       this.$set(params, "id", this.id);
       this.$set(params, "secret", this.secret);
       this.$emit("handleParams", params);
-    },
-  },
+    }
+  }
 };
 </script>
 

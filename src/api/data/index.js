@@ -491,7 +491,7 @@ export function loadTakeout(params) {
   return service2({
     url: `${devUrl}/takeout/load`,
     method: "post",
-    params,
+    data:params,
   });
 }
 

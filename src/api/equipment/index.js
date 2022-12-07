@@ -760,3 +760,48 @@ export function deleteFileApi(id) {
     method: "post",
   });
 }
+//审批列表数据
+export function pageAuditTemplateApi(data) {
+  return service({
+    url: `device/pageAuditTemplate`,
+    method: "post",
+    data
+  });
+}
+
+//审批保存
+export function auditTemplateApi(data) {
+  return service({
+    url: `device/auditTemplate`,
+    method: "post",
+    data,
+    arrType:true
+  });
+}
+
+//审批编辑数据
+export function loadAuditTemplateApi(id) {
+  return service({
+    url: `device/loadAuditTemplate?id=${id}`,
+    method: "post",
+  });
+}
+
+//审批列表删除
+export function deleteAuditTemplateApi(data) {
+  return service({
+    url: `device/deleteAuditTemplate`,
+    method: "post",
+    data
+  });
+}
+
+//pdf下载
+export function downLoadPDFApi(id) {
+  return service({
+    url: `device/downLoadPDF?id=${id}`,
+    method: "post",
+    download:true,
+    responseType:'blob'
+  });
+}
