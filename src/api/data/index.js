@@ -933,3 +933,30 @@ export function mucuploadApi(id,type,data) {
     arrType:true
   });
 }
+//流程单条
+export function mucnodeQuery(flowId) {
+  return service2({
+    url: `${devUrl}/flow/node/find?flowId=${flowId}`,
+    method: "post",
+  });
+}
+//资料登记模板下载
+export function registerdownloadMode(data) {
+  return service2({
+    url: `${devUrl}/media/register/downloadModel`,
+    method: "post",
+    download: true,
+    responseType: "blob",
+    params: data,
+  });
+}
+
+//资料登记上传模板
+export function uploadFileMode(data) {
+  return service2({
+    url: `${devUrl}/media/register/uploadFile`,
+    method: "post",
+    data,
+    arrType:true
+  });
+}

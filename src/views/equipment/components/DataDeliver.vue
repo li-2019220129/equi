@@ -65,7 +65,7 @@
           </div>
           <div
             class="equipment-button_btn"
-            v-if="activeTab === 1 || activeTab === 3"
+            v-if="activeTab === 1"
             @click="edit"
           >
             <img src="@/assets/icon/编辑@2x.png" />
@@ -263,6 +263,7 @@ export default {
     },
 
     switchStatus(num) {
+      
       switch (num) {
         case 1:
           return (this.status = 1);
@@ -273,8 +274,9 @@ export default {
         case 4:
           return (this.status = 4);
         case 5:
-          return (this.status = 8);
+          return (this.status = 16);
       }
+      console.log(this.status,'status')
     },
 
     changeRadio(row) {
@@ -304,6 +306,7 @@ export default {
     },
 
     handleParams(obj) {
+      console.log(obj,'handleParams')
       this.pArams = obj;
       this.applyDrawerVisible = false;
       this.visible = true;

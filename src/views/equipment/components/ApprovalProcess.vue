@@ -89,7 +89,7 @@ import LeadalDrawer from "@/components/LeadalDrawer";
 import FlowEditor from "./FlowEditor";
 import DataFlow from "./DataFlow.vue";
 import { page, deleteFlow, nodeQuery } from "@/api/system";
-import { pageFlow, deleteDataFlow } from "@/api/data";
+import { pageFlow, deleteDataFlow,mucnodeQuery } from "@/api/data";
 export default {
   name: "ToApprove",
   components: {
@@ -149,11 +149,11 @@ export default {
           label: "资料登记",
         },
         {
-          id: 4,
+          id: 32,
           label: "资料移交",
         },
         {
-          id: 32,
+          id: 4,
           label: "资料外送",
         },
         {
@@ -270,9 +270,10 @@ export default {
         };
         pageFlow(parmas).then((res) => {
           this.tableObj.tableData = res.data.data.map((item) => {
-            item.categoryValue = this.switchDataCategoryValue(
+            item.categoryValueLabel = this.switchDataCategoryValue(
               item.categoryValue
             );
+            item.enabled = item.enable ? "是" : "否";
             return item;
           });
           this.tableObj.total = res.data.total;
@@ -287,9 +288,9 @@ export default {
       switch (num) {
         case 1:
           return "资料登记";
-        case 4:
-          return "资料移交";
         case 32:
+          return "资料移交";
+        case 4:
           return "资料外送";
         case 64:
           return "资料销毁";
@@ -311,7 +312,9 @@ export default {
       this.title = "编辑";
       this.visible = true;
       this.editForm = row;
-      nodeQuery(row.id).then((res) => {
+      let fn =(this.activeTab ==1?nodeQuery:mucnodeQuery)
+      console.log(fn,'343434')
+      fn(row.id).then((res) => {
         const { data } = res;
 
         const array = data.map((r) => {

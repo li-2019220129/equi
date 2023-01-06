@@ -89,7 +89,7 @@ export default {
           { type: "index", label: "序号" },
           { value: "heading", label: "文件标题" },
           { value: "code", label: "文件编号" },
-          { value: "senderName", label: "所在机构" },
+          { value: "createDeptName", label: "所在机构" },
           { value: "secretLevelLabel", label: "资料密级" },
         ],
         page: 1,

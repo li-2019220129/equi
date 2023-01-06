@@ -65,7 +65,7 @@
           </div>
           <div
             class="equipment-button_btn"
-            v-if="activeTab === 1 || activeTab === 3"
+            v-if="activeTab === 1"
             @click="edit"
           >
             <img src="@/assets/icon/编辑@2x.png" />

@@ -85,8 +85,6 @@ import AddData from "./AddData.vue";
 import { tableOptions2 } from "./dataOption/toApprove.options";
 import {
   pageAudit,
-  auditAgree,
-  auditDisAgree,
   messageLookAudit,
   auditDisAgreeBatch,
   auditAgreeBatch

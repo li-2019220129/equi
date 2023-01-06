@@ -167,6 +167,7 @@ export default {
       } else if (this.drawerTitle === "资料外送") {
         this.deliverParams = {
           ...params,
+          id:p.id,
           takeoutId: p.id,
           currentUserId: p.userId,
           currentUserName: p.userName,

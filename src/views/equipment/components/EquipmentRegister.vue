@@ -585,7 +585,7 @@ export default {
       // "http://32.20.33.23:80/device/api/device/register/uploadSmFile",
       axios
         .post(
-          `http://32.20.33.84/dev/api/device/register/uploadSmFile`,
+          `${window.location.xtsConfig.devicePath}/api/device/register/uploadSmFile`,
           // `http://151.9.130.157/dev/api/device/register/uploadSmFile`,
           // "https://8dc1-240e-467-f78-ae3-24c1-dd67-ad8c-eaef.jp.ngrok.io/api/device/register/uploadSmFile",
           // "http://32.20.33.23:80/device/api/device/register/uploadSmFile",

@@ -230,6 +230,7 @@ export default {
 
     //申请
     saveApply() {
+      console.log(this.applyForm,'applyform')
       this.$emit("saveApply", this.applyForm);
     },
 

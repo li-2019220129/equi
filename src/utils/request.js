@@ -3,7 +3,9 @@ import Vue from "vue";
 import { MessageBox, Message } from "element-ui";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
-
+const devicePath = process.env.NODE_ENV==='development'?'':window.location.xtsConfig.devicePath+'/api/'
+const mucPath = process.env.NODE_ENV==='development'?'':window.location.xtsConfig.mucPath+'/api/'
+console.log(window.location.xtsConfig,'xts')
 //设备
 export const service = axios.create({
   // baseURL: window.g.EquipmentUrl + "/api/",
@@ -12,9 +14,9 @@ export const service = axios.create({
   // : window.location.origin + "/api/",
   // baseURL: window.location.contextPath + "/api/",
   // baseURL: "http://127.0.0.1:8080/api/",
-  // baseURL: process.env.VUE_APP_BASE_API + "/api/",
+  baseURL: devicePath,
   // baseURL:
-  // timeout: 50000, // request timeout
+  timeout: 50000, // request timeout
 });
 
 // request interceptor
@@ -54,6 +56,7 @@ service.interceptors.response.use(
       const result = response.data;
       return result;
     }
+    console.log(response.request.responseType ,'7777777')
     // 二进制数据则直接返回
     if (
       response.request.responseType === "blob" ||
@@ -87,9 +90,9 @@ export const service2 = axios.create({
   //   : "/api/",
   // baseURL: Vue.prototype.$DataUrl,
   // baseURL: window.location.contextPath + "/api/",
-  // baseURL: "http://127.0.0.1:8070/api/",
-  // baseURL: process.env.VUE_APP_BASE_API_DATA + "/api/",
-  // timeout: 50000, // request timeout
+  // baseURL: "",
+  baseURL: mucPath,
+  timeout: 50000, // request timeout
 });
 
 // request interceptor
@@ -127,6 +130,12 @@ service2.interceptors.response.use(
     if (filterApiList.includes(response.config.url)) {
       const result = response.data;
       return result;
+    }
+    if (
+      response.request.responseType === "blob" ||
+      response.request.responseType === "arraybuffer"
+    ) {
+      return response.data;
     }
     const res = response.data;
     // || !res.success

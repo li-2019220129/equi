@@ -37,14 +37,13 @@
               <el-form-item label="文件标题" prop="heading">
                 <el-input
                   v-model="form.heading"
-                  style="width: 1056px"
                 ></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="24">
               <el-form-item label="文件编号" prop="code">
-                <el-input v-model="form.code" style="width: 1056px"></el-input>
+                <el-input v-model="form.code" ></el-input>
               </el-form-item>
             </el-col>
 
@@ -245,10 +244,10 @@ export default {
     margin-left: 20px;
   }
 }
-.form-styles {
-  width: 420px;
-  height: 32px;
-}
+// .form-styles {
+//   width: 200px;
+//   height: 32px;
+// }
 ::v-deep .el-timeline {
   padding-left: 50%;
   padding-top: 20px;

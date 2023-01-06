@@ -6,18 +6,18 @@ export const commTableOptions = [
 export const tableOptions1 = [
   // 移交申请
   ...commTableOptions,
-  { value: "content", label: "标题" },
-  { value: "reason", label: "申请内容" },
+  { value: "carrierList", label: "标题" },
+  { value: "content", label: "申请内容" },
   { value: "applyOrganName", label: "申请单位" },
-  { value: "transferor", label: "申请人" },
+  { value: "applyUserName", label: "申请人" },
   { value: "applyTime", label: "申请时间" },
 ];
 
 export const tableOptions2 = [
   // 已审批
   ...commTableOptions,
-  { value: "content", label: "标题" },
-  { value: "reason", label: "申请内容" },
+  { value: "carrierList", label: "标题" },
+  { value: "content", label: "申请内容" },
   { value: "applyTime", label: "申请时间" },
   { value: "auditTime", label: "审批时间" },
   { value: "isAudit", label: "审批状态" },

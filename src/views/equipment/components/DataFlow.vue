@@ -18,11 +18,7 @@
       style="margin: 30px 0"
       ref="form"
     >
-      <el-form-item
-        label="流程名称"
-        prop="name"
-        style="margin-right: 50px; margin-left: 15px"
-      >
+      <el-form-item label="流程名称" prop="name" style="margin-right: 50px; margin-left: 15px">
         <el-input v-model="form.name" style="width: 400px"></el-input>
       </el-form-item>
       <el-form-item label="应用模块" prop="categoryValue">
@@ -32,9 +28,22 @@
             :key="item.id"
             :label="item.label"
             :value="item.id"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="密级" prop="secret">
+        <el-select v-model="form.secret" placeholder="请选择密级" multiple clearable>
+          <el-option
+            style="height: auto; width: 100%"
+            v-for="item in secretOptions"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否启用" prop="enable" style="margin-left: 20px">
+        <el-switch v-model="form.enable"></el-switch>
       </el-form-item>
     </el-form>
     <div class="drawer-form-title">审批节点配置</div>
@@ -56,17 +65,9 @@
       </div>
       <div class="end">
         <div class="full-node" style="margin-right: 0">
-          <div
-            class="arrow-box dark"
-            @click="addNodeLast({ index: nodes.length })"
-          >
-            <div style="width: 78px; cursor: pointer">
-              +{{ type === "tome" ? "添加" : "节点" }}
-            </div>
-            <div
-              class="el-icon-arrow-right"
-              style="margin-top: 2px; cursor: pointer"
-            ></div>
+          <div class="arrow-box dark" @click="addNodeLast({ index: nodes.length })">
+            <div style="width: 78px; cursor: pointer">+{{ type === "tome" ? "添加" : "节点" }}</div>
+            <div class="el-icon-arrow-right" style="margin-top: 2px; cursor: pointer"></div>
           </div>
           <div class="end-node-out">
             <div class="end-node"></div>
@@ -80,26 +81,26 @@
 
 <script>
 import DataNode from "./DataNode.vue";
-import { saveFlow, flowUpdate } from "@/api/data";
+import { saveFlow,  flowUpdate} from "@/api/data";
 export default {
   name: "FlowEditor",
   components: {
-    DataNode,
+    DataNode
   },
   props: {
     type: { type: String, default: "node" },
     title: {
       type: String,
-      default: "新增",
+      default: "新增"
     },
     editNodes: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     editForm: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -107,43 +108,48 @@ export default {
         {
           title: "请选择",
           id: "",
-          key: "",
-        },
+          key: ""
+        }
       ],
       form: {
         name: "",
-        categoryValue: 1,
+        categoryValue: "",
         enable: true,
+        flowIds: "",
+        secret: []
       },
+      secretOptions: this.$store.state.login.equipmentSecret,
       categoryValueList: [
         {
           id: 1,
-          label: "资料登记",
+          label: "资料登记"
         },
 
         {
-          id: 4,
-          label: "资料移交",
+          id: 32,
+          label: "资料移交"
         },
         {
-          id: 32,
-          label: "资料外送",
+          id: 4,
+          label: "资料外送"
         },
         {
           id: 64,
-          label: "资料销毁",
+          label: "资料销毁"
         },
         {
           id: 128,
-          label: "资料借阅",
-        },
+          label: "资料借阅"
+        }
       ],
       rules: {
         name: [{ required: true, message: "请输入流程名称", trigger: "blur" }],
-        approveTypeValue: [
-          { required: true, message: "请输入应用模块", trigger: "blur" },
+        categoryValue: [
+          { required: true, message: "请输入应用模块", trigger: "blur" }
         ],
-      },
+        secret: [{ required: true, message: "请选择密级", trigger: "blur" }],
+        enable: [{ required: true, message: "请选择是否启用", trigger: "blur" }]
+      }
     };
   },
   created() {},
@@ -153,15 +159,16 @@ export default {
       immediate: true,
       handler(val) {
         if (JSON.stringify(val !== "{}")) {
-          this.form.name = val.name;
-          this.form.categoryValue = val.categoryValue;
-          this.form.flowIds = val.flowIds;
+          Object.assign(this.form, val);
+          //字符串数组转整形数组
+          this.form.secret = val.secret.split(",").map(item => +item);
+          this.form.flowIds = val.id;
         } else {
           this.$nextTick(() => {
             this.$refs.form.resetFields();
           });
         }
-      },
+      }
     },
     editNodes: {
       // immediate: true,
@@ -169,15 +176,15 @@ export default {
         if (val && val.length > 0) {
           this.nodes = [...val];
         }
-      },
-    },
+      }
+    }
   },
   methods: {
     changeNode(user, index) {
       const { participatorList } = user;
-      const id = participatorList.map((item) => item.userId);
-      const userId = participatorList.map((item) => item.userId).join(",");
-      const userName = participatorList.map((item) => item.userName).join(",");
+      const id = participatorList.map(item => item.userId);
+      const userId = participatorList.map(item => item.userId).join(",");
+      const userName = participatorList.map(item => item.userName).join(",");
       this.nodes = this.nodes.map((r, i) => {
         if (i === index) {
           return {
@@ -186,7 +193,7 @@ export default {
             id: id,
             userId: userId,
             title: userName,
-            participatorList: participatorList,
+            participatorList: participatorList
           };
         }
         return { ...r };
@@ -198,8 +205,8 @@ export default {
         {
           title: "请选择",
           key: `${this.nodes.length}o${Math.random() % 10009}`,
-          participatorList: [],
-        },
+          participatorList: []
+        }
       ];
     },
     addNode({ index }) {
@@ -208,7 +215,7 @@ export default {
         if (i === index) {
           array.push({
             title: "请选择",
-            key: `${i}o${Math.random() % 10009}`,
+            key: `${i}o${Math.random() % 10009}`
           });
           array.push(node);
         } else {
@@ -229,20 +236,30 @@ export default {
 
     //保存配置
     save() {
-      this.$refs["form"].validate((valid) => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
-          const array = this.nodes.filter((r) => !r.userId);
+          const array = this.nodes.filter(r => !r.userId);
           if (array.length > 0 || this.nodes.length === 0) {
             this.$message.error("请选择审批人！");
             return;
           }
+          const sercet = this.form.secret.join(",");
+
+          const secretLabel = this.secretOptions.filter(item =>
+            this.form.secret.some(it => item.value === it)
+          );
+
+          const label = secretLabel.map(item => item.name).join(",");
+
+          this.form.secret = sercet;
+           this.$set(this.form, "secretLabel", label);
           const params = {
             ...this.form,
-            nodeViews: this.nodes.map((r) => {
+            nodeViews: this.nodes.map(r => {
               return {
-                participatorList: r.participatorList,
+                participatorList: r.participatorList
               };
-            }),
+            })
           };
           this.editNodes.length === 0
             ? this.saveOrUpdate(saveFlow(params))
@@ -254,8 +271,8 @@ export default {
       const res = await promise;
       this.$message.success(res.msg);
       this.$emit("closeDrawer");
-    },
-  },
+    }
+  }
 };
 </script>
 

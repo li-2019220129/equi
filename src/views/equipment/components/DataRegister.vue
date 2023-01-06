@@ -5,26 +5,16 @@
         <div
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
-        >
-          资料登记
-        </div>
+        >资料登记</div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
-        >
-          待审批
-        </div>
+        >待审批</div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
         >
-          <el-badge
-            :value="auditedNum"
-            :hidden="auditedNum === 0"
-            class="badge-item"
-          >
-            已审批</el-badge
-          >
+          <el-badge :value="auditedNum" :hidden="auditedNum === 0" class="badge-item">已审批</el-badge>
         </div>
       </div>
       <div class="equipment-header-right">
@@ -33,47 +23,43 @@
             <img src="@/assets/icon/选择设备@2x.png" />
             <span>新增资料</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="sendApproval"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="sendApproval">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>送审</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1 || activeTab === 3"
-            @click="edit"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1 || activeTab === 3" @click="edit">
             <img src="@/assets/icon/编辑@2x.png" />
             <span>编辑</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="deleteRegister"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="deleteRegister">
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            @click="recall"
-            v-if="activeTab === 2"
-          >
+          <div class="equipment-button_btn" @click="recall" v-if="activeTab === 2">
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
+          </div>
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="handleDownload">
+            <img src="@/assets/icon/撤回@2x.png" />
+            <span>下载模板</span>
+          </div>
+          <div class="equipment-button_btn" v-if="activeTab === 1">
+            <el-upload
+              style="display: inline-block"
+              action="#"
+              :show-file-list="false"
+              :http-request="() => {}"
+              accept=".xlsx"
+              :on-change="handleSuccess"
+            >
+              <img src="@/assets/icon/撤回@2x.png" />
+              <span>导入</span>
+            </el-upload>
           </div>
         </div>
       </div>
     </div>
-    <el-form
-      :model="searchForm"
-      inline
-      ref="form"
-      style="margin-top: 20px; margin-bottom: -10px"
-    >
+    <el-form :model="searchForm" inline ref="form" style="margin-top: 20px; margin-bottom: -10px">
       <el-form-item label="资料类别" prop="classifyType">
         <el-select
           v-model="searchForm.classifyType"
@@ -86,8 +72,7 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -124,19 +109,13 @@
       </el-form-item>
 
       <el-form-item label="资料密级" prop="secret">
-        <el-select
-          v-model="searchForm.secret"
-          placeholder="请选择资料密级"
-          clearable
-          @change="getData"
-        >
+        <el-select v-model="searchForm.secret" placeholder="请选择资料密级" clearable @change="getData">
           <el-option
             v-for="item in secretOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -174,7 +153,7 @@
             >
           </template>
         </el-table-column>
-      </template> -->
+      </template>-->
     </leadal-table>
 
     <leadal-dialog
@@ -206,6 +185,7 @@ import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
 import DataPersonDialog from "./DataPersonDialog.vue";
 import AddEquipment from "./AddEquipment.vue";
 import AddData from "./AddData.vue";
+import moment from "moment";
 import { tableOptions1 } from "./dataOption/register.options";
 import {
   pageCreateDraft,
@@ -213,7 +193,9 @@ import {
   pageCreateAudited,
   deleteByIdStr,
   messageLookMedia,
-  recallApi
+  recallApi,
+  uploadFileMode,
+  registerdownloadMode
 } from "@/api/data";
 export default {
   name: "EquipmentRegister",
@@ -222,7 +204,7 @@ export default {
     LeadalDialog,
     DataPersonDialog,
     AddEquipment,
-    AddData,
+    AddData
   },
   data() {
     return {
@@ -236,12 +218,12 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       registerDialog: {
         name: "",
         title: "",
-        visible: false,
+        visible: false
       }, //弹窗
       radio: "", //单选框
       heading: "", //标题
@@ -251,41 +233,41 @@ export default {
         classifyType: "", //类别
         heading: "", //标题
         code: "", //编号
-        secret: "", //密级
+        secret: "" //密级
       },
       classifyOptions: [
         {
           value: 1,
-          label: "个人资产",
+          label: "个人资产"
         },
         {
           value: 2,
-          label: "保密室资产",
-        },
+          label: "保密室资产"
+        }
       ],
 
       secretOptions: [
         {
           value: 1,
-          label: "内文",
+          label: "内文"
         },
         {
           value: 2,
-          label: "秘密",
+          label: "秘密"
         },
         {
           value: 4,
-          label: "机密",
+          label: "机密"
         },
         {
           value: 8,
-          label: "绝密",
+          label: "绝密"
         },
         {
           value: 16,
-          label: "核心秘密",
-        },
-      ],
+          label: "核心秘密"
+        }
+      ]
     };
   },
   created() {
@@ -299,9 +281,45 @@ export default {
       return Object.keys(this.formLine).length
         ? this.formLine
         : this.selection[0];
-    },
+    }
   },
   methods: {
+    handleDownload() {
+      const params = {
+        categoryId: null,
+        type: "xlsx"
+      };
+      registerdownloadMode(params).then(res => {
+        let blob = new Blob([res], {
+          type: "application/vnd.ms-excel"
+        });
+        let objectUrl = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = objectUrl;
+        const time = moment(new Date()).format("YYYY-MM-DD");
+        a.download = `文件登记入库模板${time}.xlsx`;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+    },
+    handleSuccess(file) {
+       const formData = new FormData();
+      formData.append("uploadFile", file.raw);
+      formData.append("userId", this.$store.state.login.loginData.userId);
+      uploadFileMode(formData).then(res=>{
+        console.log(res)
+        if (res.status === 200) {
+            this.$message.success("导入成功！");
+            this.getData();
+          } else {
+            this.$message.error("导入失败！");
+          }
+      }).catch((error) => {
+          this.$message.error(error);
+        });
+    },
     //撤回
     recall() {
       if (!this.selection.length) {
@@ -316,26 +334,26 @@ export default {
       this.$confirm("是否撤回该审批?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
-          console.log('232323')
+          console.log("232323");
           const params = {
-            idStr:  this.selection.map((item) => item.id).join(","),
+            idStr: this.selection.map(item => item.id).join(",")
           };
 
-          console.log(params)
+          console.log(params);
           const res = await recallApi(params);
-          console.log(res)
+          console.log(res);
           this.$message.success(res.msg);
-          this.selection = []
-          this.keyEl = +new Date().getTime()
+          this.selection = [];
+          this.keyEl = +new Date().getTime();
           this.getData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回",
+            message: "已取消撤回"
           });
         });
     },
@@ -369,7 +387,7 @@ export default {
       this.registerDialog = {
         name: "AddData",
         title: "编辑资料",
-        visible: true,
+        visible: true
       };
     },
 
@@ -385,8 +403,8 @@ export default {
         pageSize: this.tableObj.size,
         createUserId: this.$store.state.login.loginData.userId, //记录创建人
         keys: {
-          ...this.searchForm,
-        }, //查询条件集合
+          ...this.searchForm
+        } //查询条件集合
       };
       if (this.activeTab === 1) {
         this.pageData(pageCreateDraft(params));
@@ -401,7 +419,7 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map((item) => {
+        this.tableObj.tableData = res.data.data.map(item => {
           item.classifyType = this.swithClassifyType(item.classifyType);
           return item;
         });
@@ -439,7 +457,7 @@ export default {
       this.registerDialog = {
         name: "AddData",
         title: "新增资料",
-        visible: true,
+        visible: true
       };
     },
 
@@ -461,7 +479,7 @@ export default {
       this.registerDialog = {
         name: "DataPersonDialog",
         title: "人员选择",
-        visible: true,
+        visible: true
       };
     },
 
@@ -479,7 +497,7 @@ export default {
       this.registerDialog = {
         name: "AddData",
         title: "编辑资料",
-        visible: true,
+        visible: true
       };
     },
 
@@ -492,11 +510,11 @@ export default {
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.selection.map((item) => item.id).join(","),
+            idStr: this.selection.map(item => item.id).join(",")
           };
           const res = await deleteByIdStr(params);
           this.$message.success(res.msg);
@@ -507,11 +525,11 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消删除"
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

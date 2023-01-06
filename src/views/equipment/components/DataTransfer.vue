@@ -65,7 +65,7 @@
           </div>
           <div
             class="equipment-button_btn"
-            v-if="activeTab === 1 || activeTab === 3"
+            v-if="activeTab === 1"
             @click="edit"
           >
             <img src="@/assets/icon/编辑@2x.png" />
@@ -285,9 +285,9 @@ export default {
       } else if (this.activeTab === 3) {
         this.getPageData(pageWaitHander(params));
       } else if (this.activeTab === 4) {
-        this.getPageData(pageAlreadyHander(params));
-      } else if (this.activeTab === 5) {
         this.getPageData(pageWaitReceiveHander(params));
+      } else if (this.activeTab === 5) {
+        this.getPageData(pageAlreadyHander(params));
       } else if (this.activeTab === 6) {
         this.getPageData(pageAlreadyReceiveHander(params));
       }
@@ -437,31 +437,31 @@ export default {
     },
 
     //退回
-    recive() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
-        return;
-      }
-      this.$confirm("是否退回该申请?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(async () => {
-          const params = {
-            idStr: this.applyId,
-          };
-          const res = await returnBackHander(params);
-          this.$message.success(res.msg);
-          this.getData(this.type);
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消退回",
-          });
-        });
-    },
+    // recive() {
+    //   if (JSON.stringify(this.formLine) === "{}") {
+    //     this.$message.info("请先选中数据");
+    //     return;
+    //   }
+    //   this.$confirm("是否退回该申请?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning",
+    //   })
+    //     .then(async () => {
+    //       const params = {
+    //         idStr: this.applyId,
+    //       };
+    //       const res = await returnBackHander(params);
+    //       this.$message.success(res.msg);
+    //       this.getData(this.type);
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: "info",
+    //         message: "已取消退回",
+    //       });
+    //     });
+    // },
   },
 };
 </script>
