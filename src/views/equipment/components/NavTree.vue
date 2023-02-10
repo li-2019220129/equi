@@ -171,12 +171,12 @@ export default {
               parentId: "4",
               code:"xtsAudit"
             },
-            // {
-            //   id: "4-6",
-            //   label: "设备分类",
-            //   parentId: "4",
-            //   code: "xtsType",
-            // },
+            {
+              id: "4-6",
+              label: "设备分类",
+              parentId: "4",
+              code: "xtsType",
+            },
           ],
         },
       ],
