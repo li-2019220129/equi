@@ -141,7 +141,12 @@ export default {
     },
     async agreeOrDisagree(promise) {
       const res = await promise;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+      this.$message({
+        type: "success",
+        duration: 1000,
+        message: res.msg
+      });
       this.dialogVisible = false;
     },
   },

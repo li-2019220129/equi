@@ -1,12 +1,8 @@
 <template>
   <div class="file-list__container">
-    <el-link type="primary" @click="uploadFile" v-show="uploadBtn"
-      ><span
-        v-show="showXing"
-        style="color: red; font-size: 19px; padding: 0 6px"
-        >*</span
-      >选择附件</el-link
-    >
+    <el-link type="primary" @click="uploadFile" v-show="uploadBtn">
+      <span v-show="showXing" style="color: red; font-size: 19px; padding: 0 6px">*</span>选择附件
+    </el-link>
     <input
       multiple="multiple"
       type="file"
@@ -17,27 +13,9 @@
     <div v-for="(file, index) in fileList" class="file-list" :key="index">
       <div>{{ index + 1 }}、{{ file.fileName }}</div>
       <div>
-        <el-link
-          type="warning"
-          class="link"
-          @click="handleDelete(file)"
-          v-show="delShow"
-          >删除</el-link
-        >
-        <el-link
-          type="primary"
-          class="link"
-          @click="handlePreView(file)"
-          v-show="previewShow"
-          >预览</el-link
-        >
-        <el-link
-          class="link"
-          type="success"
-          @click="handleDownload(file)"
-          v-show="downloadShow"
-          >下载</el-link
-        >
+        <el-link type="warning" class="link" @click="handleDelete(file)" v-show="delShow">删除</el-link>
+        <el-link type="primary" class="link" @click="handlePreView(file)" v-show="previewShow">预览</el-link>
+        <el-link class="link" type="success" @click="handleDownload(file)" v-show="downloadShow">下载</el-link>
       </div>
     </div>
 
@@ -64,7 +42,7 @@ import {
   getDataList,
   upload,
   searchfStatus,
-  exchangeFile,
+  exchangeFile
 } from "@/api/no-assigned";
 
 export default {
@@ -72,49 +50,49 @@ export default {
   props: {
     btnType: {
       type: String,
-      default: null,
+      default: null
     },
     delShow: {
       type: Boolean,
-      default: true,
+      default: true
     },
     previewShow: {
       type: Boolean,
-      default: true,
+      default: true
     },
     downloadShow: {
       type: Boolean,
-      default: true,
+      default: true
     },
     id: {
       type: String,
-      default: "",
+      default: ""
     },
     type: {
       type: Number,
-      default: null,
+      default: null
     },
     uploadBtn: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showXing: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
       fileList: [],
       dialogMate: {
         visible: false,
-        title: "",
+        title: ""
       },
       iframeSrc: null,
       entity: {},
       fileArr: [],
       // 设置input文件框id不唯一
-      keyNum: 1,
+      keyNum: 1
     };
   },
   watch: {
@@ -128,20 +106,30 @@ export default {
           this.loadDataList();
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   mounted() {},
   methods: {
     handleDelete(file) {
       let formData = new FormData();
       formData.append("ids", `"${file.id}"`);
-      delFile(formData).then((res) => {
+      delFile(formData).then(res => {
         if (res.code === 0) {
-          this.$message.success("删除成功");
+          // this.$message.success("删除成功");
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: "删除成功"
+          });
           this.loadDataList();
         } else {
-          this.$message.error("删除失败");
+          // this.$message.error("删除失败");
+          this.$message({
+            type: "error",
+            duration: 1000,
+            message: "删除成功"
+          });
         }
       });
       this.$emit("handleDelete", file);
@@ -151,13 +139,13 @@ export default {
       this.dialogMate.visible = true;
       this.dialogMate.title = "预览";
       const fileStatus = await searchfStatus(file.id);
-      if(fileStatus.code ===0 && fileStatus.isSuccess === true){
+      if (fileStatus.code === 0 && fileStatus.isSuccess === true) {
         this.iframeSrc = `${window.location.contextPath}/leadal.basic/pdf/action.nsp?container&action=com.leadal.top.supervice.suggest.action.SFileInfoViewAction&id=${file.id}`;
-      }else{
+      } else {
         let res = await exchangeFile(file.id);
         if (res.code === 0) {
           this.iframeSrc = `${window.location.contextPath}/leadal.basic/pdf/action.nsp?container&action=com.leadal.top.supervice.suggest.action.SFileInfoViewAction&id=${file.id}`;
-        }else{
+        } else {
           return;
         }
       }
@@ -175,7 +163,7 @@ export default {
     },
     // 获取文件列表
     async loadDataList() {
-      await getDataList({ entityId: this.id, type: this.type }).then((res) => {
+      await getDataList({ entityId: this.id, type: this.type }).then(res => {
         this.fileList = res.data;
         this.$emit("getFilelist", this.fileList);
       });
@@ -193,11 +181,11 @@ export default {
         let entity = {
           entityId: that.id,
           fileName: files.files[0].name,
-          fcategory: that.type,
+          fcategory: that.type
         };
         formData.append("entity", JSON.stringify(entity));
         return new Promise((resolve, reject) => {
-          upload(formData).then((res) => {
+          upload(formData).then(res => {
             if (res.code === 0) {
               that.$message.success("文件上传成功");
               that.loadDataList();
@@ -215,9 +203,8 @@ export default {
     },
 
     // 新增保存后对文件遍历长传
-    fileUp() {
-    },
-  },
+    fileUp() {}
+  }
 };
 </script>
 

@@ -6,64 +6,47 @@
         :model="applyForm"
         ref="form"
         label-width="80px"
+        :disabled="isDetail"
         label-position="right"
         v-loading="loading"
       >
-        <el-form-item label="标题">
+        <el-form-item label="标题" label-width="80px">
           <template slot="label">
-            <div
-              style="letter-spacing: 30px; position: absolute; margin-left: 5px"
-            >
-              标题
-            </div>
+            <div style="letter-spacing: 15px; margin-left: 5px">标题</div>
           </template>
           <el-input v-model="applyForm.content"></el-input>
         </el-form-item>
 
         <div class="flex-item">
-          <el-form-item label="申请部门">
-            <el-select
-              v-model="organName"
-              placeholder="请选择申请部门"
-              style="width: 330px"
-              disabled
-            >
-            </el-select>
+          <el-form-item label="申请部门" >
+            <el-select v-model="organName" placeholder="请选择申请部门" style="width: 330px" disabled></el-select>
           </el-form-item>
           <el-form-item label="申请人">
             <template slot="label">
               <div
                 style="
-                  letter-spacing: 8px;
-                  position: absolute;
+                  letter-spacing: 4px;
                   margin-left: 5px;
                 "
-              >
-                申请人
-              </div>
+              >申请人</div>
             </template>
             <el-select
               v-model="applyForm.userName"
               placeholder="请选择申请人"
-              style="width: 330px"
+              style="width: 300px"
               disabled
-            >
-            </el-select>
+            ></el-select>
           </el-form-item>
         </div>
-        <el-form-item label="接收人" prop="receiveUserName">
+        <el-form-item label="接收人" prop="receiveUserName" label-width="80px">
           <template slot="label">
-            <div
-              style="letter-spacing: 8px; position: absolute; margin-left: 5px"
-            >
-              接收人
-            </div>
+            <div style="letter-spacing: 4px;margin-left: 5px">接收人</div>
           </template>
           <el-select
             v-model="applyForm.receiveUserName"
             placeholder="请选择接收人"
             ref="tree"
-            style="width: 330px"
+            style="width: 300px"
           >
             <el-option style="height: auto" :value="applyForm.receiveUserName">
               <el-tree
@@ -109,23 +92,24 @@ export default {
   name: "ApplyMessage",
   components: {
     DataMessage,
-    TreeSlot,
+    TreeSlot
   },
   props: {
     isData: {
       type: Boolean,
-      default: false,
+      default: false
     },
     formLine: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   inject: ["root"],
 
   data() {
     return {
       title: this.root.title,
+      isDetail: this.root.isDetail,
       drawerTitle: this.root.drawerTitle,
       organName: this.$store.state.login.loginData.organName,
       applyForm: {
@@ -138,21 +122,21 @@ export default {
         nodeId: "", //节点主键
         reason: "", //事由
         toUserId: "", //审批人主键
-        toUserName: "", //审批人名称
+        toUserName: "" //审批人名称
       },
       editDevTable: [],
       // devIds: "", //设备id
       defaultProps: {
         children: "children",
         label: "caption",
-        isLeaf: "leaf",
+        isLeaf: "leaf"
       },
       rules: {
         receiveUserName: [
-          { required: true, message: "请选择接收人", trigger: "change" },
-        ],
+          { required: true, message: "请选择接收人", trigger: "change" }
+        ]
       },
-      loading: false,
+      loading: false
     };
   },
   created() {
@@ -162,10 +146,10 @@ export default {
     formLine: {
       immediate: true,
       handler() {
-        console.log(this.formLine)
+        console.log(this.formLine);
         if (JSON.stringify(this.formLine) !== "{}") {
           const params = {
-            id: this.formLine.id,
+            id: this.formLine.id || this.formLine.applyId
           };
           if (this.drawerTitle === "资料移交") {
             this.loadDetail(loadHander(params));
@@ -182,8 +166,8 @@ export default {
           });
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   methods: {
     //获取创建id
@@ -207,15 +191,19 @@ export default {
         userId:
           this.drawerTitle === "资料移交"
             ? this.$store.state.login.loginData.userId
-            : null,
+            : null
       };
-      dataUserTree(params).then((res) => {
-        const treeArray = res.data.map((item) => {
-          if (!item.hasChild) {
-            this.$set(item, "leaf", true);
-          }
-          return item;
-        });
+      dataUserTree(params).then(res => {
+        const treeArray = res.data
+          .filter(item => {
+            return item.caption !== this.$store.state.login.loginData.userName;
+          })
+          .map(item => {
+            if (!item.hasChild) {
+              this.$set(item, "leaf", true);
+            }
+            return item;
+          });
         resolve(treeArray);
       });
     },
@@ -230,7 +218,7 @@ export default {
 
     //申请
     saveApply() {
-      console.log(this.applyForm,'applyform')
+      console.log(this.applyForm, "applyform");
       this.$emit("saveApply", this.applyForm);
     },
 
@@ -245,8 +233,8 @@ export default {
       } catch (error) {
         this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

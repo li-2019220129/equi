@@ -17,7 +17,7 @@
       <div class="drawer-left">
         <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
       </div>
-      <div class="drawer-right">
+      <el-scrollbar class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
             <div
@@ -47,7 +47,7 @@
             @saveApply="saveApply"
           />
         </keepAlive>
-      </div>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -121,7 +121,12 @@ export default {
     },
     papers() {
       if (!this.preserve && this.mode == "add") {
-        this.$message.warning("请先保存后在进行操作！");
+        // this.$message.warning("请先保存后在进行操作！");
+        this.$message({
+          type: "warning",
+          duration: 1000,
+          message: "请先保存后在进行操作!"
+        });
         return;
       }
       this.activeTab = 2;
@@ -133,7 +138,12 @@ export default {
     },
     saveApply(p) {
       if (!p.devId) {
-        this.$message.error("请选择设备！");
+        // this.$message.error("请选择设备！");
+        this.$message({
+          type: "error",
+          duration: 1000,
+          message: "请选择设备！"
+        });
         return;
       }
       this.$refs.applyMessage.applyFlags();
@@ -144,7 +154,7 @@ export default {
         applyContent: p.applyContent,
         applyUserId: p.applyUserId,
         applyUserName: p.applyUserName,
-        // id: p.id,
+        id: this.applyId,
         nodeId: p.nodeId,
         // ownerUserId:p.ownerUserId,
         // ownerUserName:p.ownerUserName,
@@ -188,19 +198,34 @@ export default {
     async saveTheApply(promise) {
       const res = await promise;
       if (res.status === 200) {
-        this.$message.success("保存成功！");
+        // this.$message.success("保存成功！");
+        this.$message({
+          type: "success",
+          duration: 1000,
+          message: "保存成功！"
+        });
         this.saveStatus = 1;
         this.preserve = true;
         this.id = res.data;
         this.$emit("saveApply");
       } else {
-        this.$message.error(res.msg);
+        // this.$message.error(res.msg);
+        this.$message({
+          type: "error",
+          duration: 1000,
+          message: res.msg
+        });
       }
     },
     //发送
     send() {
       if (this.saveStatus === 0) {
-        this.$message.error("请先保存再进行送审！");
+        // this.$message.error("请先保存再进行送审！");
+        this.$message({
+        type: "error",
+        duration: 1000,
+        message: '请先保存再进行送审！'
+      });
         return;
       }
       let params = {};

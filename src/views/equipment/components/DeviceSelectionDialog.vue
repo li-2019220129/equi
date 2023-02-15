@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:52vh">
     <div class="dialog-btn-layout">
       <div class="handle sure" @click="selectDevice">选择确认</div>
     </div>
@@ -76,11 +76,15 @@
     <leadal-table
       :data="tableObj.tableData"
       :row-header="tableObj.tableOptions"
-      :isPagination="false"
+      :isPagination="true"
+      :page="config.currentPage"
+      :size="config.pageSize"
+      :total="config.total"
       v-loading="tableObj.loading"
       ref="leadalTable"
       :height="'calc(100vh - 600px)'"
       :selection.sync="selection"
+      @page-change="pageChange"
     ></leadal-table>
   </div>
 </template>
@@ -108,6 +112,11 @@ export default {
   },
   data() {
     return {
+      config:{
+        pageSize:10,
+        currentPage:1,
+        total:0
+      },
       drawerTitle: this.root.drawerTitle,
       form: {
         content: "", //输入框
@@ -146,10 +155,19 @@ export default {
     this.getDeviceKindTreeData();
   },
   methods: {
+    pageChange(currentPage,pageSize){
+      this.config.currentPage = currentPage
+      this.config.pageSize = pageSize
+      this.getData()
+    },
     getData() {
+      console.log(this.form,'form')
+      if(!this.form.categoryLabel){
+        this.form.categoryId = ''
+      }
       const params = {
-        currentPage: 1,
-        pageSize: 10,
+        currentPage: this.config.currentPage,
+        pageSize: this.config.pageSize,
         userId: this.$store.state.login.loginData.userId,
         ...this.form,
       };
@@ -167,6 +185,8 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
+        console.log('resmmmm',res)
+        this.config = res.data.config
         this.tableObj.tableData = res.data.data.map((item) => {
           item.status = this.switchStatus(item.status);
           item.categoryLabel = item.categoryLabel

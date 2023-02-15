@@ -1,4 +1,4 @@
 window.location.xtsConfig={
-    "devicePath":'12.0.0.0:8080',
-    "mucPath":'12.0.0.0:8080'
+    "devicePath":'http://32.20.33.23:80/device',
+    "mucPath":'http://32.20.33.23:80/muc'
 }

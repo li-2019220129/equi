@@ -148,6 +148,7 @@
       :isPagination="true"
       :page="tableObj.page"
       :size="tableObj.size"
+      :total="tableObj.total"
       v-loading="tableObj.loading"
       @page-change="handleChangePage"
       @handleRowDblCick="handleRowDblCick"
@@ -273,6 +274,7 @@ export default {
       formLine: {},
       radio: "",
       pArams: {},
+      btnTitle:null,
       applyId: "", //当前申请id
       status: 1, //查询
     };
@@ -330,6 +332,9 @@ export default {
     handleActiveTab(num) {
       this.activeTab = num;
       this.content = null;
+      this.formLine = {};
+      this.radio=null;
+      this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.switchStatus(num);
       this.getData();
     },
@@ -367,6 +372,7 @@ export default {
         this.tableObj.tableData = res.data.data;
         this.tableObj.total = res.data.total;
         this.tableObj.loading = false;
+        this.btnTitle = "借用申请";
       } catch (error) {
         this.tableObj.loading = false;
       }
@@ -385,6 +391,18 @@ export default {
       this.applyId = row.id;
       if ([3, 4, 5].includes(this.activeTab)) {
         this.messageLookBorrow(row.id);
+      }
+      if (this.activeTab === 1) {
+        this.btnTitle = "借用申请";
+      } else if (this.activeTab === 4) {
+        this.btnTitle = "确认借出";
+      }else if(this.activeTab===5){
+        this.btnTitle = '待归还'
+      }else if(this.activeTab===6){
+        this.btnTitle = '已归还'
+      }
+       else {
+        this.btnTitle = "";
       }
       this.edit();
     },
@@ -507,8 +525,14 @@ export default {
             idStr: this.applyId,
           };
           batchBorrow(params).then((res) => {
-            this.$message.success(res.msg);
+            // this.$message.success(res.msg);
+            this.$message({
+              type:'success',
+              duration:1000,
+              message:res.msg
+            })
             this.getData();
+            this.$store.dispatch('login/getDataBorrowBadge')
           });
         })
         .catch(() => {
@@ -535,8 +559,14 @@ export default {
             idStr: this.applyId,
           };
           batchRevert(params).then((res) => {
-            this.$message.success(res.msg);
+            // this.$message.success(res.msg);
+            this.$message({
+              type:'success',
+              duration:1000,
+              message:res.msg
+            })
             this.getData();
+            this.$store.dispatch('login/getDataBorrowBadge')
           });
         })
         .catch(() => {

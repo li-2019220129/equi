@@ -75,6 +75,8 @@
 import LeadalTable from "@/components/LeadalTable";
 import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
 import LeadalDrawer from "@/components/LeadalDrawer/index.vue";
+import DataBorrowDrawer from "./DataBorrowDrawer.vue";
+import DataApplyDrawer from "./DataApplyDrawer.vue";
 import { tableOptions1 } from "./dataOption/toApprove.options";
 import { mapState } from "vuex";
 import {
@@ -87,7 +89,14 @@ export default {
   components: {
     LeadalTable,
     LeadalDialog,
-    LeadalDrawer
+    LeadalDrawer,
+    DataApplyDrawer,
+    DataBorrowDrawer,
+  },
+  provide() {
+    return {
+      root: this
+    };
   },
   props: {
     isToApproved: {
@@ -98,6 +107,12 @@ export default {
   data() {
     return {
       content: "", //输入框
+      applyId: null,
+      formLine: null,
+      drawerVisible: false,
+      title: "",
+      drawerTitle: "",
+      isDetail: false, //是否查看详情
       tableObj: {
         tableData: [],
         tableOptions: tableOptions1,
@@ -131,6 +146,7 @@ export default {
           label: "资料借阅"
         }
       ],
+      componentId: "",
       pageWaitList: [],
       pageAuditedList: [],
       deviceApproval: [], // 设备审批
@@ -152,6 +168,29 @@ export default {
     this.getData();
   },
   methods: {
+    handleRowDblCick(row) {
+      this.formLine = row;
+      this.applyId = row.applyId;
+      this.drawerVisible = true;
+      this.isDetail = true;
+      if (row.applyType === 128) {
+        this.title = "借阅";
+        this.drawerTitle = "资料借阅";
+        this.componentId = "DataBorrowDrawer";
+      } else if (row.applyType === 4) {
+        this.title = "移交";
+        this.drawerTitle = "资料移交";
+        this.componentId = "DataApplyDrawer";
+      }else if(row.applyType===32){
+        this.title = "外送";
+        this.drawerTitle = "资料外送";
+        this.componentId = "DataApplyDrawer";
+      }else if(row.applyType===64){
+        this.title = "销毁";
+        this.drawerTitle = "资料销毁";
+        this.componentId = "DataApplyDrawer";
+      }
+    },
     handleAgreeOrTakeBack(isToApproved) {
       if (isToApproved) {
         if (this.selection.length === 0) {
@@ -170,14 +209,14 @@ export default {
       //   reason: this.ruleForm.desc, //原因
       //   currentUserId: this.$store.state.login.loginData.userId //当前用户主键
       // };
-      let paramsArray = this.selection.map(item=>{
+      let paramsArray = this.selection.map(item => {
         return {
-        id:item.applyId, //申请ID
-        nodeId:item.nodeId, //审批节点id
-        reason: this.ruleForm.desc, //原因
-        currentUserId: this.$store.state.login.loginData.userId, //当前用户主键
-        }
-      })
+          id: item.applyId, //申请ID
+          nodeId: item.nodeId, //审批节点id
+          reason: this.ruleForm.desc, //原因
+          currentUserId: this.$store.state.login.loginData.userId //当前用户主键
+        };
+      });
       this.ruleForm.agree
         ? this.agreeOrDisAgree(auditAgreeBatch(paramsArray))
         : this.agreeOrDisAgree(auditDisAgreeBatch(paramsArray));
@@ -186,10 +225,19 @@ export default {
     async agreeOrDisAgree(promise) {
       const res = await promise;
       this.dialogVisible = false;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+      this.$message({
+        duration: 1000,
+        type: "success",
+        message: res.msg
+      });
       this.$refs.leadalTable.clearSelection(); //清除选中
       this.getData();
       this.$store.dispatch("login/getDataAuditBadge"); //获取资料待审批角标
+      this.$store.dispatch("login/getDataBorrowBadge");
+      this.$store.dispatch("login/getDataTransferBadge");
+      this.$store.dispatch("login/getDataDeliverBadge");
+      this.$store.dispatch("login/getDataDestoryBadge");
     },
     //分页切换
     handleChangePage(pageNum, pageSize) {

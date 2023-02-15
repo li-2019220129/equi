@@ -2,7 +2,7 @@
   <div>
     <div class="drawer-header">
       <div class="drawer-header title">{{ drawerTitle }}申请</div>
-      <div class="equipment-button">
+      <div class="equipment-button" v-show="!isDetail">
         <div class="equipment-button_btn" @click="save">
           <img src="@/assets/icon/保存@2x.png" />
           <span>保存</span>
@@ -17,7 +17,7 @@
       <div class="drawer-left">
         <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
       </div>
-      <div class="drawer-right">
+      <el-scrollbar class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
             <div
@@ -47,7 +47,7 @@
             :mediaData.sync="mediaData"
           />
         </keepAlive>
-      </div>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -84,6 +84,7 @@ export default {
       preserve: false,
       drawerTitle: this.root.drawerTitle,
       activeTab: 1,
+      isDetail: this.root.isDetail,
       pdfSrc: null,
       componentName: "DataApplyMessage",
       saveStatus: 0, //是否可发送
@@ -190,7 +191,12 @@ export default {
     async saveTheApply(promise) {
       const res = await promise;
       if (res.status === 200) {
-        this.$message.success("保存成功！");
+        // this.$message.success("保存成功！");
+        this.$message({
+            duration:1000,
+            type:'success',
+            message:'保存成功'
+          })
         this.saveStatus = 1;
         this.id = res.data.id;
         this.preserve = true;

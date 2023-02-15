@@ -88,6 +88,7 @@ export default {
   },
   data() {
     return {
+      sendClick:true,
       arrays: [],
       checkedNodes: [],
       data: [],
@@ -141,6 +142,8 @@ export default {
     },
 
     handleSend() {
+      if(!this.sendClick) return
+      this.sendClick  = false
       if (this.nodeId === "") {
         this.$message.info("请先选中送审人员");
         return;
@@ -219,7 +222,13 @@ export default {
     },
     async applyByType(promise) {
       const res = await promise;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+      this.$message({
+        type:'success',
+        duration:1000,
+        message:res.msg
+      })
+      this.sendClick = true
       this.$store.dispatch("login/getDataAuditBadge"); //获取资料待审批角标
       this.arrays = [];
       this.$emit("close");

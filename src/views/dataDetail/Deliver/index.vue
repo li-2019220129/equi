@@ -3,11 +3,7 @@
     <div class="drawer-header">
       <div class="drawer-header title">资料外送申请详情</div>
       <div class="equipment-button">
-        <div
-          class="equipment-button_btn"
-          @click="agree"
-          v-show="isAudit === 'true'"
-        >
+        <div class="equipment-button_btn" @click="agree" v-show="isAudit === 'true'">
           <img src="@/assets/icon/审批@2x.png" />
           <span>审批</span>
         </div>
@@ -22,21 +18,15 @@
             <div
               :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
               @click="activeTab = 1"
-            >
-              基础信息
-            </div>
+            >基础信息</div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
               @click="activeTab = 2"
-            >
-              相关文件
-            </div>
+            >相关文件</div>
             <div
               :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
               @click="activeTab = 3"
-            >
-              办理过程
-            </div>
+            >办理过程</div>
           </div>
         </div>
         <component
@@ -57,12 +47,7 @@
       @close="dialogVisible = false"
     >
       <template #content>
-        <el-form
-          :model="ruleForm"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="审批意见" prop="resource">
             <el-radio-group v-model="ruleForm.agree">
               <el-radio :label="true">同意</el-radio>
@@ -70,11 +55,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="审批意见" prop="desc">
-            <el-input
-              type="textarea"
-              v-model="ruleForm.desc"
-              :rows="7"
-            ></el-input>
+            <el-input type="textarea" v-model="ruleForm.desc" :rows="7"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -94,13 +75,13 @@ export default {
     DeliverMessage,
     RelativeFile,
     HandleProcess,
-    LeadalDialog,
+    LeadalDialog
   },
   props: {
     isAudit: {
       type: String,
-      default: "true",
-    },
+      default: "true"
+    }
   },
   inject: ["root"],
   data() {
@@ -113,8 +94,8 @@ export default {
       applyForm: {}, //表单数据
       ruleForm: {
         agree: true,
-        desc: "",
-      },
+        desc: ""
+      }
     };
   },
   methods: {
@@ -127,7 +108,7 @@ export default {
         id: this.id, //申请ID
         nodeId: this.applyForm.nodeId, //审批节点id
         reason: this.ruleForm.desc, //原因
-        currentUserId: this.userId, //当前用户主键
+        currentUserId: this.userId //当前用户主键
       };
       this.ruleForm.agree
         ? this.agreeOrDisagree(auditAgree(params))
@@ -136,10 +117,15 @@ export default {
 
     async agreeOrDisagree(promise) {
       const res = await promise;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+      this.$message({
+        type: "success",
+        duration: 1000,
+        message: res.msg
+      });
       this.dialogVisible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

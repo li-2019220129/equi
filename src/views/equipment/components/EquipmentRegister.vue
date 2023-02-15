@@ -7,28 +7,18 @@
           @click="handleActiveTab(1)"
           v-has="'xts_register'"
         >
-          <el-badge
-            :value="auditedNum"
-            :hidden="auditedNum === 0"
-            class="badge-item"
-          >
-            设备登记
-          </el-badge>
+          <el-badge :value="auditedNum" :hidden="auditedNum === 0" class="badge-item">设备登记</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
           v-has="'xts_auditing'"
-        >
-          待审批
-        </div>
+        >待审批</div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
           v-has="'xts_audited'"
-        >
-          已审批
-        </div>
+        >已审批</div>
       </div>
       <div class="equipment-header-right">
         <div class="equipment-button">
@@ -36,43 +26,23 @@
             <img src="@/assets/icon/选择设备@2x.png" />
             <span>新增设备</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="sendApproval"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="sendApproval">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>送审</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="handleEdit"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="handleEdit">
             <img src="@/assets/icon/编辑@2x.png" />
             <span>编辑</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="deleteRecord"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="deleteRecord">
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 2"
-            @click="recall"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 2" @click="recall">
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="handleDownload"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="handleDownload">
             <img src="@/assets/icon/撤回@2x.png" />
             <span>下载模板</span>
           </div>
@@ -93,12 +63,7 @@
       </div>
     </div>
 
-    <el-form
-      :model="searchForm"
-      inline
-      ref="form"
-      style="margin-top: 20px; margin-bottom: -10px"
-    >
+    <el-form :model="searchForm" inline ref="form" style="margin-top: 20px; margin-bottom: -10px">
       <el-form-item label="设备类别" prop="classify">
         <el-select
           v-model="searchForm.classify"
@@ -111,8 +76,7 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -160,8 +124,7 @@
             :key="item.value"
             :label="item.name"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -199,7 +162,7 @@
             >
           </template>
         </el-table-column>
-      </template> -->
+      </template>-->
     </leadal-table>
 
     <leadal-dialog
@@ -237,14 +200,14 @@ import AddData from "./AddData.vue";
 import {
   tableOptions1,
   tableOptions2,
-  tableOptions3,
+  tableOptions3
 } from "./equipmentOption/register.options";
 import {
   pagePerson,
   getDeviceKindTree,
   deleteRecord,
   recallStockin,
-  registerdownloadMode,
+  registerdownloadMode
 } from "@/api/equipment/index.js";
 import { uploadLoad } from "@/api/upload";
 import axios from "axios";
@@ -257,13 +220,18 @@ export default {
     LeadalDialog,
     PersonDialog,
     AddEquipment,
-    AddData,
+    AddData
   },
   props: {
     componentsId: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
+  },
+  provide(){
+    return {
+      root:this
+    }
   },
   data() {
     return {
@@ -279,7 +247,7 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       pArams: {},
       type: "add",
@@ -287,7 +255,7 @@ export default {
       registerDialog: {
         name: "",
         title: "",
-        visible: false,
+        visible: false
       },
       formLine: {},
       keys: "",
@@ -296,21 +264,21 @@ export default {
         brand: "", //设备品牌
         sn: "", //序列号
         classify: "", // 设备类别
-        secret: "", //设备密级
+        secret: "" //设备密级
       },
       //设备分类
       classifyOptions: [
         {
           value: 4,
-          label: "个人资产",
+          label: "个人资产"
         },
         {
           value: 8,
-          label: "保密室资产",
-        },
+          label: "保密室资产"
+        }
       ],
       //设备密级
-      secretOptions: this.$store.state.login.equipmentSecret,
+      secretOptions: this.$store.state.login.equipmentSecret
     };
   },
   created() {
@@ -335,8 +303,8 @@ export default {
             this.tableObj.tableOptions = tableOptions3;
             break;
         }
-      },
-    },
+      }
+    }
   },
   computed: {
     auditedNum() {
@@ -346,7 +314,7 @@ export default {
       return Object.keys(this.formLine).length
         ? this.formLine
         : this.selection[0];
-    },
+    }
   },
   methods: {
     // changeRadio(row) {
@@ -357,14 +325,20 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.keyEl = +new Date().getTime();
+      this.selection = [];
+      if(num===1){
+        this.isDetail = false
+      }
       if (num === 3) {
       }
       this.pagePersonData();
     },
 
     handleClose() {
-      this.keyEl = +new Date().getTime()
-      this.selection = []
+      this.keyEl = +new Date().getTime();
+      this.selection = [];
       this.registerDialog.visible = false;
       this.pagePersonData();
     },
@@ -376,12 +350,14 @@ export default {
       }
       if ([2, 3].includes(this.activeTab)) {
         this.isDetail = true;
+      }else{
+        this.isDetail = false
       }
       this.type = "edit";
       this.registerDialog = {
         name: "AddEquipment",
         title: "编辑设备",
-        visible: true,
+        visible: true
       };
     },
 
@@ -402,7 +378,7 @@ export default {
           ...this.searchForm,
           currentPage: this.tableObj.page,
           pageSize: this.tableObj.size,
-          stockinUserId: this.$store.state.login.loginData.userId, //入库人主键
+          stockinUserId: this.$store.state.login.loginData.userId //入库人主键
           // isAudit: false, //是否审批
         };
 
@@ -412,7 +388,7 @@ export default {
           ? ((params.isAudit = true), (this.isAuditEdit = true))
           : ""; // 已审批
         const res = await pagePerson(params);
-        this.tableObj.tableData = res.data.data.map((item) => {
+        this.tableObj.tableData = res.data.data.map(item => {
           item.auditOk = item.auditOk ? "已通过" : "未通过";
           item.categoryLabel = item.categoryLabel
             ? item.categoryLabel
@@ -432,7 +408,7 @@ export default {
     },
 
     //分页切换
-    handleChangePage(pageNum, pageSize) {
+    hanadddleChangePage(pageNum, pageSize) {
       this.tableObj.page = pageNum;
       this.tableObj.size = pageSize;
       this.pagePersonData();
@@ -448,7 +424,7 @@ export default {
       this.registerDialog = {
         name: "AddEquipment",
         title: "新增设备",
-        visible: true,
+        visible: true
       };
     },
 
@@ -458,12 +434,13 @@ export default {
       this.registerDialog = {
         name: "PersonDialog",
         title: "人员选择",
-        visible: true,
+        visible: true
       };
     },
 
     //送审
     sendApproval() {
+      
       // console.log(this.formLine, "line");
       if (!this.selection.length) {
         this.$message.info("请先选中数据");
@@ -496,13 +473,12 @@ export default {
       this.registerDialog = {
         name: "AddEquipment",
         title: "编辑设备",
-        visible: true,
+        visible: true
       };
     },
 
     //删除
-   deleteRecord() {
-
+    deleteRecord() {
       if (!this.selection.length) {
         this.$message.warning("请选择一条数据进行删除!");
         return;
@@ -510,22 +486,27 @@ export default {
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.selection.map((item) => item.id).join(","),
+            idStr: this.selection.map(item => item.id).join(",")
           };
           const res = await deleteRecord(params);
-          this.$message.success(res.msg);
-          this.selection = []
-          this.keyEl = +new Date().getTime()
+          // this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
+          this.selection = [];
+          this.keyEl = +new Date().getTime();
           this.pagePersonData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消删除"
           });
         });
     },
@@ -543,22 +524,27 @@ export default {
       this.$confirm("是否撤回该审批?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr:  this.selection.map((item) => item.id).join(","),
+            idStr: this.selection.map(item => item.id).join(",")
           };
           const res = await recallStockin(params);
-          this.$message.success(res.msg);
-          this.selection = []
-          this.keyEl = +new Date().getTime()
+          // this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
+          this.selection = [];
+          this.keyEl = +new Date().getTime();
           this.pagePersonData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回",
+            message: "已取消撤回"
           });
         });
     },
@@ -570,7 +556,7 @@ export default {
       formData.append("userId", this.$store.state.login.loginData.userId);
 
       const headers = {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "multipart/form-data"
       };
       // uploadLoad(formData,headers).then((res)=>{
       //   if (res.data.status === 200) {
@@ -592,15 +578,25 @@ export default {
           formData,
           headers
         )
-        .then((res) => {
+        .then(res => {
           if (res.data.status === 200) {
-            this.$message.success("导入成功！");
+            // this.$message.success("导入成功！");
+            this.$message({
+              type: "success",
+              duration: 1000,
+              message: "导入成功！"
+            });
             this.pagePersonData();
           } else {
-            this.$message.error("导入失败！");
+            // this.$message.error("导入失败！");
+            this.$message({
+              type: "error",
+              duration: 1000,
+              message: "导入失败！"
+            });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error);
         });
     },
@@ -608,11 +604,11 @@ export default {
     handleDownload() {
       const params = {
         categoryId: null,
-        type: "xlsx",
+        type: "xlsx"
       };
-      registerdownloadMode(params).then((res) => {
+      registerdownloadMode(params).then(res => {
         let blob = new Blob([res], {
-          type: "application/vnd.ms-excel",
+          type: "application/vnd.ms-excel"
         });
         let objectUrl = URL.createObjectURL(blob);
         let a = document.createElement("a");
@@ -624,8 +620,8 @@ export default {
         a.click();
         document.body.removeChild(a);
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

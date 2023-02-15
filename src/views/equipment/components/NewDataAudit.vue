@@ -191,6 +191,7 @@ export default {
         this.getData();
         this.$store.dispatch("login/getRegisterBadge"); //刷新资料登记角标
         this.$store.dispatch("login/getAuditBadge");
+        this.$store.dispatch("login/getDataAuditBadge")
       });
       // const res = await promise;
       // this.dialogVisible = false;
@@ -232,7 +233,7 @@ export default {
     handleRowDblCick(row) {
       this.formLine = row;
       this.detailVisible = true;
-      this.messageLookAudit(row.id);
+      this.messageLookAudit(row.applyId);
     },
 
     //消息标记已读

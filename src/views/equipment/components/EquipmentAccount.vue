@@ -501,12 +501,12 @@ export default {
 
     //导出
     async downloadExist() {
-      if (this.selection.length === 0) {
-        this.$message.error(`请选择要导出的数据！`);
-        return;
-      }
-      const ids = this.selection.map((item) => item.id).join(",");
-      const res = await downloadExist({ ids });
+      // if (this.selection.length === 0) {
+      //   this.$message.error(`请选择要导出的数据！`);
+      //   return;
+      // }
+      // const ids = this.selection.map((item) => item.id).join(",");
+      const res = await downloadExist({ type:this.activeTab });
       let blob = new Blob([res], {
         type: "application/vnd.ms-excel",
       });

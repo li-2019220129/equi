@@ -1,5 +1,9 @@
 <template>
   <div>
+    <span
+      v-show="!isDetail"
+      style="display:inline-block;color:red;font-size:20px;margin-top:10px"
+    >提示：保密室资产用于设备借用</span>
     <div class="dialog-btn-layout" v-show="!isDetail">
       <div class="handle send" @click="handleSave(true)">保存并送审</div>
       <div class="handle save" @click="handleSave(false)">保存</div>
@@ -17,18 +21,13 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="设备类别" prop="classify">
-            <el-select
-              v-model="form.classify"
-              placeholder="请选择"
-              class="form-styles"
-            >
+            <el-select v-model="form.classify" placeholder="请选择" class="form-styles">
               <el-option
                 v-for="item in classifyOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-              >
-              </el-option>
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -72,8 +71,7 @@
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
-              >
-              </el-option>
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -91,7 +89,7 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="" prop="sn">
+          <el-form-item label prop="sn">
             <template slot="label">
               <div
                 style="
@@ -99,9 +97,7 @@
                   position: absolute;
                   margin-left: 45px;
                 "
-              >
-                序列号
-              </div>
+              >序列号</div>
             </template>
             <el-input v-model="form.sn" class="form-styles"></el-input>
           </el-form-item>
@@ -115,8 +111,7 @@
               value-format="yyyy-MM-dd"
               placeholder="选择日期"
               class="form-styles"
-            >
-            </el-date-picker>
+            ></el-date-picker>
           </el-form-item>
         </el-col>
 
@@ -128,35 +123,26 @@
               value-format="yyyy-MM-dd"
               placeholder="选择日期"
               class="form-styles"
-            >
-            </el-date-picker>
+            ></el-date-picker>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
           <el-form-item label="设备密级" prop="secret">
-            <el-select
-              v-model="form.secret"
-              placeholder="请选择"
-              class="form-styles"
-            >
+            <el-select v-model="form.secret" placeholder="请选择" class="form-styles">
               <el-option
                 v-for="item in secretOptions"
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
-              >
-              </el-option>
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
           <el-form-item label="载体编号" prop="secretRoomCode">
-            <el-input
-              v-model="form.secretRoomCode"
-              class="form-styles"
-            ></el-input>
+            <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
           </el-form-item>
         </el-col>
 
@@ -168,34 +154,31 @@
 
         <el-col :span="12">
           <el-form-item label="门禁编号" prop="entranceGuardCode">
-            <el-input
-              v-model="form.entranceGuardCode"
-              class="form-styles"
-            ></el-input>
+            <el-input v-model="form.entranceGuardCode" class="form-styles"></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
           <el-form-item label="存放位置" prop="storagePlace">
-            <el-input
-              v-model="form.storagePlace"
-              class="form-styles"
-            ></el-input>
+            <el-input v-model="form.storagePlace" class="form-styles"></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="所属部门" prop="organName">
+          <el-form-item label="所属部门" prop="ownerOrganId">
             <el-cascader
-              v-model="form.organName"
+              :value="form.ownerOrganId"
               class="form-styles"
               size="mini"
+              :options="options"
               :props="props"
+              @change="change"
+              :show-all-levels="false"
             ></el-cascader>
             <!-- <el-input
               v-model="form.organName"
               class="form-styles"
-            ></el-input> -->
+            ></el-input>-->
           </el-form-item>
         </el-col>
 
@@ -206,7 +189,18 @@
               v-model="form.reason"
               placeholder="请输入内容"
               :rows="5"
-              style="width: 1046px"
+              size="mini"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="active===3" :span="24">
+          <el-form-item label="审批意见" prop="option">
+            <el-input
+              type="textarea"
+              v-model="form.option"
+              placeholder="请输入内容"
+              :rows="5"
+              size="mini"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -219,7 +213,7 @@
 import {
   saveDirectly,
   loadEditData,
-  loadRecordByInfoId,
+  loadRecordByInfoId
 } from "@/api/equipment/index";
 import { createId } from "@/api/common/index";
 import { organTreeApi } from "@/api/audit/index";
@@ -227,33 +221,34 @@ import TreeSlot from "@/components/TreeSlot/index.vue";
 import moment from "moment";
 export default {
   components: {
-    TreeSlot,
+    TreeSlot
   },
   props: {
     treeData: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     formLine: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     type: {
       type: String,
-      default: "add",
+      default: "add"
     },
     isDetail: {
       type: Boolean,
-      default: false,
+      default: false
     },
     infoId: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
   },
-
+  inject: ["root"],
   data() {
     return {
+      active: this.root.activeTab,
       networkLoading: false,
       loading: false,
       nodeCount: 0, //树双击收缩
@@ -275,92 +270,85 @@ export default {
         storagePlace: "", // 存放位
         classify: "", // 设备类型
         reason: "", // 原因用途
-        organName: this.$store.state.login.loginData.organName, // 部门
+        // organName: this.$store.state.login.loginData.organName, // 部门
+        ownerOrganName: "",
+        option: null,
+        ownerOrganId: null
       },
       rules: {
         categoryLabel: [
-          { required: true, message: "请选择设备分类", trigger: "change" },
+          { required: true, message: "请选择设备分类", trigger: "change" }
         ],
         secretRoomCode: [
-          { required: true, message: "请输入载体编号", trigger: "blur" },
+          { required: true, message: "请输入载体编号", trigger: "blur" }
         ],
         code: [
-          { required: true, message: "请输入保密系统编号", trigger: "blur" },
+          { required: true, message: "请输入保密系统编号", trigger: "blur" }
         ],
         classify: [
-          { required: true, message: "请选择设备类型", trigger: "change" },
+          { required: true, message: "请选择设备类型", trigger: "change" }
         ],
         secret: [
-          { required: true, message: "请选择设备密级", trigger: "change" },
-        ],
+          { required: true, message: "请选择设备密级", trigger: "change" }
+        ]
       },
       classifyOptions: [
         {
           value: 4,
-          label: "个人资产",
+          label: "个人资产"
         },
         {
           value: 8,
-          label: "保密室资产",
-        },
+          label: "保密室资产"
+        }
       ],
       tabList: [],
       tabOptions: this.$store.state.login.equipmentTab,
       secretOptions: this.$store.state.login.equipmentSecret,
       defaultProps: {
         children: "children",
-        label: "caption",
+        label: "caption"
       },
+      options: [],
       props: {
-        lazy: true,
-        async lazyLoad(node, resolve) {
-          // const { level } = node;
-          console.log(node)
-          const res = await organTreeApi({
-            id: node.level===0?null:node.value,
-          });
-          resolve(res.data)
-          // setTimeout(() => {
-          //   const nodes = Array.from({ length: level + 1 })
-          //     .map(item => ({
-          //       value: ++id,
-          //       label: `选项${id}`,
-          //       leaf: level >= 2
-          //     }));
-          //   // 通过调用resolve将子节点数据返回，通知组件数据加载完成
-          //   resolve(nodes);
-          // }, 1000);
-        },
-        value:'id',
-        label:'caption',
-        checkStrictly:true,
-        emitPath:false
-      },
+        value: "id",
+        label: "caption",
+        children: "childs",
+        checkStrictly: true,
+        emitPath: false
+      }
     };
+  },
+  async mounted() {
+    const res = await organTreeApi();
+    this.options = res.data;
   },
   watch: {
     formLine: {
       immediate: true,
       handler() {
-        if (this.formLine&&JSON.stringify(this.formLine) !== "{}") {
+        if (this.formLine && JSON.stringify(this.formLine) !== "{}") {
           try {
             this.loading = true;
             if (this.infoId) {
               const params1 = {
-                infoId: this.infoId,
+                infoId: this.infoId
               };
-              loadRecordByInfoId(params1).then((res) => {
+              loadRecordByInfoId(params1).then(res => {
                 Object.assign(this.form, res.data);
               });
             } else {
               const params2 = {
-                deviceRecordId: this.formLine.deviceRecordId,
+                deviceRecordId: this.formLine.deviceRecordId
               };
-              loadEditData(params2).then((res) => {
+              loadEditData(params2).then(res => {
                 Object.assign(this.form, res.data);
+
                 this.form.categoryLabel = res.data.categoryLabel
                   ? res.data.categoryLabel
                   : res.data.kindLabel;
+                this.form.ownerOrganName = res.data.ownerOrganName;
+                console.log(this.form, "oooooo");
               });
             }
             this.loading = false;
@@ -374,12 +362,16 @@ export default {
           });
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   methods: {
+    change(value){
+      console.log(value,'12456')
+      this.form.ownerOrganId = value
+    },
     createIdData() {
-      createId().then((res) => {
+      createId().then(res => {
         this.createId = res.data;
       });
     },
@@ -400,7 +392,7 @@ export default {
 
     handleSave(flag) {
       if (this.networkLoading) return;
-      this.$refs["form"].validate(async (valid) => {
+      this.$refs["form"].validate(async valid => {
         if (valid) {
           const params = {
             id: this.type === "add" ? this.createId : this.form.id, //任务主键
@@ -419,7 +411,7 @@ export default {
             secret: this.form.secret, //密级
             code: String(this.form.code), //保密系统编号
             classify: this.form.classify, //设备类别
-            ownerOrganId: this.$store.state.login.loginData.organId, //所属部门
+            ownerOrganId: this.form.ownerOrganId, //所属部门
             tab: this.form.tab, //设备标签
             reason: this.form.reason,
             extList: [
@@ -428,37 +420,47 @@ export default {
                 fieldLabel: "启用时间", //中文名称
                 fieldValue: ["", null].includes(this.form.enabledTime)
                   ? ""
-                  : moment(this.form.enabledTime).format("YYYY-MM-DD"),
+                  : moment(this.form.enabledTime).format("YYYY-MM-DD")
               },
               {
                 fieldName: "secretRoomCode", //英文名称
                 fieldLabel: "载体编号", //中文名称
-                fieldValue: String(this.form.secretRoomCode),
+                fieldValue: String(this.form.secretRoomCode)
               },
               {
                 fieldName: "entranceGuardCode", //英文名称
                 fieldLabel: "门禁编号", //中文名称
-                fieldValue: String(this.form.entranceGuardCode),
+                fieldValue: String(this.form.entranceGuardCode)
               },
               {
                 fieldName: "storagePlace", //英文名称
                 fieldLabel: "存放位置", //中文名称
-                fieldValue: this.form.storagePlace,
+                fieldValue: this.form.storagePlace
               },
               {
                 fieldName: "reason", //英文名称
                 fieldLabel: "原因用途", //中文名称
-                fieldValue: this.form.reason,
-              },
-            ],
+                fieldValue: this.form.reason
+              }
+            ]
           };
           this.networkLoading = true;
           const { status, msg } = await saveDirectly(params);
-          this.$message.success(msg);
+          // this.$message.success(msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: msg
+          });
           if (status == 200) {
             this.networkLoading = false;
           } else {
-            this.$message.error(msg);
+            // this.$message.error(msg);
+            this.$message({
+              type: "error",
+              duration: 1000,
+              message: msg
+            });
             this.networkLoading = false;
           }
           if (flag) {
@@ -471,8 +473,8 @@ export default {
           return false;
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -367,7 +367,12 @@ export default {
     },
     async deleteDeviceOrData(promise) {
       const res = await promise;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+       this.$message({
+        type: "success",
+        duration: 1000,
+        message: res.msg
+      });
       this.activeTab === 1 ? this.getData() : this.getOtherData();
     },
     //关闭

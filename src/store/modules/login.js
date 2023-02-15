@@ -270,6 +270,7 @@ const actions = {
     const params = {
       userId: state.loginData.userId,
     };
+    console.log('23232323','垃圾代码')
     const res = await countDataHander(params);
     commit("SET_DATATRANSFERBADGE", res.data);
   },

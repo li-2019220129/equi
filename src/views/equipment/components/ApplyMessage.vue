@@ -10,55 +10,37 @@
         :disabled="isDetail"
         v-loading="loading"
       >
-        <el-form-item label="标题">
+        <el-form-item label="标题" label-width="80px">
           <template slot="label">
-            <div
-              style="letter-spacing: 30px; position: absolute; margin-left: 5px"
-            >
-              标题
-            </div>
+            <div style="letter-spacing: 15px;  margin-left: 5px">标题</div>
           </template>
           <el-input v-model="applyForm.applyContent"></el-input>
         </el-form-item>
 
         <div class="flex-item">
           <el-form-item label="申请部门">
-            <el-select
-              v-model="organName"
-              placeholder="请选择申请部门"
-              style="width: 330px"
-              disabled
-            >
-            </el-select>
+            <el-select v-model="organName" placeholder="请选择申请部门" style="width: 330px" disabled></el-select>
           </el-form-item>
-          <el-form-item label="申请人">
+          <el-form-item label="申请人" label-width="100px">
             <template slot="label">
               <div
                 style="
                   letter-spacing: 8px;
-                  position: absolute;
                   margin-left: 5px;
                 "
-              >
-                申请人
-              </div>
+              >申请人</div>
             </template>
             <el-select
               v-model="applyForm.applyUserName"
               placeholder="请选择申请人"
               style="width: 330px"
               disabled
-            >
-            </el-select>
+            ></el-select>
           </el-form-item>
         </div>
-        <el-form-item label="接收人">
+        <el-form-item label="接收人" label-width="80px">
           <template slot="label">
-            <div
-              style="letter-spacing: 8px; position: absolute; margin-left: 5px"
-            >
-              接收人
-            </div>
+            <div style="letter-spacing: 4px; margin-left: 5px">接收人</div>
           </template>
           <el-input
             v-model="applyForm.modifyUserName"
@@ -92,6 +74,10 @@
           <label slot="label" style="font-weight: 400">{{ title }}事由</label>
           <el-input type="textarea" v-model="applyForm.reason"></el-input>
         </el-form-item>
+        <!-- <el-form-item v-if="active">
+          <label slot="label"  style="font-weight: 400">审批意见</label>
+          <el-input type="textarea" v-model="applyForm.option"></el-input>
+        </el-form-item>-->
       </el-form>
     </div>
     <div>
@@ -113,25 +99,27 @@ import {
   findDeviceByModifyId,
   findDeviceByTakeoutId,
   viewDetailDestory,
+  loadDeviceModify,
+  detailAudit
 } from "@/api/equipment";
 import Vue from "vue";
 export default {
   name: "ApplyMessage",
   components: {
     EquipmentMessage,
-    TreeSlot,
+    TreeSlot
   },
   props: {
     formLine: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   inject: ["root"],
-
   data() {
     return {
-      applySuccess:false,
+      active: this.root.active,
+      applySuccess: false,
       loading: false,
       title: this.root.title,
       drawerTitle: this.root.drawerTitle,
@@ -150,6 +138,7 @@ export default {
         reason: "", //事由
         toUserId: "", //审批人主键
         toUserName: "", //审批人名称
+        option: null
       },
       secret: "", //设备密级
       modifyUserList: this.$store.state.login.userTreeData,
@@ -159,8 +148,8 @@ export default {
       defaultProps: {
         children: "children",
         label: "caption",
-        isLeaf: "leaf",
-      },
+        isLeaf: "leaf"
+      }
     };
   },
   created() {
@@ -175,27 +164,41 @@ export default {
           this.loading = true;
           if (this.drawerTitle === "设备移交") {
             const params1 = {
-              modifyId: this.formLine.id,
+              modifyId: this.formLine.id
             };
             this.findDevice(findDeviceByModifyId(params1));
+            if(!this.formLine.modifyUserName){
+             loadDeviceModify({
+              id:this.formLine.id
+             }).then((res)=>{
+              this.applyForm.modifyUserName = res.data.modifyUserName
+             })
+            }
           } else if (this.drawerTitle === "设备外送") {
             const params2 = {
-              id: this.formLine.id,
+              id: this.formLine.id
             };
             this.findDevice(findDeviceByTakeoutId(params2));
+            if(!this.formLine.modifyUserName){
+             detailAudit({
+              id:this.formLine.id
+             }).then((res)=>{
+              this.applyForm.modifyUserName = res.data.takeoutView.receiveUserName
+             })
+            }
           } else if (this.drawerTitle === "设备销毁") {
             const params3 = {
               id: this.formLine.id,
-              currentUserId: this.$store.state.login.loginData.userId,
+              currentUserId: this.$store.state.login.loginData.userId
             };
-            viewDetailDestory(params3).then((res) => {
+            viewDetailDestory(params3).then(res => {
               const editObj = res.data;
               this.applyForm.modifyUserId = editObj.destoryData.receiveUserId;
               this.applyForm.modifyUserName =
                 editObj.destoryData.receiveUserName;
               this.editDevTable = editObj.devInfo.data;
               this.applyForm.devId = editObj.devInfo.data
-                .map((item) => item.id)
+                .map(item => item.id)
                 .join(",");
             });
           }
@@ -207,13 +210,13 @@ export default {
           });
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   methods: {
     //获取创建人id
     createIdData() {
-      createId().then((res) => {
+      createId().then(res => {
         this.applyForm.id = res.data;
       });
     },
@@ -232,27 +235,34 @@ export default {
 
     //申请
     saveApply() {
-      console.log('外卖少儿阿瓦我')
+      console.log("外卖少儿阿瓦我");
       if (this.applySuccess) {
-        this.$message.warning("已经保存了无需再次保存！");
+        // this.$message.warning("已经保存了无需再次保存！");
+        this.$message({
+          type: "warning",
+          duration: 1000,
+          message: "已经保存了无需再次保存！"
+        });
         return;
       }
       this.$set(this.applyForm, "organName", this.organName);
       this.$set(this.applyForm, "secret", this.secret);
       this.$emit("saveApply", this.applyForm);
     },
-    applyFlags(){
-      this.applySuccess=true
+    applyFlags() {
+      this.applyccess = true;
     },
     //编辑查询已选设备
     async findDevice(promise) {
       const res = await promise;
       this.editDevTable = res.data.data;
-      this.applyForm.devId = res.data.data
-        .map((item) => item.deviceId)
-        .join(",");
-    },
-  },
+      if (this.drawerTitle === "设备移交") {
+        this.applyForm.devId = res.data.data.map(item => item.deviceId).join(",");
+      }else if(this.drawerTitle==='设备外送'){
+          this.applyForm.devId = res.data.data.map(item => item.id).join(",");
+      }
+    }
+  }
 };
 </script>
 

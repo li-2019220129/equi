@@ -8,7 +8,7 @@ export const tableOptions1 = [
   ...commTableOptions,
   { value: "carrierList", label: "标题" },
   { value: "content", label: "申请内容" },
-  { value: "applyOrganName", label: "申请单位" },
+  { value: "applyOrganName", label: "申请部门" },
   { value: "applyUserName", label: "申请人" },
   { value: "applyTime", label: "申请时间" },
 ];

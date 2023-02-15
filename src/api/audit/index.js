@@ -45,10 +45,9 @@ export function findWorkDataAndUser(params) {
   });
 }
 
-export function organTreeApi(data) {
+export function organTreeApi() {
   return service({
-    url:'device/common/organTree',
+    url:'/device/common/allOrganTree',
     method: "post",
-    params:data
   });
 }

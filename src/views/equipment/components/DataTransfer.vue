@@ -219,6 +219,7 @@ export default {
       title: "移交",
       drawerTitle: "资料移交",
       activeTab: 1,
+      isDetail:false,
       keyWord: "", //输入框
       tableObj: {
         tableData: [],
@@ -264,7 +265,10 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.radio=null;
       this.getData();
+      this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
     },
     changeRadio(row) {
       this.radio = row.id;
@@ -371,7 +375,12 @@ export default {
             idStr: this.applyId,
           };
           const res = await rubbishHander(params);
-          this.$message.success(res.msg);
+          // this.$message.success(res.msg);
+          this.$message({
+            duration:1000,
+            type:'success',
+            message:res.msg
+          })
           this.getData(this.type);
         })
         .catch(() => {
@@ -398,7 +407,12 @@ export default {
             idStr: this.applyId,
           };
           const res = await takeBackHander(params);
-          this.$message.success(res.msg);
+          // this.$message.success(res.msg);
+          this.$message({
+            duration:1000,
+            type:'success',
+            message:res.msg
+          })
           this.getData(this.type);
         })
         .catch(() => {
@@ -425,8 +439,14 @@ export default {
             idStr: this.applyId,
           };
           const res = await receiveHander(params);
-          this.$message.success(res.msg);
+          // this.$message.success(res.msg);
+          this.$message({
+            duration:1000,
+            type:'success',
+            message:res.msg
+          })
           this.getData(this.type);
+           this.$store.dispatch('login/getDataTransferBadge')
         })
         .catch(() => {
           this.$message({

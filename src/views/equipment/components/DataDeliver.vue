@@ -5,93 +5,51 @@
         <div
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
-        >
-          外送申请
-        </div>
+        >外送申请</div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
-        >
-          审批中
-        </div>
+        >审批中</div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
         >
-          <el-badge
-            :value="auditedNum"
-            class="badge-item"
-            :hidden="auditedNum === 0"
-          >
-            已审批</el-badge
-          >
+          <el-badge :value="auditedNum" class="badge-item" :hidden="auditedNum === 0">已审批</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 4 ? 'selected' : '']"
           @click="handleActiveTab(4)"
         >
-          <el-badge
-            :value="receiveNum"
-            :hidden="receiveNum === 0"
-            class="badge-item"
-          >
-            待回执</el-badge
-          >
+          <el-badge :value="receiveNum" :hidden="receiveNum === 0" class="badge-item">待回执</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 5 ? 'selected' : '']"
           @click="handleActiveTab(5)"
-        >
-          已回执
-        </div>
+        >已回执</div>
       </div>
       <div class="equipment-header-right">
         <div class="equipment-button">
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="transferApply"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="transferApply">
             <img src="@/assets/icon/移交申请@2x.png" />
             <span>外送申请</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="send"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="send">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>送审</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="edit"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="edit">
             <img src="@/assets/icon/编辑@2x.png" />
             <span>编辑</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="deleteTakeout"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="deleteTakeout">
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 4"
-            @click="recive"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 4" @click="recive">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>回执</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 2"
-            @click="recall"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 2" @click="recall">
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
           </div>
@@ -129,20 +87,14 @@
       ref="leadalTable"
     >
       <template slot="radio">
-        <el-table-column
-          label=""
-          header-align="center"
-          align="center"
-          width="50"
-        >
+        <el-table-column label header-align="center" align="center" width="50">
           <template slot-scope="scope">
             <el-radio
               :label="scope.row.id"
               v-model="radio"
               @change.stop="changeRadio(scope.row)"
               class="none-radio-label"
-              >{{ "" }}</el-radio
-            >
+            >{{ "" }}</el-radio>
           </template>
         </el-table-column>
       </template>
@@ -193,7 +145,7 @@ import {
   deleteTakeout,
   recallTakeout,
   receiptTakeout,
-  messageLookTakeout,
+  messageLookTakeout
 } from "@/api/data";
 import { mapState } from "vuex";
 export default {
@@ -203,18 +155,18 @@ export default {
     LeadalDrawer,
     LeadalDialog,
     DataApplyDrawer,
-    DataPersonDialog,
+    DataPersonDialog
   },
   provide() {
     return {
-      root: this,
+      root: this
     };
   },
   data() {
     return {
       title: "外送",
       drawerTitle: "资料外送",
-      mode:'',
+      mode: "",
       activeTab: 1,
       keyWord: "", //输入框
       tableObj: {
@@ -223,7 +175,7 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       applyDrawerVisible: false,
       visible: false,
@@ -232,7 +184,7 @@ export default {
       pArams: {}, //保存后送审数据
       status: 1, //申请状态
       applyId: "", //申请id
-      content: "", //标题输入框
+      content: "" //标题输入框
     };
   },
   computed: {
@@ -242,7 +194,7 @@ export default {
     },
     receiveNum() {
       return this.dataDeliverBadge.countTakeout;
-    },
+    }
   },
   created() {
     this.getData();
@@ -258,12 +210,14 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.radio = "";
       this.switchStatus(num);
+      this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.getData();
     },
 
     switchStatus(num) {
-      
       switch (num) {
         case 1:
           return (this.status = 1);
@@ -276,7 +230,7 @@ export default {
         case 5:
           return (this.status = 16);
       }
-      console.log(this.status,'status')
+      console.log(this.status, "status");
     },
 
     changeRadio(row) {
@@ -294,7 +248,7 @@ export default {
           currentPage: this.tableObj.page,
           type: 0,
           content: this.content,
-          status: this.status, //1 草稿 2待审批  2已审批  4  已外送  8已回执
+          status: this.status //1 草稿 2待审批  2已审批  4  已外送  8已回执
         };
         const res = await pageTakeout(params);
         this.tableObj.tableData = res.data.data.data;
@@ -306,7 +260,7 @@ export default {
     },
 
     handleParams(obj) {
-      console.log(obj,'handleParams')
+      console.log(obj, "handleParams");
       this.pArams = obj;
       this.applyDrawerVisible = false;
       this.visible = true;
@@ -321,7 +275,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
-      this.mode='add'
+      this.mode = "add";
       this.applyDrawerVisible = true;
     },
 
@@ -355,7 +309,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
-      this.mode = ''
+      this.mode = "";
       this.applyDrawerVisible = true;
     },
 
@@ -364,11 +318,11 @@ export default {
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await deleteTakeout(params);
           this.$message.success(res.msg);
@@ -377,7 +331,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消删除"
           });
         });
     },
@@ -391,20 +345,26 @@ export default {
       this.$confirm("是否撤回该申请?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await recallTakeout(params);
-          this.$message.success(res.msg);
+          // this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
           this.getData(this.type);
+          this.$store.dispatch("login/getDataDeliverBadge");
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回",
+            message: "已取消撤回"
           });
         });
     },
@@ -418,24 +378,29 @@ export default {
       this.$confirm("是否回执该申请?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            takeoutId: this.applyId,
+            takeoutId: this.applyId
           };
           const res = await receiptTakeout(params);
-          this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
+          this.$store.dispatch("login/getDataDeliverBadge");
           this.getData(this.type);
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消接收",
+            message: "已取消接收"
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

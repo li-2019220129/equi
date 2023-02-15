@@ -19,7 +19,7 @@
             >
               编号
             </div>
-          </label> -->
+          </label>-->
           <el-input v-model="applyForm.borrowCode"></el-input>
         </el-form-item>
         <el-form-item label="标题" prop="applyContent">
@@ -29,31 +29,22 @@
             >
               标题
             </div>
-          </label> -->
+          </label>-->
           <el-input v-model="applyForm.applyContent"></el-input>
         </el-form-item>
 
         <div class="flex-item">
           <el-form-item label="申请部门">
-            <el-select
-              v-model="organName"
-              placeholder="请选择申请部门"
-              style="width: 330px"
-              disabled
-            >
-            </el-select>
+            <el-select v-model="organName" placeholder="请选择申请部门" style="width: 330px" disabled></el-select>
           </el-form-item>
-          <el-form-item label="申请人">
+          <el-form-item label="申请人" label-width="100px">
             <template slot="label">
               <div
                 style="
                   letter-spacing: 8px;
-                  position: absolute;
                   margin-left: 5px;
                 "
-              >
-                申请人
-              </div>
+              >申请人</div>
             </template>
             <el-select
               v-model="applyForm.applyUserName"
@@ -81,7 +72,9 @@
         <el-form-item label="申请事由" prop="reason">
           <el-input type="textarea" v-model="applyForm.reason"></el-input>
         </el-form-item>
-
+        <el-form-item v-if="active===3" label="审批意见" prop="option">
+          <el-input type="textarea" v-model="applyForm.option"></el-input>
+        </el-form-item>
         <el-form-item label="借用时间" prop="borrowTime">
           <el-date-picker
             v-model="applyForm.borrowTime"
@@ -92,8 +85,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 100%"
-          >
-          </el-date-picker>
+          ></el-date-picker>
         </el-form-item>
 
         <div class="flex-item">
@@ -104,10 +96,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="保管方式">
-            <el-input
-              v-model="applyForm.storageWay"
-              style="width: 330px"
-            ></el-input>
+            <el-input v-model="applyForm.storageWay" style="width: 330px"></el-input>
           </el-form-item>
         </div>
 
@@ -118,14 +107,10 @@
               type="date"
               style="width: 330px"
               placeholder="选择日期"
-            >
-            </el-date-picker>
+            ></el-date-picker>
           </el-form-item>
           <el-form-item label="联系方式" prop="contactWay">
-            <el-input
-              v-model="applyForm.contactWay"
-              style="width: 330px"
-            ></el-input>
+            <el-input v-model="applyForm.contactWay" style="width: 330px"></el-input>
           </el-form-item>
         </div>
       </div>
@@ -135,12 +120,20 @@
           <el-form-item label="设备分类" prop="categoryLabel">
             <el-select
               v-model="applyForm.categoryLabel"
+              multiple
               placeholder="请选择设备分类"
               class="form-styles"
               ref="el-select"
               style="width: 330px"
             >
-              <el-option style="height: auto" :value="applyForm.categoryLabel">
+              <el-option
+                :label="item.caption"
+                :value="item.id"
+                style="height: auto"
+                :key="index"
+                v-for="(item,index) in categoryData"
+              ></el-option>
+              <!-- <el-option style="height: auto" :value="applyForm.categoryLabel">
                 <el-tree
                   :props="defaultProps"
                   :data="categoryData"
@@ -153,7 +146,7 @@
                     <tree-slot :node="node" :data="data"></tree-slot>
                   </div>
                 </el-tree>
-              </el-option>
+              </el-option>-->
             </el-select>
           </el-form-item>
           <el-form-item label="设备标签" prop="tab">
@@ -168,44 +161,33 @@
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
-              >
-              </el-option>
+              ></el-option>
             </el-select>
           </el-form-item>
         </div>
 
         <div class="flex-item">
           <el-form-item label="设备数量" prop="devCount">
-            <el-input-number
-              v-model="applyForm.devCount"
-              :min="1"
-              :max="10"
-              style="width: 330px"
-            ></el-input-number>
+            <el-input-number v-model="applyForm.devCount" :min="1" :max="10" style="width: 330px"></el-input-number>
           </el-form-item>
 
           <el-form-item label="设备密级" prop="secret">
-            <el-select
-              v-model="applyForm.secret"
-              placeholder="请选择设备密级"
-              style="width: 330px"
-            >
+            <el-select v-model="applyForm.secret" placeholder="请选择设备密级" style="width: 330px">
               <el-option
                 v-for="item in secretOptions"
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
-              >
-              </el-option>
+              ></el-option>
             </el-select>
           </el-form-item>
         </div>
       </div>
     </el-form>
 
-    <div class="apply-form" v-if="btnTitle === '确认借出'">
+    <div class="apply-form" v-if="btnTitle === '确认借出'||btnTitle==='待归还'||btnTitle==='已归还'">
       <equipment-message
-        :maxHeight="'calc(15vh - 37px)'"
+        :maxHeight="'calc(20vh - 17px)'"
         :equipmentTab="applyForm.tab"
         :editId="editId"
         :devIds.sync="applyForm.devIds"
@@ -225,18 +207,18 @@ export default {
   name: "BorrowMessage",
   components: {
     EquipmentMessage,
-    TreeSlot,
+    TreeSlot
   },
   inject: ["root"],
   props: {
     formLine: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     mode: {
       type: String,
-      default: "add",
-    },
+      default: "add"
+    }
   },
   created() {
     this.createIdData();
@@ -244,6 +226,7 @@ export default {
   },
   data() {
     return {
+      active:this.root.activeTab,
       loading: false,
       title: this.root.title,
       isDetail: this.root.isDetail,
@@ -268,6 +251,7 @@ export default {
         tab: "", //设备标签
         secret: "", //设备密级
         devCount: 1, //设备数量
+        option:null,
       },
       cloneDorrowTime: [],
       editId: "", //编辑id
@@ -275,37 +259,37 @@ export default {
       categoryData: [], //树
       defaultProps: {
         children: "children",
-        label: "caption",
+        label: "caption"
       },
       tabOptions: this.$store.state.login.equipmentTab,
       secretOptions: this.$store.state.login.equipmentSecret,
       rules: {
         applyContent: [
-          { required: true, message: "请输入标题", trigger: "blur" },
+          { required: true, message: "请输入标题", trigger: "blur" }
         ],
         borrowTime: [
-          { required: true, message: "请选择借用时间", trigger: "change" },
+          { required: true, message: "请选择借用时间", trigger: "change" }
         ],
         useRange: [
-          { required: true, message: "请选择使用范围", trigger: "change" },
+          { required: true, message: "请选择使用范围", trigger: "change" }
         ],
         contactWay: [
           {
             pattern: /^1[3456789]\d{9}$/,
             message: "联系方式格式不正确",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         categoryLabel: [
-          { required: true, message: "请选择设备分类", trigger: "change" },
+          { required: true, message: "请选择设备分类", trigger: "change" }
         ],
         devCount: [
-          { required: true, message: "请输入设备数量", trigger: "blur" },
+          { required: true, message: "请输入设备数量", trigger: "blur" }
         ],
         secret: [
-          { required: true, message: "请选择设备密级", trigger: "change" },
-        ],
-      },
+          { required: true, message: "请选择设备密级", trigger: "change" }
+        ]
+      }
     };
   },
   watch: {
@@ -318,7 +302,7 @@ export default {
 
           const params = {
             id: this.formLine.id,
-            currentUserId: this.$store.state.login.loginData.userId,
+            currentUserId: this.$store.state.login.loginData.userId
           };
           const res = await viewDetail(params);
           const editObj = res.data;
@@ -334,7 +318,7 @@ export default {
           }
           //已选设备回显
           this.applyForm.devIds = editObj.devInfo
-            .map((item) => item.id)
+            .map(item => item.id)
             .join(",");
 
           this.loading = false;
@@ -344,18 +328,18 @@ export default {
           });
         }
       },
-      deep: true,
+      deep: true
     },
     btnTitle: {
       immediate: true,
       handler(val) {
         if (val === "确认借出") this.isDetail = true;
-      },
-    },
+      }
+    }
   },
   methods: {
     createIdData() {
-      createId().then((res) => {
+      createId().then(res => {
         this.applyForm.id = res.data;
       });
     },
@@ -386,14 +370,14 @@ export default {
           ? this.applyForm.borrowTime.join("-")
           : [];
       }
-      this.$refs["form"].validate((valid) => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
           this.$emit("saveBorrow", this.applyForm);
           this.applyForm.borrowTime = this.cloneDorrowTime;
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

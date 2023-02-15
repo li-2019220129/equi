@@ -21,8 +21,7 @@
             'terr-margin': !data.flag,
             'tree-margin-select': isSelect && !data.flag,
           }"
-          >{{ node.label }}</span
-        >
+        >{{ node.label }}</span>
 
         <div class="permission-position">{{ data.permission }}</div>
       </div>
@@ -43,12 +42,7 @@
         }"
       ></i>
       <template v-if="isOnLine">
-        <img
-          :src="iconHeader(data)"
-          v-if="data.isOnLine !== undefined"
-          width="13px"
-          height="13px"
-        />
+        <img :src="iconHeader(data)" v-if="data.isOnLine !== undefined" width="13px" height="13px" />
       </template>
       {{ node.label }}
       <div class="tree-child-click" @click="triangle(data)" />
@@ -62,7 +56,7 @@
       </el-badge>
       <!-- <span style="position: absolute; right: 20px" v-if="isNumber">{{
         $store.state.login | filterNumber(node.label)
-      }}</span> -->
+      }}</span>-->
     </div>
   </div>
 </template>
@@ -106,32 +100,77 @@ export default {
   props: {
     node: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     data: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     lazy: {
       type: Boolean,
-      default: false,
+      default: false
     },
     checkbox: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isOnLine: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isSelect: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isNumber: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
+  },
+  computed: {
+    countAudtit() {
+      return str => {
+        
+        let store = this.$store.state.login
+        console.log(store.equipmentAuditBadge.total,store.dataAuditBadge.total,'垃圾代码')
+        if (str === "设备登记" && store.equipmentRegisterBadge > 0) {
+          return store.equipmentRegisterBadge;
+        } else if (str === "设备借用" && store.equipmentBorrowBadge.total > 0) {
+          return store.equipmentBorrowBadge.total;
+        } else if (
+          str === "设备移交" &&
+          store.equipmentTransferBadge.total > 0
+        ) {
+          return store.equipmentTransferBadge.total;
+        } else if (
+          str === "设备外送" &&
+          store.equipmentDeliverBadge.total > 0
+        ) {
+          return store.equipmentDeliverBadge.total;
+        } else if (
+          str === "设备销毁" &&
+          store.equipmentDestoryBadge.total > 0
+        ) {
+          return store.equipmentDestoryBadge.total;
+        } else if (
+          str === "待审批" &&
+          (store.equipmentAuditBadge.total > 0 ||
+            store.dataAuditBadge.total > 0)
+        ) {
+          return store.equipmentAuditBadge.total + store.dataAuditBadge.total;
+        } else if (str === "资料登记" && store.dataRegisterBadge > 0) {
+          return store.dataRegisterBadge;
+        } else if (str === "资料借阅" && store.dataBorrowBadge.total > 0) {
+          return store.dataBorrowBadge.total;
+        } else if (str === "资料移交" && store.dataTransferBadge.total > 0) {
+          return store.dataTransferBadge.total;
+        } else if (str === "资料外送" && store.dataDeliverBadge.total > 0) {
+          return store.dataDeliverBadge.total;
+        } else if (str === "资料销毁" && store.dataDestoryBadge.total > 0) {
+          return store.dataDestoryBadge.total;
+        }
+      };
+    }
   },
   filters: {
     filterNumber(store, str) {
@@ -145,8 +184,11 @@ export default {
         return store.equipmentDeliverBadge.total;
       } else if (str === "设备销毁" && store.equipmentDestoryBadge.total > 0) {
         return store.equipmentDestoryBadge.total;
-      } else if (str === "待审批" && store.equipmentAuditBadge.total > 0) {
-        return store.equipmentAuditBadge.total;
+      } else if (
+        str === "待审批" &&
+        (store.equipmentAuditBadge.total > 0 || store.dataAuditBadge.total > 0)
+      ) {
+        return store.equipmentAuditBadge.total + store.dataAuditBadge.total;
       } else if (str === "资料登记" && store.dataRegisterBadge > 0) {
         return store.dataRegisterBadge;
       } else if (str === "资料借阅" && store.dataBorrowBadge.total > 0) {
@@ -158,7 +200,7 @@ export default {
       } else if (str === "资料销毁" && store.dataDestoryBadge.total > 0) {
         return store.dataDestoryBadge.total;
       }
-    },
+    }
   },
   methods: {
     triangle(data) {
@@ -169,7 +211,7 @@ export default {
           }
         }, 0);
       });
-    },
-  },
+    }
+  }
 };
 </script>

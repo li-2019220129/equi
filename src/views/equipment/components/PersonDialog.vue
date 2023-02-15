@@ -1,7 +1,7 @@
 <template>
   <div class="person-layout">
     <div class="dialog-btn-layout">
-      <div class="handle send" @click="handleSend">确认送审</div>
+      <div class="handle send" @click="handleSend" >确认送审</div>
     </div>
     <hr />
     <div class="person-dialog-layout">
@@ -26,17 +26,9 @@
       <div class="layout-box">
         <div class="title">已选人员</div>
         <div class="content">
-          <div
-            v-for="(item, index) of arrays"
-            :key="index"
-            class="content-chosen"
-          >
+          <div v-for="(item, index) of arrays" :key="index" class="content-chosen">
             <div>
-              <img
-                src="@/assets/icon/人员 在位@2x.png"
-                width="20px"
-                height="20px"
-              />
+              <img src="@/assets/icon/人员 在位@2x.png" width="20px" height="20px" />
             </div>
             <div>{{ item.label }}</div>
             <div class="del">
@@ -61,48 +53,50 @@ import {
   submit,
   applyDeviceModify,
   applyTakeout,
-  saveSendDestory,
+  saveSendDestory
 } from "@/api/equipment/index";
 import { findParticipators } from "@/api/system";
+import { duration } from 'moment';
 export default {
   components: {
-    TreeSlot,
+    TreeSlot
   },
   props: {
     pArams: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     formLine: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     selection: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     sendType: {
       type: String,
-      default: "register",
-    },
+      default: "register"
+    }
   },
   data() {
     return {
+      typeClick:true,
       arrays: [],
       checkedNodes: [],
       data: [],
       defaultProps: {
         children: "children",
-        label: "label",
+        label: "label"
       },
       nodeId: "", //节点id
       form: {
         caption: "",
-        id: "",
+        id: ""
       },
       // createId: "",
       loading: false,
-      type: 1, //1登记   16移交   32销毁  64借用  256外送
+      type: 1 //1登记   16移交   32销毁  64借用  256外送
     };
   },
   created() {
@@ -134,9 +128,9 @@ export default {
         const params = {
           type: this.type,
           flag: 1,
-          secretLevelStr: secret.toString(),
+          secretLevelStr: secret.toString()
         };
-        findParticipators(params).then((res) => {
+        findParticipators(params).then(res => {
           this.loading = false;
           this.data = res.data;
         });
@@ -146,13 +140,17 @@ export default {
     },
 
     handleSend() {
+      if(!this.typeClick){
+        return
+      }
+      this.typeClick=false
       if (this.nodeId === "") {
         this.$message.info("请先选中送审人员");
         return;
       }
       let params = {};
-      console.log(this.selection,'selection')
-      let paramsArray = this.selection?.map((item) => {
+      console.log(this.selection, "selection");
+      let paramsArray = this.selection?.map(item => {
         return {
           id: item.id,
           reason: item.reason, //原因用途
@@ -160,10 +158,10 @@ export default {
           applyUserName: this.$store.state.login.loginData.userName, //申请人名称
           nodeId: this.nodeId, //节点主键
           toUserId: this.form.id, //审批人主键
-          toUserName: this.form.caption,
+          toUserName: this.form.caption
         };
       });
-      console.log(paramsArray,'11111')
+      console.log(paramsArray, "11111");
       params = {
         // id: this.pArams.id, //任务主键
         id: Object.keys(this.pArams).length ? this.pArams.id : this.formLine.id,
@@ -174,10 +172,12 @@ export default {
         applyUserName: this.$store.state.login.loginData.userName, //申请人名称
         nodeId: this.nodeId, //节点主键
         toUserId: this.form.id, //审批人主键
-        toUserName: this.form.caption,
+        toUserName: this.form.caption
       };
       if (this.sendType === "register") {
-        this.applyByType(apply(Object.keys(this.pArams).length?[params]:paramsArray));
+        this.applyByType(
+          apply(Object.keys(this.pArams).length ? [params] : paramsArray)
+        );
         this.$store.dispatch("login/getRegisterBadge"); ////获取设备登记角标
       } else if (this.sendType === "borrow") {
         this.applyByType(submit(params));
@@ -194,9 +194,14 @@ export default {
       }
     },
     async applyByType(promise) {
-
       const res = await promise;
-      this.$message.success(res.msg);
+      this.$message({
+        type: "success",
+        duration: 1000,
+        message: res.msg
+      });
+      this.typeClick = true
+      // this.$message.success(res.msg);
       this.$store.dispatch("login/getAuditBadge"); //获取设备待审批角标
       this.arrays = [];
       this.$emit("close");
@@ -213,9 +218,9 @@ export default {
     },
 
     handleDel(id) {
-      this.arrays = this.arrays.filter((item) => item.id !== id);
-    },
-  },
+      this.arrays = this.arrays.filter(item => item.id !== id);
+    }
+  }
 };
 </script>
 

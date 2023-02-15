@@ -113,7 +113,7 @@ export function apply(data) {
   return service({
     url: "stockin/apply",
     method: "post",
-    arrType:true,
+    arrType: true,
     data,
   });
 }
@@ -178,6 +178,14 @@ export function pageBorrowData(data) {
   });
 }
 
+export function findBorrowedDev(data) {
+  return service({
+    url: "/borrow/findBorrowedDev",
+    method: "post",
+    data,
+    arrType:true
+  });
+}
 //已审批or待借出
 export function pageBorrowWait(data) {
   return service({
@@ -297,6 +305,16 @@ export function pageBorrowDataTotal(data) {
 
 // ============= 设备移交
 
+
+// // 查询移交接收人
+// export function loadDeviceModify(data) {
+//   return service({
+//     url: "/deviceModify/loadDeviceModify",
+//     method: "post",
+//     data,
+//   });
+// }
+
 // 审批中
 export function pageDeviceModify(data) {
   return service({
@@ -400,6 +418,15 @@ export function receiveDeviceModify(data) {
 
 //====================================================
 //设备外送
+
+//外送接收人查询
+export function detailAudit(data) {
+  return service({
+    url: "takeout/takeout/detailAudit",
+    method: "post",
+    data,
+  });
+}
 
 //外送申请查询
 export function pageTakeout(data) {
@@ -726,12 +753,12 @@ export function batchDestoryDisAgree(data) {
 
 
 // 设备借用上传
-export function uploadApi(id,type,data) {
+export function uploadApi(id, type, data) {
   return service({
     url: `device/upload?id=${id}&type=${type}`,
     method: "post",
     data,
-    arrType:true
+    arrType: true
   });
 }
 
@@ -748,8 +775,8 @@ export function downLoadApi(id) {
   return service({
     url: `device/downLoad?id=${id}`,
     method: "post",
-    download:true,
-    responseType:'blob'
+    download: true,
+    responseType: 'blob'
   });
 }
 
@@ -775,7 +802,7 @@ export function auditTemplateApi(data) {
     url: `device/auditTemplate`,
     method: "post",
     data,
-    arrType:true
+    arrType: true
   });
 }
 
@@ -801,7 +828,7 @@ export function downLoadPDFApi(id) {
   return service({
     url: `device/downLoadPDF?id=${id}`,
     method: "post",
-    download:true,
-    responseType:'blob'
+    download: true,
+    responseType: 'blob'
   });
 }

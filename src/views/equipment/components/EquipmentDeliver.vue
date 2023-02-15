@@ -220,6 +220,7 @@ export default {
   },
   data() {
     return {
+      active:false,
       title: "外送",
       drawerTitle: "设备外送",
       activeTab: 0,
@@ -276,17 +277,23 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.radio=null;
       if (num === 1) {
         this.type = 7;
       } else if (num === 2) {
         this.type = 8;
+        this.active = true
       } else if (num === 3) {
         this.type = 2;
       } else {
         this.type = num;
       }
+      if(num!==2){
+        this.active = false
+      }
       this.content = "";
-      this.num === 0 ? (this.isDetail = false) : (this.isDetail = true);
+      num === 0 ? (this.isDetail = false) : (this.isDetail = true);
       this.getData(this.type);
     },
 
@@ -445,7 +452,12 @@ export default {
         takeoutId: this.applyId,
       };
       receiveTakeout2Device(params).then((res) => {
-        this.$message.success(res.msg);
+        // this.$message.success(res.msg);
+        this.$message({
+          type:'success',
+          duration:1000,
+          message:res.msg
+        })
         this.$store.dispatch("login/getDeliverBadge"); //获取设备外送角标
         this.getData(this.type);
       });

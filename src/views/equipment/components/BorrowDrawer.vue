@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="drawer-header">
-      <div class="drawer-header title">
-        {{ drawerTitle }}{{ btnTitle === "确认借出" ? "借出" : "申请" }}
-      </div>
+      <div class="drawer-header title">{{ drawerTitle }}{{ btnTitle === "确认借出" ? "借出" : "申请" }}</div>
       <div class="equipment-button">
         <div
           class="equipment-button_btn"
@@ -24,11 +22,7 @@
           <span>发送</span>
         </div>
 
-        <div
-          class="equipment-button_btn"
-          @click="borrow"
-          v-if="btnTitle === '确认借出'"
-        >
+        <div class="equipment-button_btn" @click="borrow" v-if="btnTitle === '确认借出'">
           <img src="@/assets/icon/借出-确认借出@2x.png" />
           <span>借出</span>
         </div>
@@ -36,29 +30,23 @@
     </div>
     <div class="drawer-container">
       <div class="drawer-left">
-        <pdf :src="pdfSrc"  style="width:100%;height:100%"></pdf>
+        <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
       </div>
-      <div class="drawer-right">
+      <el-scrollbar class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
             <div
               :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
               @click="activeTab = 1"
-            >
-              基础信息
-            </div>
+            >基础信息</div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
               @click="papers"
-            >
-              相关文件
-            </div>
+            >相关文件</div>
             <div
               :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
               @click="activeTab = 3"
-            >
-              办理过程
-            </div>
+            >办理过程</div>
           </div>
         </div>
         <keep-alive>
@@ -74,7 +62,7 @@
             :devIds.sync="devIds"
           />
         </keep-alive>
-      </div>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -84,7 +72,7 @@ import BorrowMessage from "./BorrowMessage.vue";
 import RelativeFile from "./RelativeFile.vue";
 import HandleProcess from "./HandleProcess.vue";
 import { applyBorrow, xtsBorrow } from "@/api/equipment";
-import pdf from "vue-pdf"
+import pdf from "vue-pdf";
 export default {
   name: "BorrowDrawer",
   components: {
@@ -97,11 +85,11 @@ export default {
   props: {
     applyId: {
       type: String,
-      default: "",
+      default: ""
     },
-    mode:{
-     type: String,
-     default: "",
+    mode: {
+      type: String,
+      default: ""
     }
   },
 
@@ -116,10 +104,10 @@ export default {
       activeTab: 1,
       componentName: "BorrowMessage",
       params: {},
-      pdfSrc:null,
+      pdfSrc: null,
       saveStatus: 0, //是否已保存
       id: "", //申请主键
-      devIds: "", //设备id
+      devIds: "" //设备id
     };
   },
   watch: {
@@ -135,28 +123,39 @@ export default {
           this.componentName = "HandleProcess";
           break;
       }
-    },
+    }
   },
 
   methods: {
-    pdfSrcDelete(){
-      this.pdfSrc = null
+    pdfSrcDelete() {
+      this.pdfSrc = null;
     },
-    pdfSrcSuccess(src){
-      console.log(src,'6654553')
-      this.pdfSrc = src
+    pdfSrcSuccess(src) {
+      console.log(src, "6654553");
+      this.pdfSrc = src;
     },
-    papers(){
-        if (!this.preserve&&this.mode=='add') {
-        this.$message.warning("请先保存后在进行操作！");
+    papers() {
+      if (!this.preserve && this.mode == "add") {
+        // this.$message.warning("请先保存后在进行操作！");
+        this.$message({
+          type: "warning",
+          duration: 1000,
+          message: "请先保存后在进行操作！"
+        });
         return;
       }
-      this.activeTab = 2
+      this.activeTab = 2;
     },
     //保存
     handleSave() {
+
       if (this.preserve) {
-        this.$message.warning("已经保存了无需再次保存！");
+        // this.$message.warning("已经保存了无需再次保存！");
+        this.$message({
+          type: "warning",
+          duration: 1000,
+          message: "已经保存了无需再次保存！"
+        });
         return;
       }
       this.$refs.borrowMessage.saveBorrow();
@@ -179,7 +178,7 @@ export default {
         categoryId: p.categoryId,
         tab: p.tab,
         secret: p.secret,
-        devCount: p.devCount,
+        devCount: p.devCount
       };
 
       //如果有申请人id，代表是编辑
@@ -189,15 +188,25 @@ export default {
 
       this.params = params;
 
-      applyBorrow(params).then((res) => {
+      applyBorrow(params).then(res => {
         if (res.status === 200) {
-          this.$message.success("保存成功！");
+          // this.$message.success("保存成功！");
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: "保存成功！"
+          });
           this.saveStatus = 1;
           this.id = res.data;
           this.preserve = true;
           this.$emit("reloadData");
         } else {
-          this.$message.error(res.msg);
+          // this.$message.error(res.msg);
+          this.$message({
+            type: "error",
+            duration: 1000,
+            message: res.msg
+          });
         }
       });
     },
@@ -225,14 +234,19 @@ export default {
       }
       const params = {
         borrowId: this.applyId,
-        devIdStr: this.devIds,
+        devIdStr: this.devIds
       };
       const res = await xtsBorrow(params);
       this.borrowSuccess = true;
-      this.$message.success("借出成功！");
+      // this.$message.success("借出成功！");
+      this.$message({
+            type:'success',
+            duration:1000,
+            message:'借出成功!'
+          })
       this.$emit("reloadData");
-    },
-  },
+    }
+  }
 };
 </script>
 

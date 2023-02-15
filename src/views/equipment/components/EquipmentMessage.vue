@@ -5,10 +5,7 @@
         <div class="drawer-form-title">{{ title }}设备信息</div>
       </div>
       <div class="equipment-header-right">
-        <div
-          class="equipment-button"
-          v-show="!isDetail || btnTitle === '确认借出'"
-        >
+        <div class="equipment-button" v-show="!isDetail || btnTitle === '确认借出'">
           <div class="equipment-button_btn" @click="visible = true">
             <img src="@/assets/icon/选择设备@2x.png" />
             <span>选择设备</span>
@@ -48,31 +45,36 @@
 import LeadalTable from "@/components/LeadalTable";
 import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
 import DeviceSelectionDialog from "./DeviceSelectionDialog.vue";
-import { removeBorrowDevice } from "@/api/equipment";
+import { removeBorrowDevice, findBorrowedDev } from "@/api/equipment";
 export default {
   name: "EquipmentMessage",
   components: {
     LeadalTable,
     LeadalDialog,
-    DeviceSelectionDialog,
+    DeviceSelectionDialog
   },
   inject: ["root"],
   props: {
     maxHeight: {
       type: String,
-      default: "",
+      default: ""
     },
     editDevTable: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     editId: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
   },
   data() {
     return {
+      // config:{
+      //   pageSize:10,
+      //   currentPage:1,
+      //   total:0
+      // },
       title: this.root.title,
       isDetail: this.root.isDetail,
       btnTitle: this.root.btnTitle,
@@ -81,30 +83,46 @@ export default {
         tableOptions: [
           { type: "selection" },
           { type: "index", label: "序号" },
-          { value: "categoryLabel", label: "设备分类" },
+          { value: "kindLabel", label: "设备分类" },
           { value: "brand", label: "设备品牌" },
           { value: "model", label: "设备型号" },
-          { value: "sn", label: "序列号" },
-        ],
+          { value: "sn", label: "序列号" }
+        ]
       },
       visible: false,
-      selectList: [], //勾选设备
+      selectList: [] //勾选设备
     };
   },
   created() {
+    if (this.btnTitle === "待归还") {
+      console.log('reerrer',this.editId)
+      this.loadPageData()
+    }else if(this.btnTitle === '已归还'){
+       this.loadPageData()
+    }
   },
   watch: {
     editDevTable(val) {
-      console.log(val,'99999999')
+      console.log(val, "99999999");
       this.tableObj.tableData = val;
-    },
+    }
   },
   methods: {
+    async loadPageData() {
+      const res = await findBorrowedDev({
+        borrowId:this.editId,
+      });
+      // this.config.total = res.data.total
+      // this.config.pageSize = res.data.pageSize
+      // this.config.currentPage = res.data.currentPage
+      // this.config = res.data.config
+      this.tableObj.tableData = res.data
+    },
     selectDevice(selection) {
       this.tableObj.tableData = selection;
-      const devIds = selection.map((item) => item.id).join(",");
+      const devIds = selection.map(item => item.id).join(",");
       const secret = selection
-        .map((item) => item.secret)
+        .map(item => item.secret)
         .sort()
         .reverse()[0];
       this.$emit("update:devIds", devIds);
@@ -120,12 +138,12 @@ export default {
       this.$confirm("是否删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(() => {
           //定义一个存放选中数组索引的数组
           const selectionItemIndexes = [];
-          this.selectList.forEach((item) => {
+          this.selectList.forEach(item => {
             selectionItemIndexes.push(item.index);
           });
           //过滤存在选中数组索引的数据
@@ -135,19 +153,17 @@ export default {
             }
           );
           //更新已选择设备
-          const devIds = this.tableObj.tableData
-            .map((item) => item.id)
-            .join(",");
+          const devIds = this.tableObj.tableData.map(item => item.id).join(",");
           this.$emit("update:devIds", devIds);
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消删除"
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

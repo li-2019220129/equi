@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:52vh">
     <div class="dialog-btn-layout">
       <div class="handle sure" @click="selectData">选择确认</div>
     </div>
@@ -35,11 +35,15 @@
     <leadal-table
       :data="tableObj.tableData"
       :row-header="tableObj.tableOptions"
-      :isPagination="false"
+      :isPagination="true"
+      :page="config.currentPage"
+      :size="config.pageSize"
+      :total="config.total"
       v-loading="tableObj.loading"
       :selection.sync="selection"
       ref="leadalTable"
       :height="'calc(100vh - 600px)'"
+        @page-change="pageChange"
     ></leadal-table>
   </div>
 </template>
@@ -54,6 +58,11 @@ export default {
   inject: ["root"],
   data() {
     return {
+      config:{
+        pageSize:10,
+        currentPage:1,
+        total:0
+      },
       drawerTitle: this.root.drawerTitle,
       form: { name: "" },
       tableObj: {
@@ -78,10 +87,15 @@ export default {
     this.getData();
   },
   methods: {
+     pageChange(currentPage,pageSize){
+      this.config.currentPage = currentPage
+      this.config.pageSize = pageSize
+      this.getData()
+    },
     getData() {
       const params = {
-        currentPage: this.tableObj.page,
-        pageSize: this.tableObj.size,
+        currentPage: this.config.currentPage,
+        pageSize: this.config.pageSize,
       };
       if (this.drawerTitle === "资料借阅") {
         this.getDataByType(pageSafeMedia(params));
@@ -95,6 +109,7 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
+         this.config = res.data.config
         this.tableObj.tableData = res.data.data;
         this.tableObj.loading = false;
       } catch (error) {

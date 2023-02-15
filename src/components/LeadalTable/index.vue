@@ -443,7 +443,7 @@ export default {
 <style lang="scss" scoped>
 .pagination {
   text-align: right;
-  margin-top: 55px;
+  margin-top: 35px;
 }
 
 .table-styles {

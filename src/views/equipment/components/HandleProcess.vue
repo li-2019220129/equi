@@ -14,6 +14,7 @@
             <h4>办理人：{{ item.work.toUserName }}</h4>
             <p>办理时间：{{ item.work.sendTime }}</p>
             <p>完成时间：{{ item.work.dealTime }}</p>
+            <p>办理意见：{{item.opinion.reason}}</p>
             <P v-if="item.work.nextAudit">接收人：{{ item.work.nextAudit }}</P>
           </el-card>
           <el-card v-else-if="item.work.fromUserName">

@@ -4,7 +4,7 @@
       <div class="equipment-header-left">
         <div class="drawer-form-title">{{ title }}资料信息</div>
       </div>
-      <div class="equipment-header-right">
+      <div class="equipment-header-right" v-show="!isDetail">
         <div class="equipment-button">
           <div class="equipment-button_btn" @click="visible = true">
             <img src="@/assets/icon/选择设备@2x.png" />
@@ -80,8 +80,9 @@ export default {
   data() {
     return {
       title: this.root.title,
+      isDetail:this.root.isDetail,
       drawerTitle: this.root.drawerTitle,
-      applyId: this.root.formLine.id,
+      applyId: this.root.formLine.id || this.root.formLine.applyId,
       tableObj: {
         tableData: [],
         tableOptions: [
@@ -184,7 +185,12 @@ export default {
 
     async selectDataByType(promise) {
       const res = await promise;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+      this.$message({
+            duration:1000,
+            type:'success',
+            message:res.msg
+          })
       this.getData();
       this.visible = false;
     },
@@ -224,7 +230,12 @@ export default {
 
     async deleteDataByType(promise) {
       const res = await promise;
-      this.$message.success(res.msg);
+      // this.$message.success(res.msg);
+      this.$message({
+            duration:1000,
+            type:'success',
+            message:res.msg
+          })
       this.getData();
       this.visible = false;
     },

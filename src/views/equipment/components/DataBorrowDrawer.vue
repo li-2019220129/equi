@@ -3,11 +3,11 @@
     <div class="drawer-header">
       <div class="drawer-header title">{{ drawerTitle }}申请</div>
       <div class="equipment-button">
-        <div class="equipment-button_btn" @click="handleSave">
+        <div v-show="!isDetail" class="equipment-button_btn" @click="handleSave">
           <img src="@/assets/icon/保存@2x.png" />
           <span>保存</span>
         </div>
-        <div class="equipment-button_btn" @click="send">
+        <div v-show="!isDetail" class="equipment-button_btn" @click="send">
           <img src="@/assets/icon/发送@2x.png" />
           <span>发送</span>
         </div>
@@ -17,7 +17,7 @@
       <div class="drawer-left">
         <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
       </div>
-      <div class="drawer-right">
+      <el-scrollbar class="drawer-right">
         <div class="equipment-header">
           <div class="equipment-header-left">
             <div
@@ -46,7 +46,7 @@
           @pdfSrcSuccess="pdfSrcSuccess"
         />
         </keepAlive>
-      </div>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -65,11 +65,12 @@ export default {
     HandleProcess,
     pdf
   },
+  inject: ["root"],
   props: {
-    drawerTitle: {
-      type: String,
-      default: ""
-    },
+    // drawerTitle: {
+    //   type: String,
+    //   default: ""
+    // },
     applyId: {
       type: String,
       default: ""
@@ -84,6 +85,10 @@ export default {
     return {
       preserve: false,
       id: null,
+      drawerTitle: this.root.drawerTitle,
+      title: this.root.title,
+      isDetail: this.root.isDetail,
+      btnTitle: this.root.btnTitle,
       activeTab: 1,
       componentName: "DataBorrowMessage",
       params: {},

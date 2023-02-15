@@ -132,7 +132,7 @@
       @page-change="handleChangePage"
       @handleRowDblCick="handleRowDblCick"
       @row-click="changeRadio"
-      :height="'75vh'"
+      :height="'66vh'"
       ref="leadalTable"
       :selection.sync="selection"
     >
@@ -173,6 +173,7 @@
           :sendType="'register'"
           @handleParams="handleParams"
           @close="handleClose"
+          :isDetail="isDetail"
         ></component>
       </template>
     </leadal-dialog>
@@ -206,8 +207,14 @@ export default {
     AddEquipment,
     AddData
   },
+  provide() {
+    return {
+      root: this
+    };
+  },
   data() {
     return {
+      isDetail: false, //是否已审批状态编辑
       activeTab: 1,
       keyEl: +new Date().getTime(),
       selection: [],
@@ -305,18 +312,20 @@ export default {
       });
     },
     handleSuccess(file) {
-       const formData = new FormData();
+      const formData = new FormData();
       formData.append("uploadFile", file.raw);
       formData.append("userId", this.$store.state.login.loginData.userId);
-      uploadFileMode(formData).then(res=>{
-        console.log(res)
-        if (res.status === 200) {
+      uploadFileMode(formData)
+        .then(res => {
+          console.log(res);
+          if (res.status === 200) {
             this.$message.success("导入成功！");
             this.getData();
           } else {
             this.$message.error("导入失败！");
           }
-      }).catch((error) => {
+        })
+        .catch(error => {
           this.$message.error(error);
         });
     },
@@ -365,7 +374,13 @@ export default {
     },
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.keyEl = +new Date().getTime();
+      this.selection = [];
       this.getData();
+      if(num===1){
+        this.isDetail = false
+      }
     },
     changeRadio(row) {
       this.radio = row.id;
@@ -383,6 +398,11 @@ export default {
       this.formLine = row;
       if (this.activeTab === 3) {
         this.messageLookRegister(row.id);
+      }
+      if ([2, 3].includes(this.activeTab)) {
+        this.isDetail = true;
+      } else {
+        this.isDetail = false;
       }
       this.registerDialog = {
         name: "AddData",

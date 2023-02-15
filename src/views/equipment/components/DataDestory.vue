@@ -5,93 +5,51 @@
         <div
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
-        >
-          销毁申请
-        </div>
+        >销毁申请</div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
-        >
-          审批中
-        </div>
+        >审批中</div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
         >
-          <el-badge
-            :value="auditedNum"
-            :hidden="auditedNum === 0"
-            class="badge-item"
-          >
-            已审批</el-badge
-          >
+          <el-badge :value="auditedNum" :hidden="auditedNum === 0" class="badge-item">已审批</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 4 ? 'selected' : '']"
           @click="handleActiveTab(4)"
         >
-          <el-badge
-            :value="receiveNum"
-            :hidden="receiveNum === 0"
-            class="badge-item"
-          >
-            待销毁</el-badge
-          >
+          <el-badge :value="receiveNum" :hidden="receiveNum === 0" class="badge-item">待销毁</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 5 ? 'selected' : '']"
           @click="handleActiveTab(5)"
-        >
-          已销毁
-        </div>
+        >已销毁</div>
       </div>
       <div class="equipment-header-right">
         <div class="equipment-button">
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="destoryApply"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="destoryApply">
             <img src="@/assets/icon/外送申请@2x.png" />
             <span>销毁申请</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="send"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="send">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>送审</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="edit"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="edit">
             <img src="@/assets/icon/编辑@2x.png" />
             <span>编辑</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="deleteDestory"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="deleteDestory">
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 4"
-            @click="recive"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 4" @click="recive">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>销毁</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 2"
-            @click="recall"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 2" @click="recall">
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
           </div>
@@ -129,20 +87,14 @@
       ref="leadalTable"
     >
       <template slot="radio">
-        <el-table-column
-          label=""
-          header-align="center"
-          align="center"
-          width="50"
-        >
+        <el-table-column label header-align="center" align="center" width="50">
           <template slot-scope="scope">
             <el-radio
               :label="scope.row.id"
               v-model="radio"
               @change.stop="changeRadio(scope.row)"
               class="none-radio-label"
-              >{{ "" }}</el-radio
-            >
+            >{{ "" }}</el-radio>
           </template>
         </el-table-column>
       </template>
@@ -195,7 +147,7 @@ import {
   recallRecycle,
   recycleRecycle,
   rubbishRecycle,
-  messageLookRecycle,
+  messageLookRecycle
 } from "@/api/data";
 import { mapState } from "vuex";
 export default {
@@ -205,17 +157,18 @@ export default {
     LeadalDrawer,
     DataApplyDrawer,
     LeadalDialog,
-    DataPersonDialog,
+    DataPersonDialog
   },
   provide() {
     return {
-      root: this,
+      root: this
     };
   },
   data() {
     return {
+      isDetail: false,
       title: "销毁",
-      mode:null,
+      mode: null,
       drawerTitle: "资料销毁",
       activeTab: 1,
       keyWord: "", //输入框
@@ -225,7 +178,7 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       applyDrawerVisible: false,
       visible: false,
@@ -234,7 +187,7 @@ export default {
       radio: "", //单选
       pArams: {}, //保存后送审数据
       applyId: "", //申请id
-      content: "", //标题输入框
+      content: "" //标题输入框
     };
   },
   created() {
@@ -247,8 +200,8 @@ export default {
         val === 3
           ? (this.tableObj.tableOptions = tableOptions2)
           : (this.tableObj.tableOptions = tableOptions1);
-      },
-    },
+      }
+    }
   },
   computed: {
     ...mapState("login", ["loginData", "dataDestoryBadge"]),
@@ -257,7 +210,7 @@ export default {
     },
     receiveNum() {
       return this.dataDestoryBadge.countRecycle;
-    },
+    }
   },
   methods: {
     //分页切换
@@ -269,6 +222,8 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.radio = "";
+      this.formLine = {};
       if (num === 1) {
         this.status = 2;
       } else if (num === 2) {
@@ -278,6 +233,7 @@ export default {
       } else {
         this.status = null;
       }
+      this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.content = "";
       this.getData();
     },
@@ -291,7 +247,7 @@ export default {
       const params2 = {
         currentPage: this.tableObj.page,
         pageSize: this.tableObj.size,
-        content: this.content,
+        content: this.content
       };
       if ([1, 2, 3].includes(this.activeTab)) {
         const params1 = {
@@ -299,12 +255,14 @@ export default {
           pageSize: this.tableObj.size,
           status: this.status,
           content: this.content,
-          currentUserId: this.$store.state.login.loginData.userId,
+          currentUserId: this.$store.state.login.loginData.userId
         };
         this.getDataByType(pageApplyRecycle(params1));
       } else if (this.activeTab === 4) {
+        params2.applyUserId = this.$store.state.login.loginData.userId;
         this.getDataByType(pageAllWaitRecycle(params2));
       } else {
+        params2.applyUserId = this.$store.state.login.loginData.userId;
         this.getDataByType(pageAllAlreadyRecycle(params2));
       }
     },
@@ -313,7 +271,7 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map((item) => {
+        this.tableObj.tableData = res.data.data.map(item => {
           item.isAudit = this.switchIsAudit(item.status);
           return item;
         });
@@ -348,7 +306,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
-      this.mode= 'add'
+      this.mode = "add";
       this.applyDrawerVisible = true;
     },
 
@@ -382,7 +340,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
-      this.mode=''
+      this.mode = "";
       this.applyDrawerVisible = true;
     },
 
@@ -395,20 +353,27 @@ export default {
       this.$confirm("是否撤回该申请?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await recallRecycle(params);
-          this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
+          this.$store.dispatch("login/getDataDestoryBadge");
+
+          // this.$message.success(res.msg);
           this.getData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回",
+            message: "已取消撤回"
           });
         });
     },
@@ -422,20 +387,26 @@ export default {
       this.$confirm("是否销毁该资料?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await recycleRecycle(params);
-          this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
+          this.$store.dispatch("login/getDataDestoryBadge");
+
           this.getData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回",
+            message: "已取消撤回"
           });
         });
     },
@@ -445,11 +416,11 @@ export default {
       this.$confirm("是否删除该申请?, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await rubbishRecycle(params);
           this.$message.success(res.msg);
@@ -458,11 +429,11 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消删除"
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

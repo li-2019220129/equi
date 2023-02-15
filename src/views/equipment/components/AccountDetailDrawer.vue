@@ -150,7 +150,6 @@
               <el-form-item label="所属部门" prop="organName">
                 <el-input
                   v-model="form.organName"
-                  style="width: 1030px"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -162,7 +161,6 @@
                   v-model="form.reason"
                   placeholder="请输入内容"
                   :rows="5"
-                  style="width: 1030px"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -297,7 +295,8 @@ export default {
   }
 }
 .form-styles {
-  width: 420px;
+  // width: 420px;
+  width: 100%;
   height: 32px;
 }
 ::v-deep .el-timeline {

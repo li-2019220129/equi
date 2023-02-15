@@ -222,6 +222,7 @@ export default {
   },
   data() {
     return {
+      active:false,
       title: "销毁",
       mode:'',
       drawerTitle: "设备销毁",
@@ -278,19 +279,25 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.radio=null;
       if (num === 1) {
         this.status = 17;
       } else if (num === 2) {
         this.status = 2;
       } else if (num === 3) {
         this.status = 4;
+        this.active = true
       } else if (num === 4) {
         this.status = 4;
       } else {
         this.status = 8;
       }
+      if(num!==3){
+        this.active = false
+      }
       this.content = "";
-      this.num === 1 ? (this.isDetail = false) : (this.isDetail = true);
+      num === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.getData();
     },
     changeRadio(row) {

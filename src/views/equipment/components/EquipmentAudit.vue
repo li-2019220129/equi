@@ -7,11 +7,7 @@
         style="width: 300px; margin-top: 10px"
         class="equipment-search"
       >
-        <i
-          slot="suffix"
-          style="cursor: pointer"
-          class="el-input__icon el-icon-search"
-        ></i>
+        <i slot="suffix" style="cursor: pointer" class="el-input__icon el-icon-search"></i>
       </el-input>
       <el-select
         v-model="applyType"
@@ -25,8 +21,7 @@
           :key="item.id"
           :label="item.label"
           :value="item.id"
-        >
-        </el-option>
+        ></el-option>
       </el-select>
     </div>
     <leadal-table
@@ -42,8 +37,7 @@
       @handleRowDblCick="handleRowDblCick"
       :height="'calc(75vh - 46px)'"
       ref="leadalTable"
-    >
-    </leadal-table>
+    ></leadal-table>
 
     <leadal-dialog
       :visible="dialogVisible"
@@ -55,12 +49,7 @@
       @close="dialogVisible = false"
     >
       <template #content>
-        <el-form
-          :model="ruleForm"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="审批意见" prop="resource">
             <el-radio-group v-model="ruleForm.agree">
               <el-radio :label="true">同意</el-radio>
@@ -68,11 +57,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="审批意见" prop="desc">
-            <el-input
-              type="textarea"
-              v-model="ruleForm.desc"
-              :rows="7"
-            ></el-input>
+            <el-input type="textarea" v-model="ruleForm.desc" :rows="7"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -80,11 +65,7 @@
 
     <LeadalDrawer :visible.sync="drawerVisible">
       <template #content>
-        <component
-          :is="componentId"
-          :formLine="formLine"
-          :applyId="applyId"
-        ></component>
+        <component :is="componentId" :formLine="formLine" :applyId="applyId"></component>
       </template>
     </LeadalDrawer>
   </div>
@@ -107,7 +88,7 @@ import {
   batchTakeoutAgree, // 设备外送批量审批同意
   batchTakeoutDisAgree, // 设备外送批量审批不同意
   batchDestoryAgree, // 设备外送批量审批同意
-  batchDestoryDisAgree, // 设备外送批量审批不同意
+  batchDestoryDisAgree // 设备外送批量审批不同意
 } from "@/api/equipment/index.js";
 import { messageLookAudit } from "@/api/common";
 export default {
@@ -117,17 +98,17 @@ export default {
     LeadalDialog,
     LeadalDrawer,
     BorrowDrawer,
-    ApplyDrawer,
+    ApplyDrawer
   },
   props: {
     isToApproved: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   provide() {
     return {
-      root: this,
+      root: this
     };
   },
   data() {
@@ -139,32 +120,32 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       dialogVisible: false,
       selection: [],
       ruleForm: {
         agree: true,
-        desc: "",
+        desc: ""
       },
       applyType: "",
       approveTypeList: [
         {
           id: 64,
-          label: "设备借用",
+          label: "设备借用"
         },
         {
           id: 16,
-          label: "设备移交",
+          label: "设备移交"
         },
         {
           id: 256,
-          label: "设备外送",
+          label: "设备外送"
         },
         {
           id: 32,
-          label: "设备销毁",
-        },
+          label: "设备销毁"
+        }
       ],
       pageWaitList: [],
       pageAuditedList: [],
@@ -178,7 +159,7 @@ export default {
       drawerTitle: "",
       drawerVisible: false, //详情抽屉
       formLine: {}, //当前行数据
-      applyId: "", //当前行id
+      applyId: "" //当前行id
     };
   },
   computed: {
@@ -187,14 +168,14 @@ export default {
       return require(`@/assets/icon/${
         this.componentsId === "3-1" ? "审批@2x" : "还原@2x"
       }.png`);
-    },
+    }
   },
   created() {
     this.getData();
   },
   methods: {
     filterData(num) {
-      return this.selection.filter((item) => item.applyType === num);
+      return this.selection.filter(item => item.applyType === num);
     },
 
     handleAgreeOrTakeBack(isToApproved) {
@@ -212,7 +193,7 @@ export default {
     },
 
     setAgreeOrDisAgree(array, obj, arr) {
-      array.map((item) => {
+      array.map(item => {
         obj["applyId"] = item.id;
         obj["nodeId"] = item.nodeId;
         arr.push(this.$cloneDeep(obj));
@@ -220,7 +201,7 @@ export default {
       return arr;
     },
 
-    handleSubmit() {
+    async handleSubmit() {
       // 设备移交
       const moveObj = {};
       const moveArray = [];
@@ -260,59 +241,59 @@ export default {
 
       const common = {
         reason: this.ruleForm.desc,
-        currentUserId: this.$store.state.login.loginData.userId,
+        currentUserId: this.$store.state.login.loginData.userId
       };
 
       const params2 = {
         ...common,
-        data: deviceMove, //返回数据
+        data: deviceMove //返回数据
       };
 
       const params3 = {
         ...common,
-        data: deviceBorrow, //返回数据
+        data: deviceBorrow //返回数据
       };
 
       const params4 = {
         ...common,
-        data: deviceDeliver, //返回数据
+        data: deviceDeliver //返回数据
       };
 
       const params5 = {
         ...common,
         mark: true,
-        data: deviceDestory, //返回数据
+        data: deviceDestory //返回数据
       };
       if (this.ruleForm.agree) {
         if (this.deviceMove.length > 0) {
-          this.handleEquipment(batchMoveAgree(params2));
+          await this.handleEquipment(batchMoveAgree(params2));
           this.$store.dispatch("login/getTransferBadge"); //获取设备移交角标/
         }
         if (this.deviceBorrow.length > 0) {
-          this.handleEquipment(batchBorrowAgree(params3));
+          await this.handleEquipment(batchBorrowAgree(params3));
           this.$store.dispatch("login/getBorrowBadge"); //获取设备借用角标
         }
         if (this.deviceDeliver.length > 0) {
-          this.handleEquipment(batchTakeoutAgree(params4));
+          await this.handleEquipment(batchTakeoutAgree(params4));
           this.$store.dispatch("login/getDeliverBadge"); //获取设备外送角标
         }
         if (this.deviceDestory.length > 0) {
-          this.handleEquipment(batchDestoryAgree(params5));
+          await this.handleEquipment(batchDestoryAgree(params5));
           this.$store.dispatch("login/getDestoryBadge"); //获取设备销毁角标
         }
         this.handleCancel();
       } else {
         if (this.deviceMove.length > 0) {
-          this.handleEquipment(batchMoveDisAgree(params2));
+          await this.handleEquipment(batchMoveDisAgree(params2));
         }
         if (this.deviceBorrow.length > 0) {
-          this.handleEquipment(batchBorrowDisAgree(params3));
+          await this.handleEquipment(batchBorrowDisAgree(params3));
         }
         if (this.deviceDeliver.length > 0) {
-          this.handleEquipment(batchTakeoutDisAgree(params4));
+          await this.handleEquipment(batchTakeoutDisAgree(params4));
         }
         if (this.deviceDestory.length > 0) {
-          this.handleEquipment(batchDestoryDisAgree(params5));
+          await this.handleEquipment(batchDestoryDisAgree(params5));
         }
         this.handleCancel();
       }
@@ -342,7 +323,7 @@ export default {
         userId: this.loginData.userId,
         pageSize: this.tableObj.size,
         currentPage: this.tableObj.page,
-        applyType: this.applyType,
+        applyType: this.applyType
       };
       this.$nextTick(() => {
         this.$refs["leadalTable"].clearSelection();
@@ -356,11 +337,11 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map((item) => {
+        this.tableObj.tableData = res.data.data.map(item => {
           item.applyTypes = this.switchapplyTypes(item.applyType);
           return item;
         });
-        console.log(res)
+        console.log(res);
         this.tableObj.total = res.data.total;
         this.tableObj.loading = false;
       } catch (error) {
@@ -410,8 +391,8 @@ export default {
     async messageLookAudit(id) {
       const res = await messageLookAudit({ id });
       this.$store.dispatch("login/getAuditBadge"); //获取设备待审批角标
-    },
-  },
+    }
+  }
 };
 </script>
 

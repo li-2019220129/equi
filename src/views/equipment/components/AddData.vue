@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="dialog-btn-layout">
+    <div class="dialog-btn-layout" v-show="!isDetail">
       <div class="handle send" @click="handleSave(true)">保存并送审</div>
       <div class="handle save" @click="handleSave(false)">保存</div>
     </div>
@@ -125,6 +125,17 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col v-if="active===3" :span="24">
+          <el-form-item label="审批意见" prop="option">
+            <el-input
+              type="textarea"
+              v-model="form.option"
+              placeholder="请输入内容"
+              :rows="5"
+              size="mini"
+            ></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
   </div>
@@ -144,8 +155,11 @@ export default {
       default: false,
     },
   },
+  inject: ["root"],
   data() {
     return {
+      saveClick:true,
+      active: this.root.activeTab,
       loading: false,
       form: {
         heading: "", //标题
@@ -162,10 +176,14 @@ export default {
         toZone: "", //发往单位
         witness: "", //见证人
         classifyType: "", //归属类型（1是个人资产   2是保密室资产）
+        option:null,
       },
       rules: {
         ownerDeptName: [
           { required: true, message: "请选择所在机构", trigger: "change" },
+        ],
+        secretLevel: [
+          { required: true, message: "请选择文件密级", trigger: "blur" },
         ],
         ownerUserName: [
           { required: true, message: "请选择申请人", trigger: "blur" },
@@ -246,10 +264,18 @@ export default {
   },
   methods: {
     handleSave(flag) {
+      if(!this.saveClick)return
+      this.saveClick = false
       this.$refs["form"].validate(async (valid) => {
         if (valid) {
           const res = await saveDraft(this.form);
-          this.$message.success(res.msg);
+          // this.$message.success(res.msg);
+          this.$message({
+        type: "success",
+        duration: 1000,
+        message: res.msg
+      });
+      this.saveClick = true
           if (flag) {
             this.$emit("handleParams", res.data);
           } else {

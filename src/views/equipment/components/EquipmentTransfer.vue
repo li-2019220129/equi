@@ -281,12 +281,20 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
+      this.formLine = {};
+      this.radio=null;
       if (num === 1 || num === 2) {
         this.type = 1;
       } else if (num === 3 || num === 4) {
         this.type = 3;
       } else {
         this.type = 4;
+      }
+      if(num===3){
+        this.active=true
+      }
+      if(num!==3){
+        this.active=false
       }
       this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.applyContent = "";
@@ -456,9 +464,16 @@ export default {
         modifyId: this.formLine.modifyId,
       };
       receiveDeviceModify(params).then((res) => {
-        this.$message.success(res.msg);
+        // this.$message.success(res.msg);
+        this.$message({
+          type:'success',
+          duration:1000,
+          message:res.msg
+        })
         this.$store.dispatch("login/getTransferBadge"); //获取设备移交角标/
+       
         this.getData(this.type);
+        
       });
     },
   },
