@@ -12,7 +12,7 @@ export const tableOptions1 = [
   { value: "brand", label: "设备品牌" },
   { value: "model", label: "设备型号" },
   { value: "sn", label: "序列号" },
-  { value: "secretRoomCode", label: "保密室编号" },
+  { value: "secretRoomCode", label: "保密编号" },
   { value: "secretLabel", label: "设备密级" },
 ];
 
@@ -23,7 +23,7 @@ export const tableOptions2 = [
   { value: "brand", label: "设备品牌" },
   { value: "model", label: "设备型号" },
   { value: "sn", label: "序列号" },
-  { value: "secretRoomCode", label: "保密室编号" },
+  { value: "secretRoomCode", label: "保密编号" },
   { value: "storagePlace", label: "存放位置" },
   { value: "secretLabel", label: "设备密级" },
 ];
@@ -35,7 +35,7 @@ export const tableOptions3 = [
   { value: "brand", label: "设备品牌" },
   { value: "model", label: "设备型号" },
   { value: "sn", label: "序列号" },
-  { value: "secretRoomCode", label: "保密室编号" },
+  { value: "secretRoomCode", label: "保密编号" },
   { value: "storagePlace", label: "存放位置" },
   { value: "secretLabel", label: "设备密级" },
   { value: "auditOk", label: "审批状态" },

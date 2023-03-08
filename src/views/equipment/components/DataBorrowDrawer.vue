@@ -2,7 +2,7 @@
   <div>
     <div class="drawer-header">
       <div class="drawer-header title">{{ drawerTitle }}申请</div>
-      <div class="equipment-button">
+      <div class="equipment-button" v-if="activeTab===1">
         <div v-show="!isDetail" class="equipment-button_btn" @click="handleSave">
           <img src="@/assets/icon/保存@2x.png" />
           <span>保存</span>
@@ -40,6 +40,7 @@
           v-bind="$attrs"
           :applyId="applyId"
           :id="id"
+          type="2"
           ref="borrowMessage"
           @saveBorrow="saveBorrow"
           @pdfSrcDelete="pdfSrcDelete"

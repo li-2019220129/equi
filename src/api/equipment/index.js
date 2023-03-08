@@ -592,6 +592,7 @@ export function pageMyselfAll(data) {
     url: "deviceRecord/pageMyselfAll",
     method: "post",
     data,
+    arrType:true,
   });
 }
 

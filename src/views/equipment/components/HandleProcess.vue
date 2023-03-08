@@ -14,6 +14,7 @@
             <h4>办理人：{{ item.work.toUserName }}</h4>
             <p>办理时间：{{ item.work.sendTime }}</p>
             <p>完成时间：{{ item.work.dealTime }}</p>
+            <p>审批状态：{{ getStatus(item.work.result)}}</p>
             <p>办理意见：{{item.opinion.reason}}</p>
             <P v-if="item.work.nextAudit">接收人：{{ item.work.nextAudit }}</P>
           </el-card>
@@ -42,6 +43,7 @@
 
 <script>
 import { findWorkDataAndUser } from "@/api/audit";
+import { WorkDataAndUser } from "@/api/data";
 export default {
   name: "HandleProcess",
   props: {
@@ -49,6 +51,10 @@ export default {
       type: String,
       default: "",
     },
+    type:{
+      type:String,
+      default:'1'
+    }
   },
   data() {
     return {
@@ -60,6 +66,15 @@ export default {
     this.getData();
   },
   methods: {
+    getStatus(result){
+      if(result===1){
+        return '同意'
+      }else if(result===2){
+        return '不同意'
+      }else{
+        return ''
+      }
+    },
     async getData() {
       if (this.applyId) {
         try {
@@ -68,8 +83,9 @@ export default {
             applyId: this.applyId,
             currentUserId: this.$store.state.login.loginData.userId,
           };
-          const res = await findWorkDataAndUser(params);
-          this.flowList = res.data.flowList;
+          let fn = this.type==='1'? findWorkDataAndUser:WorkDataAndUser
+          const res = await fn(params);
+          this.flowList =this.type==='1'?res.data.flowList:res.data;
           this.loading = false;
         } catch (error) {
           this.loading = false;

@@ -18,7 +18,7 @@
         </el-form-item>
 
         <div class="flex-item">
-          <el-form-item label="申请部门" >
+          <el-form-item label="申请部门">
             <el-select v-model="organName" placeholder="请选择申请部门" style="width: 330px" disabled></el-select>
           </el-form-item>
           <el-form-item label="申请人">
@@ -43,6 +43,7 @@
             <div style="letter-spacing: 4px;margin-left: 5px">接收人</div>
           </template>
           <el-select
+            v-if="!selectText"
             v-model="applyForm.receiveUserName"
             placeholder="请选择接收人"
             ref="tree"
@@ -63,6 +64,7 @@
               </el-tree>
             </el-option>
           </el-select>
+          <el-input v-else v-model="applyForm.receiveUserName"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -95,6 +97,10 @@ export default {
     TreeSlot
   },
   props: {
+    selectText: {
+      type: Boolean,
+      defalut: false
+    },
     isData: {
       type: Boolean,
       default: false

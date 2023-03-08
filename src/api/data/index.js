@@ -374,6 +374,22 @@ export function takeBackHander(params) {
     params,
   });
 }
+// 获取办理过程
+export function WorkDataAndUser(params) {
+  return service2({
+    url: `${devUrl}/audit/work/find`,
+    method: "post",
+    params,
+  });
+}
+
+export function handerRecallApi(params) {
+  return service2({
+    url: `${devUrl}/hander/recall`,
+    method: "post",
+    params,
+  });
+}
 
 // 移交接收
 export function receiveHander(params) {
@@ -958,5 +974,14 @@ export function uploadFileMode(data) {
     method: "post",
     data,
     arrType:true
+  });
+}
+
+// 借用撤回
+export function recallBorrow(params) {
+  return service2({
+    url: `${devUrl}/borrow/recall`,
+    method: "post",
+    params,
   });
 }

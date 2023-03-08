@@ -6,97 +6,55 @@
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
           v-has="'xts_destroy'"
-        >
-          销毁申请
-        </div>
+        >销毁申请</div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
           v-has="'xtsD_auditing'"
-        >
-          审批中
-        </div>
+        >审批中</div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
           v-has="'xtsD_audited'"
         >
-          <el-badge
-            :value="auditedNum"
-            :hidden="auditedNum === 0"
-            class="badge-item"
-          >
-            已审批</el-badge
-          >
+          <el-badge :value="auditedNum" :hidden="auditedNum === 0" class="badge-item">已审批</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 4 ? 'selected' : '']"
           @click="handleActiveTab(4)"
           v-has="'xts_destroying'"
         >
-          <el-badge
-            :value="receiveNum"
-            :hidden="receiveNum === 0"
-            class="badge-item"
-          >
-            待销毁</el-badge
-          >
+          <el-badge :value="receiveNum" :hidden="receiveNum === 0" class="badge-item">待销毁</el-badge>
         </div>
         <div
           :class="['table-menu-item', activeTab === 5 ? 'selected' : '']"
           @click="handleActiveTab(5)"
           v-has="'xts_destroyed'"
-        >
-          已销毁
-        </div>
+        >已销毁</div>
       </div>
       <div class="equipment-header-right">
         <div class="equipment-button">
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="destoryApply"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="destoryApply">
             <img src="@/assets/icon/外送申请@2x.png" />
             <span>销毁申请</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="send"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="send">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>送审</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="edit"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="edit">
             <img src="@/assets/icon/编辑@2x.png" />
             <span>编辑</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 1"
-            @click="deleteDestory"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 1" @click="deleteDestory">
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 4"
-            @click="recive"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 4" @click="recive">
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>销毁</span>
           </div>
-          <div
-            class="equipment-button_btn"
-            v-if="activeTab === 2"
-            @click="recall"
-          >
+          <div class="equipment-button_btn" v-if="activeTab === 2" @click="recall">
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
           </div>
@@ -134,20 +92,14 @@
       ref="leadalTable"
     >
       <template slot="radio">
-        <el-table-column
-          label=""
-          header-align="center"
-          align="center"
-          width="50"
-        >
+        <el-table-column label header-align="center" align="center" width="50">
           <template slot-scope="scope">
             <el-radio
               :label="scope.row.id"
               v-model="radio"
               @change.stop="changeRadio(scope.row)"
               class="none-radio-label"
-              >{{ "" }}</el-radio
-            >
+            >{{ "" }}</el-radio>
           </template>
         </el-table-column>
       </template>
@@ -194,7 +146,7 @@ import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
 import PersonDialog from "./PersonDialog.vue";
 import {
   tableOptions1,
-  tableOptions2,
+  tableOptions2
 } from "./equipmentOption/destory.options";
 import {
   pageDestoryOneByUserId,
@@ -202,7 +154,7 @@ import {
   pageDestoryReadlyOneByUserId,
   recallDestory,
   deleteDestory,
-  receiveDestory,
+  receiveDestory
 } from "@/api/equipment";
 import { messageLookDestory } from "@/api/common";
 import { mapState } from "vuex";
@@ -213,18 +165,18 @@ export default {
     LeadalDrawer,
     ApplyDrawer,
     LeadalDialog,
-    PersonDialog,
+    PersonDialog
   },
   provide() {
     return {
-      root: this,
+      root: this
     };
   },
   data() {
     return {
-      active:false,
+      active: false,
       title: "销毁",
-      mode:'',
+      mode: "",
       drawerTitle: "设备销毁",
       activeTab: 1,
       keyWord: "", //输入框
@@ -234,7 +186,7 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       applyDrawerVisible: false,
       visible: false,
@@ -244,7 +196,7 @@ export default {
       pArams: {}, //保存后送审数据
       applyId: "", //申请id
       content: "", //标题输入框
-      isDetail: false,
+      isDetail: false
     };
   },
   created() {
@@ -257,8 +209,8 @@ export default {
         val === 3
           ? (this.tableObj.tableOptions = tableOptions2)
           : (this.tableObj.tableOptions = tableOptions1);
-      },
-    },
+      }
+    }
   },
   computed: {
     ...mapState("login", ["loginData", "equipmentDestoryBadge"]),
@@ -267,7 +219,7 @@ export default {
     },
     receiveNum() {
       return this.equipmentDestoryBadge.countWaitDestory;
-    },
+    }
   },
   methods: {
     //分页切换
@@ -280,21 +232,21 @@ export default {
     handleActiveTab(num) {
       this.activeTab = num;
       this.formLine = {};
-      this.radio=null;
+      this.radio = null;
       if (num === 1) {
         this.status = 17;
       } else if (num === 2) {
         this.status = 2;
       } else if (num === 3) {
         this.status = 4;
-        this.active = true
+        this.active = true;
       } else if (num === 4) {
         this.status = 4;
       } else {
         this.status = 8;
       }
-      if(num!==3){
-        this.active = false
+      if (num !== 3) {
+        this.active = false;
       }
       this.content = "";
       num === 1 ? (this.isDetail = false) : (this.isDetail = true);
@@ -312,7 +264,7 @@ export default {
         pageSize: this.tableObj.size,
         status: this.status,
         content: this.content,
-        userId: this.$store.state.login.loginData.userId,
+        userId: this.$store.state.login.loginData.userId
       };
       if (this.activeTab === 4) {
         //待销毁
@@ -328,7 +280,7 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map((item) => {
+        this.tableObj.tableData = res.data.data.map(item => {
           item.isAudit = this.switchIsAudit(item.status);
           return item;
         });
@@ -363,7 +315,7 @@ export default {
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
-      this.mode = 'add'
+      this.mode = "add";
       this.applyDrawerVisible = true;
     },
 
@@ -397,7 +349,7 @@ export default {
         this.$message.info("请先选中数据");
         return;
       }
-      this.mode=''
+      this.mode = "";
       this.applyDrawerVisible = true;
     },
 
@@ -410,20 +362,24 @@ export default {
       this.$confirm("是否撤回该申请?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await recallDestory(params);
-          this.$message.success(res.msg);
+          this.$message({
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
           this.getData(this.status);
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回",
+            message: "已取消撤回"
           });
         });
     },
@@ -435,10 +391,15 @@ export default {
         return;
       }
       const params = {
-        applyId: this.applyId,
+        applyId: this.applyId
       };
-      receiveDestory(params).then((res) => {
-        this.$message.success(res.msg);
+      receiveDestory(params).then(res => {
+        // this.$message.success(res.msg);
+        this.$message({
+          type: "success",
+          duration: 1000,
+          message: res.msg
+        });
         this.$store.dispatch("login/getDestoryBadge"); //获取设备销毁角标
         this.getData(this.status);
       });
@@ -449,11 +410,11 @@ export default {
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId,
+            idStr: this.applyId
           };
           const res = await deleteDestory(params);
           this.$message.success(res.msg);
@@ -462,11 +423,11 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消删除"
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

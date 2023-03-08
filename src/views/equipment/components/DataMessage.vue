@@ -23,6 +23,7 @@
       :selection.sync="selectList"
       :isPagination="false"
       ref="leadalTable"
+      :key="keyEl"
       :max-height="maxHeight"
     ></leadal-table>
 
@@ -57,30 +58,31 @@ import {
   saveTakeout2Media,
   deleteTakeout2Media,
   addMediaRecycle,
-  removeMediaRecycle,
+  removeMediaRecycle
 } from "@/api/data";
 export default {
   name: "DataMessage",
   components: {
     LeadalTable,
     LeadalDialog,
-    DataSelectionDialog,
+    DataSelectionDialog
   },
   inject: ["root"],
   props: {
     maxHeight: {
       type: String,
-      default: "",
+      default: ""
     },
     currentApplyId: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
   },
   data() {
     return {
+      keyEl: +new Date().getTime(),
       title: this.root.title,
-      isDetail:this.root.isDetail,
+      isDetail: this.root.isDetail,
       drawerTitle: this.root.drawerTitle,
       applyId: this.root.formLine.id || this.root.formLine.applyId,
       tableObj: {
@@ -91,14 +93,14 @@ export default {
           { value: "heading", label: "文件标题" },
           { value: "code", label: "文件编号" },
           { value: "createDeptName", label: "所在机构" },
-          { value: "secretLevelLabel", label: "资料密级" },
+          { value: "secretLevelLabel", label: "资料密级" }
         ],
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       visible: false,
-      selectList: [],
+      selectList: []
     };
   },
   mounted() {
@@ -108,30 +110,30 @@ export default {
     getData() {
       const common = {
         currentPage: this.tableObj.page, //当前页
-        pageSize: this.tableObj.size, //单前每页几条
+        pageSize: this.tableObj.size //单前每页几条
       };
       if (this.drawerTitle === "资料借阅") {
         const params1 = {
           ...common,
-          id: this.applyId ? this.applyId : this.currentApplyId, //记录主键
+          id: this.applyId ? this.applyId : this.currentApplyId //记录主键
         };
         this.getDataByType(pageMediaByBorrowId(params1));
       } else if (this.drawerTitle === "资料移交") {
         const params2 = {
           ...common,
-          id: this.applyId ? this.applyId : this.currentApplyId, //记录主键
+          id: this.applyId ? this.applyId : this.currentApplyId //记录主键
         };
         this.getDataByType(pageByMediaIds(params2));
       } else if (this.drawerTitle === "资料外送") {
         const params3 = {
           ...common,
-          takeoutId: this.applyId ? this.applyId : this.currentApplyId, //记录主键
+          takeoutId: this.applyId ? this.applyId : this.currentApplyId //记录主键
         };
         this.getDataByType(pageTakeout2Media(params3));
       } else if (this.drawerTitle === "资料销毁") {
         const params4 = {
           ...common,
-          id: this.applyId ? this.applyId : this.currentApplyId, //记录主键
+          id: this.applyId ? this.applyId : this.currentApplyId //记录主键
         };
         this.getDataByType(pageMediaRecycle(params4));
       }
@@ -149,30 +151,30 @@ export default {
     },
 
     async selectData(selection) {
-      const mediaIdStr = selection.map((item) => item.id).join(",");
+      const mediaIdStr = selection.map(item => item.id).join(",");
 
       if (this.drawerTitle === "资料借阅") {
         const borrowParams = {
           mediaIdStr,
-          id: this.currentApplyId,
+          id: this.currentApplyId
         };
         this.selectDataByType(addMediaBorrow(borrowParams));
       } else if (this.drawerTitle === "资料移交") {
         const transferParams = {
           mediaIdStr,
-          id: this.currentApplyId,
+          id: this.currentApplyId
         };
         this.selectDataByType(addMediaHander(transferParams));
       } else if (this.drawerTitle === "资料外送") {
         const borrowParams = {
           mediaStr: mediaIdStr,
-          takeoutId: this.currentApplyId,
+          takeoutId: this.currentApplyId
         };
         this.selectDataByType(saveTakeout2Media(borrowParams));
       } else if (this.drawerTitle === "资料销毁") {
         const borrowParams = {
           mediaIdStr: mediaIdStr,
-          id: this.currentApplyId,
+          id: this.currentApplyId
         };
         this.selectDataByType(addMediaRecycle(borrowParams));
       }
@@ -187,42 +189,48 @@ export default {
       const res = await promise;
       // this.$message.success(res.msg);
       this.$message({
-            duration:1000,
-            type:'success',
-            message:res.msg
-          })
+        duration: 1000,
+        type: "success",
+        message: res.msg
+      });
+      this.keyEl = +new Date().getTime();
+      this.selectList = []
       this.getData();
       this.visible = false;
     },
 
     async deleteData() {
-      if (this.selectList.length === 1) {
-        this.$message.error("无法删除，至少选择一份资料！");
+      // if (this.selectList.length === 1) {
+      //   this.$message.error("无法删除，至少选择一份资料！");
+      //   return;
+      // }
+      if (this.selectList.length === 0) {
+        this.$message.info("至少选择一个设备!");
         return;
       }
-      const mediaIdStr = this.selectList.map((item) => item.id).join(",");
+      const mediaIdStr = this.selectList.map(item => item.id).join(",");
       if (this.drawerTitle === "资料借阅") {
         const borrowParams = {
           mediaIdStr,
-          id: this.currentApplyId,
+          id: this.currentApplyId
         };
         this.selectDataByType(removeMediaBorrow(borrowParams));
       } else if (this.drawerTitle === "资料移交") {
         const transferParams = {
           mediaIdStr,
-          id: this.currentApplyId,
+          id: this.currentApplyId
         };
         this.selectDataByType(removeMediaHander(transferParams));
       } else if (this.drawerTitle === "资料外送") {
         const borrowParams = {
           mediaIdStr,
-          takeoutId: this.currentApplyId,
+          takeoutId: this.currentApplyId
         };
         this.selectDataByType(deleteTakeout2Media(borrowParams));
       } else if (this.drawerTitle === "资料销毁") {
         const borrowParams = {
           mediaIdStr,
-          takeoutId: this.currentApplyId,
+          takeoutId: this.currentApplyId
         };
         this.selectDataByType(removeMediaRecycle(borrowParams));
       }
@@ -232,14 +240,14 @@ export default {
       const res = await promise;
       // this.$message.success(res.msg);
       this.$message({
-            duration:1000,
-            type:'success',
-            message:res.msg
-          })
+        duration: 1000,
+        type: "success",
+        message: res.msg
+      });
       this.getData();
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

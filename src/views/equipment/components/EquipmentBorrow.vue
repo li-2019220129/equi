@@ -377,7 +377,7 @@ export default {
       this.activeTab = num;
       this.content = "";
       this.formLine = {};
-      this.radio=null;
+      this.radio = null;
       this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.getData();
     },
@@ -466,12 +466,11 @@ export default {
         this.btnTitle = "借用申请";
       } else if (this.activeTab === 4) {
         this.btnTitle = "确认借出";
-      }else if(this.activeTab===5){
-        this.btnTitle = '待归还'
-      }else if(this.activeTab===6){
-        this.btnTitle = '已归还'
-      }
-       else {
+      } else if (this.activeTab === 5) {
+        this.btnTitle = "待归还";
+      } else if (this.activeTab === 6) {
+        this.btnTitle = "已归还";
+      } else {
         this.btnTitle = "";
       }
       this.edit();
@@ -505,11 +504,13 @@ export default {
 
     //编辑
     edit() {
+      console.log("12121212");
       if (JSON.stringify(this.formLine) === "{}") {
         this.$message.info("请先选中数据");
         return;
       }
       this.mode = "edit";
+     this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.borrowDrawer = {
         title: "设备借用",
         visible: true
@@ -534,10 +535,10 @@ export default {
           const res = await recallBorrow(params);
           // this.$message.success(res.msg);
           this.$message({
-            type:'success',
-            duration:1000,
-            message:res.msg
-          })
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
           this.getData();
         })
         .catch(() => {
@@ -566,10 +567,10 @@ export default {
           const res = await deleteBorrow(params);
           // this.$message.success(res.msg);
           this.$message({
-            type:'success',
-            duration:1000,
-            message:res.msg
-          })
+            type: "success",
+            duration: 1000,
+            message: res.msg
+          });
           this.getData();
         })
         .catch(() => {
@@ -587,6 +588,7 @@ export default {
         return;
       }
       this.btnTitle = "确认借出";
+      this.isDetail = true;
       this.borrowDrawer.visible = true;
     },
 

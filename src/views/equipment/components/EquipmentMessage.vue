@@ -154,6 +154,7 @@ export default {
           );
           //更新已选择设备
           const devIds = this.tableObj.tableData.map(item => item.id).join(",");
+          this.selectList = []
           this.$emit("update:devIds", devIds);
         })
         .catch(() => {

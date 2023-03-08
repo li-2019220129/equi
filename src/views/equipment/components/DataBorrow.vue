@@ -227,6 +227,7 @@ import {
   deleteBorrow,
   batchBorrow,
   batchRevert,
+  recallBorrow,
   messageLookBorrow,
 } from "@/api/data";
 import { mapState } from "vuex";

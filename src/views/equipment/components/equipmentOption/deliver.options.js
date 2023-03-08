@@ -6,7 +6,7 @@ export const commTableOptions = [
 export const tableOptions1 = [
   // 外送申请
   ...commTableOptions,
-  { value: "content", label: "标题" },
+  { value: "applyContent", label: "标题" },
   { value: "reason", label: "外送事由" },
   { value: "applyOrganName", label: "申请单位" },
   { value: "applyUserName", label: "申请人" },
@@ -16,7 +16,7 @@ export const tableOptions1 = [
 export const tableOptions2 = [
   // 已审批
   ...commTableOptions,
-  { value: "content", label: "标题" },
+  { value: "applyContent", label: "标题" },
   { value: "reason", label: "外送事由" },
   { value: "applyTime", label: "申请时间" },
   { value: "dealTime", label: "审批时间" },

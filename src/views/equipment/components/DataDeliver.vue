@@ -109,6 +109,7 @@
           @saveApply="getData()"
           @handleParams="handleParams"
           :mode="mode"
+          :selectText="true"
         />
       </template>
     </LeadalDrawer>
@@ -139,7 +140,7 @@ import LeadalDrawer from "@/components/LeadalDrawer";
 import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
 import DataApplyDrawer from "./DataApplyDrawer.vue";
 import DataPersonDialog from "./DataPersonDialog.vue";
-import { tableOptions1 } from "./equipmentOption/deliver.options";
+import { tableOptions1 } from "./dataOption/deliver.options";
 import {
   pageTakeout,
   deleteTakeout,

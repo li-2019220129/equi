@@ -2,12 +2,11 @@
   <div>
     <div class="drawer-header">
       <div class="drawer-header title">{{ drawerTitle }}{{ btnTitle === "确认借出" ? "借出" : "申请" }}</div>
-      <div class="equipment-button">
+      <div class="equipment-button" v-if="activeTab===1">
         <div
           class="equipment-button_btn"
           @click="handleSave"
-          v-if="btnTitle === '借用申请'"
-          v-show="!isDetail"
+          v-if="btnTitle === '借用申请'||!isDetail"
         >
           <img src="@/assets/icon/保存@2x.png" />
           <span>保存</span>
@@ -15,8 +14,7 @@
         <div
           class="equipment-button_btn"
           @click="send"
-          v-if="btnTitle === '借用申请'"
-          v-show="!isDetail"
+          v-if="btnTitle === '借用申请' ||!isDetail"
         >
           <img src="@/assets/icon/发送@2x.png" />
           <span>发送</span>

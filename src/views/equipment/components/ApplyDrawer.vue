@@ -2,14 +2,14 @@
   <div>
     <div class="drawer-header">
       <div class="drawer-header title">{{ drawerTitle }}申请</div>
-      <div class="equipment-button" v-show="!isDetail">
-        <div class="equipment-button_btn" @click="save">
+      <div class="equipment-button" v-if="activeTab===1">
+        <div class="equipment-button_btn" v-show="!isDetail" @click="save">
           <img src="@/assets/icon/保存@2x.png" />
           <span>保存</span>
         </div>
-        <div class="equipment-button_btn" @click="send">
+        <div class="equipment-button_btn" v-show="!isDetail" @click="send">
           <img src="@/assets/icon/发送@2x.png" />
-          <span>发送</span>
+          <span>送审</span>
         </div>
       </div>
     </div>
@@ -222,10 +222,10 @@ export default {
       if (this.saveStatus === 0) {
         // this.$message.error("请先保存再进行送审！");
         this.$message({
-        type: "error",
-        duration: 1000,
-        message: '请先保存再进行送审！'
-      });
+          type: "error",
+          duration: 1000,
+          message: "请先保存再进行送审！"
+        });
         return;
       }
       let params = {};

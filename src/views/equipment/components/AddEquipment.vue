@@ -140,15 +140,15 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="载体编号" prop="secretRoomCode">
             <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
 
         <el-col :span="12">
-          <el-form-item label="保密系统编号" prop="code">
-            <el-input v-model="form.code" class="form-styles"></el-input>
+          <el-form-item label="保密编号" prop="secretRoomCode">
+            <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
           </el-form-item>
         </el-col>
 
@@ -282,8 +282,11 @@ export default {
         secretRoomCode: [
           { required: true, message: "请输入载体编号", trigger: "blur" }
         ],
-        code: [
-          { required: true, message: "请输入保密系统编号", trigger: "blur" }
+        // code: [
+        //   { required: true, message: "请输入保密系统编号", trigger: "blur" }
+        // ],
+        ownerOrganId: [
+          { required: true, message: "请选择部门", trigger: "blur" }
         ],
         classify: [
           { required: true, message: "请选择设备类型", trigger: "change" }

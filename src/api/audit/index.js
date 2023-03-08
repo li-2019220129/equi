@@ -51,3 +51,12 @@ export function organTreeApi() {
     method: "post",
   });
 }
+
+
+export function allOrganTreeApi(data) {
+  return service({
+    url:'/device/common/organTree',
+    method: "post",
+    params:data
+  });
+}

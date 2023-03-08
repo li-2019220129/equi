@@ -6,28 +6,18 @@
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
           v-has="'xts_alone'"
-        >
-          个人设备
-        </div>
+        >个人设备</div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
           v-has="'dev_organ'"
-        >
-          本部门设备
-        </div>
+        >本部门设备</div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
           v-has="'dev_zone'"
-        >
-          本单位设备
-        </div>
-        <img
-          :src="setImg"
-          class="equipment-search-icon"
-          @click="isMore = !isMore"
-        />
+        >本单位设备</div>
+        <img :src="setImg" class="equipment-search-icon" @click="isMore = !isMore" />
       </div>
 
       <div class="equipment-header-right">
@@ -40,12 +30,7 @@
       </div>
     </div>
     <div class="equipment-account-search" v-show="isMore">
-      <el-form
-        :model="searchForm"
-        inline
-        ref="form"
-        style="margin-top: 20px; margin-bottom: -10px"
-      >
+      <el-form :model="searchForm" inline ref="form" style="margin-top: 20px; margin-bottom: -10px">
         <el-form-item prop="content">
           <el-input
             placeholder="请输入品牌/型号/序列号关键字"
@@ -62,16 +47,22 @@
             ></i>
           </el-input>
         </el-form-item>
-        <el-form-item prop="categoryLabel">
+        <el-form-item prop="kindId">
           <el-select
-            v-model="searchForm.categoryLabel"
+            v-model="searchForm.kindId"
             placeholder="请选择设备分类"
             clearable
             ref="el-select"
             @change="moreSearch('categoryId')"
           >
-            <el-option style="height: auto" :value="searchForm.categoryLabel">
-              <el-tree
+            <el-option
+              v-for="(item,index) in treeData"
+              :key="index"
+              :label="item.caption"
+              style="height: auto"
+              :value="item.id"
+            >
+              <!-- <el-tree
                 :props="defaultProps"
                 :data="treeData"
                 node-key="id"
@@ -82,7 +73,7 @@
                 <div class="custom-tree-node" slot-scope="{ node, data }">
                   <tree-slot :node="node" :data="data"></tree-slot>
                 </div>
-              </el-tree>
+              </el-tree>-->
             </el-option>
           </el-select>
         </el-form-item>
@@ -99,8 +90,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
-            >
-            </el-option>
+            ></el-option>
           </el-select>
         </el-form-item>
 
@@ -117,8 +107,7 @@
               :key="item.id"
               :label="item.label"
               :value="item.id"
-            >
-            </el-option>
+            ></el-option>
           </el-select>
         </el-form-item>
 
@@ -155,20 +144,14 @@
       ref="leadalTable"
     >
       <template slot="operate">
-        <el-table-column
-          label="操作"
-          header-align="center"
-          align="center"
-          width="200"
-        >
+        <el-table-column label="操作" header-align="center" align="center" width="200">
           <template slot-scope="scope">
             <el-button @click="detail(scope.row)">详情</el-button>
-            <el-button
+            <!-- <el-button
               v-show="scope.row.classify === 8"
               @click="handleUpdateStatus(scope.row)"
               v-has="'zone_audadmin'"
-              >修改</el-button
-            >
+            >修改</el-button> -->
           </template>
         </el-table-column>
       </template>
@@ -191,19 +174,13 @@
     >
       <template #content>
         <span style="font-size: 16px">状态：</span>
-        <el-select
-          v-model="updateStatus"
-          placeholder="请选择要修改的设备状态"
-          clearable
-          style="width: 300px"
-        >
+        <el-select v-model="updateStatus" placeholder="请选择要修改的设备状态" clearable style="width: 300px">
           <el-option
             v-for="item in statusOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </template>
     </leadal-dialog>
@@ -218,7 +195,7 @@ import TreeSlot from "@/components/TreeSlot/index.vue";
 import AccountDetailDrawer from "./AccountDetailDrawer.vue";
 import {
   tableOptions1,
-  tableOptions2,
+  tableOptions2
 } from "./equipmentOption/account.options";
 import {
   pageMyselfAll,
@@ -226,7 +203,7 @@ import {
   pageZoneUse,
   getDeviceKindTree,
   downloadExist,
-  updateStatus,
+  updateStatus
 } from "@/api/equipment";
 import moment from "moment";
 import { mapState } from "vuex";
@@ -237,7 +214,7 @@ export default {
     TreeSlot,
     LeadalDrawer,
     LeadalDialog,
-    AccountDetailDrawer,
+    AccountDetailDrawer
   },
   data() {
     return {
@@ -254,7 +231,7 @@ export default {
         loading: true,
         page: 1,
         size: 10,
-        total: 0,
+        total: 0
       },
       searchForm: {
         content: "", //关键字搜索
@@ -264,86 +241,87 @@ export default {
         // classifyLabel: "", // 设备类别名称
         classify: "", // 设备类别
         applyType: "", //设备状态
+        kindId:''
       },
       updateStatus: "", //修改后的状态
       defaultProps: {
         children: "children",
-        label: "caption",
+        label: "caption"
       },
       treeData: [], //设备分类树
       //设备类别
       classifyOptions: [
         {
           value: 4,
-          label: "个人资产",
+          label: "个人资产"
         },
         {
           value: 8,
-          label: "保密室资产",
-        },
+          label: "保密室资产"
+        }
       ],
       //设备状态
       equipmentStatusList: [
         {
           id: 1,
-          label: "登记中",
+          label: "登记中"
         },
-        {
-          id: 2,
-          label: "已入库",
-        },
+        // {
+        //   id: 2,
+        //   label: "已入库"
+        // },
         {
           id: 4,
-          label: "已登记",
+          label: "已登记"
         },
-        {
-          id: 16,
-          label: "已报废",
-        },
+        // {
+        //   id: 16,
+        //   label: "已报废"
+        // },
         {
           id: 32,
-          label: "已销毁",
+          label: "已销毁"
         },
         {
           id: 64,
-          label: "已借用",
+          label: "已借用"
         },
-        {
-          id: 128,
-          label: "已维修",
-        },
+        // {
+        //   id: 128,
+        //   label: "已维修"
+        // },
         {
           id: 256,
-          label: "已外送",
+          label: "已外送"
         },
         {
           id: 512,
-          label: "已回执",
-        },
+          label: "已回执"
+        }
       ],
       //设备类别
       statusOptions: [],
       initStatusOptions: [
         {
           value: 4,
-          label: "已登记",
+          label: "已登记"
         },
         {
           value: 16,
-          label: "已报废",
+          label: "已报废"
         },
         {
           value: 128,
-          label: "已维修",
-        },
+          label: "已维修"
+        }
       ],
       detailObj: {}, //详情
       deviceRecordId: "", //编辑id
       updateParams: {
         applyUserName: "",
         applyUserId: "",
-        devId: "",
-      },
+        devId: ""
+      }
     };
   },
   watch: {
@@ -358,8 +336,8 @@ export default {
             this.tableObj.tableOptions = tableOptions2;
             break;
         }
-      },
-    },
+      }
+    }
   },
   computed: {
     ...mapState("login", ["userAuth"]),
@@ -370,7 +348,7 @@ export default {
       return require(`@/assets/icon/${
         this.isMore ? "icon_system_搜索收起@2x" : "icon_system_搜索展开@2x"
       }.png`);
-    },
+    }
   },
   created() {
     this.setInitActiveTab();
@@ -392,7 +370,7 @@ export default {
     resetForm() {
       this.$nextTick(() => {
         this.$refs["form"].resetFields();
-        this.$refs['leadalTable'].clearSelection()
+        this.$refs["leadalTable"].clearSelection();
       });
     },
 
@@ -404,11 +382,11 @@ export default {
     },
 
     handleActiveTab(num) {
-      if(this.activeTab===num){
-        return
+      if (this.activeTab === num) {
+        return;
       }
-      this.selection = []
-      console.log(this.selection)
+      this.selection = [];
+      console.log(this.selection);
       this.activeTab = num;
       this.resetForm();
       this.getData();
@@ -450,7 +428,7 @@ export default {
         currentPage: this.tableObj.page,
         pageSize: this.tableObj.size,
         userId: this.$store.state.login.loginData.userId,
-        ...this.searchForm,
+        ...this.searchForm
       };
       if (this.activeTab === 1) {
         this.loadData(pageMyselfAll(params));
@@ -465,7 +443,7 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map((item) => {
+        this.tableObj.tableData = res.data.data.map(item => {
           item.statusLabel = this.switchStatus(item.status);
           return item;
         });
@@ -506,9 +484,9 @@ export default {
       //   return;
       // }
       // const ids = this.selection.map((item) => item.id).join(",");
-      const res = await downloadExist({ type:this.activeTab });
+      const res = await downloadExist({ type: this.activeTab });
       let blob = new Blob([res], {
-        type: "application/vnd.ms-excel",
+        type: "application/vnd.ms-excel"
       });
       let objectUrl = URL.createObjectURL(blob);
       let a = document.createElement("a");
@@ -530,10 +508,10 @@ export default {
       this.updateParams = {
         applyUserName: row.ownerUserName,
         applyUserId: row.ownerUserId,
-        devId: row.id,
+        devId: row.id
       };
       this.statusOptions = this.initStatusOptions.filter(
-        (item) => item.value !== row.status
+        item => item.value !== row.status
       );
       this.dialogVisible = true;
     },
@@ -542,14 +520,14 @@ export default {
     async handleSubmit() {
       const params = {
         ...this.updateParams,
-        status: this.updateStatus,
+        status: this.updateStatus
       };
       const res = await updateStatus(params);
       this.$message.success(res.msg);
       this.dialogVisible = false;
       this.getData();
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div style="height:52vh">
+  <div>
     <div class="dialog-btn-layout">
       <div class="handle sure" @click="selectDevice">选择确认</div>
     </div>
@@ -255,3 +255,4 @@ export default {
 
 <style lang="scss" src="./headerScss.scss" scoped >
 </style>
+

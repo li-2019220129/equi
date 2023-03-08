@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { organTreeApi } from "@/api/audit/index";
+import { allOrganTreeApi } from "@/api/audit/index";
 import LeadalTable from "@/components/LeadalTable";
 import LeadalDrawer from "@/components/LeadalDrawer/index.vue";
 import TreeSlot from "@/components/TreeSlot";
@@ -137,7 +137,7 @@ export default {
     },
     async lazyLoad(node, resolve) {
       // const { level } = node;
-      const res = await organTreeApi({
+      const res = await allOrganTreeApi({
         id: node.level === 0 ? null : node.data.id
       });
       resolve(res.data);

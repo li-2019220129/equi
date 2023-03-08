@@ -322,7 +322,11 @@ export default {
     //   this.formLine = row;
     //   this.pArams = row;
     // },
-
+    handleChangePage(page,size){
+      this.tableObj.page = page
+      this.tableObj.size = size
+      this.pagePersonData()
+    },
     handleActiveTab(num) {
       this.activeTab = num;
       this.formLine = {};
@@ -568,7 +572,7 @@ export default {
       // }).catch(err=>{
       //     this.$message.error(err);
       // })
-      // "http://32.20.33.23:80/device/api/device/register/uploadSmFile",
+      // "device/register/uploadSmFile",
       axios
         .post(
           `${window.location.xtsConfig.devicePath}/api/device/register/uploadSmFile`,

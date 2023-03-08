@@ -195,7 +195,7 @@ import {
   pageWaitReceiveHander,
   pageAlreadyReceiveHander,
   rubbishHander,
-  takeBackHander,
+  handerRecallApi,
   receiveHander,
   messageLookHander,
 } from "@/api/data";
@@ -406,7 +406,7 @@ export default {
           const params = {
             idStr: this.applyId,
           };
-          const res = await takeBackHander(params);
+          const res = await handerRecallApi(params);
           // this.$message.success(res.msg);
           this.$message({
             duration:1000,
