@@ -18,11 +18,11 @@ router.beforeEach(async (to, from, next) => {
       next();
     } else {
       try {
-        const accessRoutes = await store.dispatch("permission/generateRoutes", [
-          "admin",
-        ]);
-        router.addRoutes(accessRoutes);
-        next({ ...to, replace: true });
+        // const accessRoutes = await store.dispatch("permission/generateRoutes", [
+        //   "admin",
+        // ]);
+        // router.addRoutes(accessRoutes);
+        // next({ ...to, replace: true });
         // store.dispatch("login/userAuth").then(async (res) => {
 
         //   if (res?.length > 0) {
@@ -34,20 +34,20 @@ router.beforeEach(async (to, from, next) => {
         //     next({ ...to, replace: true });
         //   }
         // });
-        // store.dispatch("login/loginAction").then((res) => {
-        //   if (res) {
-        //     store.dispatch("login/userAuth").then(async (res) => {
-        //       if (res?.length > 0) {
-        //         const accessRoutes = await store.dispatch(
-        //           "permission/generateRoutes",
-        //           ["admin"]
-        //         );
-        //         router.addRoutes(accessRoutes);
-        //         next({ ...to, replace: true });
-        //       }
-        //     }); //获取用户权限
-        //   }
-        // });
+        store.dispatch("login/loginAction").then((res) => {
+          if (res) {
+            store.dispatch("login/userAuth").then(async (res) => {
+              if (res?.length > 0) {
+                const accessRoutes = await store.dispatch(
+                  "permission/generateRoutes",
+                  ["admin"]
+                );
+                router.addRoutes(accessRoutes);
+                next({ ...to, replace: true });
+              }
+            }); //获取用户权限
+          }
+        });
       } catch (error) {
         await store.dispatch("user/resetToken");
         Message.error(error || "Has Error");

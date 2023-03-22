@@ -99,7 +99,7 @@
             v-model="searchForm.applyType"
             placeholder="请选择设备状态"
             clearable
-            v-if="activeTab === 1"
+            v-if="activeTab === 1||activeTab===2"
             @change="moreSearch"
           >
             <el-option
@@ -128,6 +128,37 @@
             ></i>
           </el-input>
         </el-form-item>
+        <!-- <el-form-item prop="storagePlace">
+          <el-input
+            placeholder="存放位置"
+            v-model="searchForm.storagePlace"
+            style="width: 300px"
+            class="equipment-search"
+            @keyup.enter.native="moreSearch"
+          >
+            <i
+              slot="suffix"
+              style="cursor: pointer"
+              class="el-input__icon el-icon-search"
+              @click="moreSearch"
+            ></i>
+          </el-input>
+        </el-form-item>-->
+        <el-form-item prop="ownerOrganId">
+          <el-cascader
+            v-if="activeTab===3"
+            v-model="searchForm.ownerOrganId"
+            class="form-styles"
+            size="mini"
+            :options="options"
+            :props="props"
+            @change="moreSearch"
+            style="height:40px"
+            placeholder="请选择可属科室"
+            :show-all-levels="false"
+            clearable
+          ></el-cascader>
+        </el-form-item>
       </el-form>
     </div>
     <leadal-table
@@ -151,7 +182,7 @@
               v-show="scope.row.classify === 8"
               @click="handleUpdateStatus(scope.row)"
               v-has="'zone_audadmin'"
-            >修改</el-button> -->
+            >修改</el-button>-->
           </template>
         </el-table-column>
       </template>
@@ -205,6 +236,7 @@ import {
   downloadExist,
   updateStatus
 } from "@/api/equipment";
+import { organTreeApi } from "@/api/audit";
 import moment from "moment";
 import { mapState } from "vuex";
 export default {
@@ -233,6 +265,13 @@ export default {
         size: 10,
         total: 0
       },
+      props: {
+        value: "id",
+        label: "caption",
+        children: "childs",
+        checkStrictly: true,
+        emitPath: false
+      },
       searchForm: {
         content: "", //关键字搜索
         code: "", //保密室编号
@@ -241,7 +280,9 @@ export default {
         // classifyLabel: "", // 设备类别名称
         classify: "", // 设备类别
         applyType: "", //设备状态
-        kindId:''
+        kindId: "",
+        storagePlace: "",
+        ownerOrganId: ""
       },
       updateStatus: "", //修改后的状态
       defaultProps: {
@@ -335,6 +376,9 @@ export default {
           case 2:
             this.tableObj.tableOptions = tableOptions2;
             break;
+          case 3:
+            this.tableObj.tableOptions = tableOptions2;
+            break;
         }
       }
     }
@@ -355,6 +399,9 @@ export default {
     this.resetForm();
     this.getData();
     this.getDeviceKindTreeData();
+    organTreeApi().then(res => {
+      this.options = res.data;
+    });
   },
   methods: {
     setInitActiveTab() {
@@ -534,6 +581,13 @@ export default {
 <style lang="scss" scoped>
 .el-select {
   margin-left: 24px;
+}
+::v-deep .el-cascader .el-input .el-input__inner {
+    height: 40px;
+  }
+.form-styles {
+  width: 200px;
+  
 }
 .equipment-search-icon {
   height: 20px;
