@@ -15,12 +15,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="设备分类" prop="categoryLabel">
-                <el-select
-                  v-model="form.categoryLabel"
-                  placeholder="请选择"
-                  class="form-styles"
-                >
-                </el-select>
+                <el-select v-model="form.categoryLabel" placeholder="请选择" class="form-styles"></el-select>
               </el-form-item>
             </el-col>
 
@@ -37,7 +32,7 @@
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="" prop="sn">
+              <el-form-item label prop="sn">
                 <template slot="label">
                   <div
                     style="
@@ -45,23 +40,30 @@
                       position: absolute;
                       margin-left: 45px;
                     "
-                  >
-                    序列号
-                  </div>
+                  >序列号</div>
                 </template>
                 <el-input v-model="form.sn" class="form-styles"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="购置时间" prop="purchaseDate">
-                <el-date-picker
-                  v-model="form.purchaseDate"
-                  type="date"
-                  placeholder="选择日期"
-                  class="form-styles"
-                >
-                </el-date-picker>
+              <el-form-item label prop="camp">
+                <template slot="label">
+                  <div
+                    style="
+                  display:inline-block;
+                  letter-spacing: 12px;
+                "
+                  >营区</div>
+                </template>
+                <el-select v-model="form.camp" placeholder="请选择" class="form-styles">
+                  <el-option
+                    v-for="item in campOptions"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
 
@@ -72,89 +74,67 @@
                   type="date"
                   placeholder="选择日期"
                   class="form-styles"
-                >
-                </el-date-picker>
+                ></el-date-picker>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
               <el-form-item label="设备密级" prop="secret">
-                <el-select
-                  v-model="form.secret"
-                  placeholder="请选择"
-                  class="form-styles"
-                >
+                <el-select v-model="form.secret" placeholder="请选择" class="form-styles">
                   <el-option
                     v-for="item in secretOptions"
                     :key="item.value"
                     :label="item.name"
                     :value="item.value"
-                  >
-                  </el-option>
+                  ></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="保密室编号" prop="secretRoomCode">
-                <el-input
-                  v-model="form.secretRoomCode"
-                  class="form-styles"
-                ></el-input>
+              <el-form-item label="保密编号" prop="secretRoomCode">
+                <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
               </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <!-- <el-col :span="12">
               <el-form-item label="保密系统编号" prop="code">
                 <el-input v-model="form.code" class="form-styles"></el-input>
               </el-form-item>
-            </el-col>
+            </el-col>-->
 
-            <el-col :span="12">
+            <!-- <el-col :span="12">
               <el-form-item label="门禁编号" prop="entranceGuardCode">
-                <el-input
-                  v-model="form.entranceGuardCode"
-                  class="form-styles"
-                ></el-input>
+                <el-input v-model="form.entranceGuardCode" class="form-styles"></el-input>
               </el-form-item>
-            </el-col>
+            </el-col>-->
 
             <el-col :span="12">
               <el-form-item label="存放位置" prop="storagePlace">
-                <el-input
-                  v-model="form.storagePlace"
-                  class="form-styles"
-                ></el-input>
+                <el-input v-model="form.storagePlace" class="form-styles"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="设备类型" prop="classify">
-                <el-select
-                  v-model="form.classify"
-                  placeholder="请选择"
-                  class="form-styles"
-                >
+              <el-form-item label="设备类别" prop="classify">
+                <el-select v-model="form.classify" placeholder="请选择" class="form-styles">
                   <el-option
                     v-for="item in classifyOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
-                  >
-                  </el-option>
+                  ></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
 
-            <el-col :span="24">
-              <el-form-item label="所属部门" prop="organName">
-                <el-input
-                  v-model="form.organName"
-                ></el-input>
+            <el-col :span="12">
+              <el-form-item label="所属部门" prop="ownerOrganName">
+                <el-input v-model="form.ownerOrganName"></el-input>
               </el-form-item>
             </el-col>
 
-            <el-col :span="24">
+            <!-- <el-col :span="24">
               <el-form-item label="原因用途" prop="reason">
                 <el-input
                   type="textarea"
@@ -163,7 +143,7 @@
                   :rows="5"
                 ></el-input>
               </el-form-item>
-            </el-col>
+            </el-col>-->
           </el-row>
         </el-form>
       </div>
@@ -179,10 +159,12 @@
             :class="index % 2 !== 0 ? 'el-timeline-item-live-out' : ''"
           >
             <p class="flow-record-text">
-              <span>操作人：</span>{{ item.userName }}
+              <span>操作人：</span>
+              {{ item.userName }}
             </p>
             <p class="flow-record-text">
-              <span>操作类型：</span>{{ item.info }}
+              <span>操作类型：</span>
+              {{ item.info }}
             </p>
           </el-timeline-item>
         </el-timeline>
@@ -198,8 +180,8 @@ export default {
   props: {
     deviceRecordId: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
   },
   data() {
     return {
@@ -220,19 +202,33 @@ export default {
         storagePlace: "", // 存放位置
         classify: "", // 设备类型
         reason: "", // 原因用途
-        organName: this.$store.state.login.loginData.organName, // 部门
+        ownerOrganName: "" // 部门
       },
       classifyOptions: [
         {
           value: 4,
-          label: "个人资产",
+          label: "个人资产"
         },
         {
           value: 8,
-          label: "保密室资产",
-        },
+          label: "保密室资产"
+        }
       ],
-      secretOptions: this.$store.state.login.equipmentSecret,
+      campOptions: [
+        {
+          name: "万寿路营区",
+          value: 1
+        },
+        {
+          name: "昌平营区",
+          value: 2
+        },
+        {
+          name: "六里桥营区",
+          value: 3
+        }
+      ],
+      secretOptions: this.$store.state.login.equipmentSecret
     };
   },
   created() {
@@ -244,7 +240,7 @@ export default {
       try {
         this.loading = true;
         const params = {
-          deviceRecordId: this.deviceRecordId,
+          deviceRecordId: this.deviceRecordId
         };
         const res = await loadDetail(params);
         Object.assign(this.form, res.data);
@@ -257,12 +253,12 @@ export default {
     async findModifyDetail() {
       const params = {
         devId: this.deviceRecordId,
-        systemType: "xts",
+        systemType: "xts"
       };
       const res = await findModifyDetail(params);
       this.flowData = res.data;
-    },
-  },
+    }
+  }
 };
 </script>
 

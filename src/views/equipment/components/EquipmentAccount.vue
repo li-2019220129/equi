@@ -531,7 +531,10 @@ export default {
       //   return;
       // }
       // const ids = this.selection.map((item) => item.id).join(",");
-      const res = await downloadExist({ type: this.activeTab });
+      const res = await downloadExist({
+        type: this.activeTab,
+        ...this.searchForm
+      });
       let blob = new Blob([res], {
         type: "application/vnd.ms-excel"
       });
@@ -583,11 +586,10 @@ export default {
   margin-left: 24px;
 }
 ::v-deep .el-cascader .el-input .el-input__inner {
-    height: 40px;
-  }
+  height: 40px;
+}
 .form-styles {
   width: 200px;
-  
 }
 .equipment-search-icon {
   height: 20px;

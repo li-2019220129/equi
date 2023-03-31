@@ -58,7 +58,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="设备标签" prop="tab">
             <el-select
               v-model="form.tab"
@@ -74,10 +74,10 @@
               ></el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col>-->
 
         <el-col :span="12">
-          <el-form-item label="设备品牌" porp="brand">
+          <el-form-item label="设备品牌" prop="brand">
             <el-input v-model="form.brand" class="form-styles"></el-input>
           </el-form-item>
         </el-col>
@@ -93,9 +93,8 @@
             <template slot="label">
               <div
                 style="
-                  letter-spacing: 8px;
-                  position: absolute;
-                  margin-left: 45px;
+                  display:inline-block;
+                  letter-spacing: 5px;
                 "
               >序列号</div>
             </template>
@@ -103,7 +102,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="购置时间" prop="purchaseDate">
             <el-date-picker
               v-model="form.purchaseDate"
@@ -113,7 +112,7 @@
               class="form-styles"
             ></el-date-picker>
           </el-form-item>
-        </el-col>
+        </el-col>!-->
 
         <el-col :span="12">
           <el-form-item label="启用时间" prop="enabledTime">
@@ -144,7 +143,7 @@
           <el-form-item label="载体编号" prop="secretRoomCode">
             <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
           </el-form-item>
-        </el-col> -->
+        </el-col>-->
 
         <el-col :span="12">
           <el-form-item label="保密编号" prop="secretRoomCode">
@@ -152,18 +151,37 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="门禁编号" prop="entranceGuardCode">
             <el-input v-model="form.entranceGuardCode" class="form-styles"></el-input>
           </el-form-item>
-        </el-col>
+        </el-col>-->
 
         <el-col :span="12">
           <el-form-item label="存放位置" prop="storagePlace">
             <el-input v-model="form.storagePlace" class="form-styles"></el-input>
           </el-form-item>
         </el-col>
-
+        <el-col :span="12">
+          <el-form-item label prop="camp">
+            <template slot="label">
+              <div
+                style="
+                  display:inline-block;
+                  letter-spacing: 12px;
+                "
+              >营区</div>
+            </template>
+            <el-select v-model="form.camp" placeholder="请选择" class="form-styles">
+              <el-option
+                v-for="item in campOptions"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
         <el-col :span="12">
           <el-form-item label="所属部门" prop="ownerOrganId">
             <el-cascader
@@ -182,7 +200,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="24">
+        <!-- <el-col :span="24">
           <el-form-item label="原因用途" prop="reason">
             <el-input
               type="textarea"
@@ -192,7 +210,7 @@
               size="mini"
             ></el-input>
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col v-if="active===3" :span="24">
           <el-form-item label="审批意见" prop="option">
             <el-input
@@ -273,7 +291,8 @@ export default {
         // organName: this.$store.state.login.loginData.organName, // 部门
         ownerOrganName: "",
         option: null,
-        ownerOrganId: null
+        ownerOrganId: null,
+        camp: null //营区
       },
       rules: {
         categoryLabel: [
@@ -285,6 +304,13 @@ export default {
         // code: [
         //   { required: true, message: "请输入保密系统编号", trigger: "blur" }
         // ],
+        model: [{ required: true, message: "请输入设备型号", trigger: "blur" }],
+        camp: [{ required: true, message: "请输入营区", trigger: "blur" }],
+        brand: [{ required: true, message: "请输入设备品牌", trigger: "blur" }],
+        sn: [{ required: true, message: "请输入序列号", trigger: "blur" }],
+        storagePlace: [
+          { required: true, message: "请输入存放位置", trigger: "blur" }
+        ],
         ownerOrganId: [
           { required: true, message: "请选择部门", trigger: "blur" }
         ],
@@ -308,6 +334,20 @@ export default {
       tabList: [],
       tabOptions: this.$store.state.login.equipmentTab,
       secretOptions: this.$store.state.login.equipmentSecret,
+      campOptions:[
+        {
+          name:'万寿路营区',
+          value:1
+        },
+        {
+          name:'昌平营区',
+          value:2
+        },
+        {
+          name:'六里桥营区',
+          value:3
+        }
+      ],
       defaultProps: {
         children: "children",
         label: "caption"
@@ -369,9 +409,9 @@ export default {
     }
   },
   methods: {
-    change(value){
-      console.log(value,'12456')
-      this.form.ownerOrganId = value
+    change(value) {
+      console.log(value, "12456");
+      this.form.ownerOrganId = value;
     },
     createIdData() {
       createId().then(res => {
@@ -417,6 +457,7 @@ export default {
             ownerOrganId: this.form.ownerOrganId, //所属部门
             tab: this.form.tab, //设备标签
             reason: this.form.reason,
+            camp:this.form.camp,
             extList: [
               {
                 fieldName: "enabledTime", //英文名称
