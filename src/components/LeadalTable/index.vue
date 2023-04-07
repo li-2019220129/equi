@@ -1,5 +1,9 @@
 <template>
-  <div class="leadal" style="position: relative" :style="{ height: getHeight(height) }">
+  <div
+    class="leadal"
+    style="position: relative"
+    :style="{ height: getHeight(height) }"
+  >
     <el-table
       :data="data"
       ref="multipleTable"
@@ -50,7 +54,8 @@
           />
         </template>
 
-        <slot v-else-if="col.type === 'slot'" :name="col.name" :data="col" />
+        <slot v-else-if="col.type === 'slot'" :name="col.name" :data="col">
+        </slot>
 
         <template v-else>
           <el-table-column
@@ -67,7 +72,9 @@
             show-overflow-tooltip
             :prop="col.value"
           >
-            <template v-if="col.children !== undefined && col.children.length > 0">
+            <template
+              v-if="col.children !== undefined && col.children.length > 0"
+            >
               <my-column
                 v-for="(item, index) of col.children"
                 :key="index"
@@ -133,19 +140,19 @@ const exSlot = {
     index: Number,
     column: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   render: (h, data) => {
     const params = {
       row: data.props.row,
-      index: data.props.index
+      index: data.props.index,
     };
     if (data.props.column) {
       params.column = data.props.column;
     }
     return data.props.render(h, params);
-  }
+  },
 };
 
 import MyColumn from "./components/childTable";
@@ -162,82 +169,82 @@ export default {
       type: Array,
       default: () => {
         return [];
-      }
+      },
     },
     // 表头数据
     rowHeader: {
       type: Array,
       default: () => {
         return [];
-      }
+      },
     },
     isPagination: {
       // 是否分页
       type: Boolean,
-      default: false
+      default: false,
     },
     page: {
       type: Number,
-      default: 1
+      default: 1,
     },
     size: {
       type: Number,
-      default: 10
+      default: 10,
     },
     total: {
       type: Number,
-      default: 0
+      default: 0,
     },
     width: {
       type: String,
-      default: "100%"
+      default: "100%",
     },
     highlightCurrentRow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     stripe: {
       type: Boolean,
-      default: true
+      default: true,
     },
     border: {
       type: Boolean,
-      default: true
+      default: true,
     },
     chosize: {
       type: String,
-      default: "small"
+      default: "small",
     },
     arraySpanMethod: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     progress: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isScrollX: {
       type: Boolean,
-      defalut: false
+      defalut: false,
     },
     height: {
-      default: undefined
+      default: undefined,
     },
     maxHeight: {
-      type: [String, Number]
+      type: [String, Number],
     },
     treeProps: {
       type: Object,
       default: () => {
         return { children: "children", hasChildren: "hasChildren" };
-      }
+      },
     },
     pageSizes: {
       type: Array,
       default: () => {
         return [10, 20, 30, 40, 50];
-      }
-    }
+      },
+    },
   },
 
   watch: {
@@ -246,9 +253,9 @@ export default {
       immediate: true,
       handler(val) {
         const array = this.$cloneDeep(val);
-        this.tableCloumn = array.filter(item => !item.hidden);
-      }
-    }
+        this.tableCloumn = array.filter((item) => !item.hidden);
+      },
+    },
   },
   //解决动态控制表头抖动问题
   beforeUpdate() {
@@ -258,7 +265,7 @@ export default {
   },
   computed: {
     setWidth() {
-      return col => {
+      return (col) => {
         return setWidths(col);
       };
     },
@@ -269,7 +276,7 @@ export default {
       }
 
       return "calc(100vh - 400px)";
-    }
+    },
   },
 
   data() {
@@ -287,13 +294,13 @@ export default {
       tableCloumn: [],
       timeStartDiff: 0, // 开始时间
       timeEndDiff: 0, // 结束时间
-      selection: [] //选中的表格数据
+      selection: [], //选中的表格数据
     };
   },
 
   methods: {
     getHeight(height) {
-      if(!height) return
+      if (!height) return;
       if (height.indexOf("calc")) {
         return height.replace(")", "+ 52px");
       }
@@ -383,12 +390,12 @@ export default {
       this.$emit("current-change", val);
     },
 
-    handleSizeChange: function(size) {
+    handleSizeChange: function (size) {
       this.pageNum = 1;
       this.pageSize = size;
       this.$emit("page-change", this.pageNum, this.pageSize);
     },
-    handleCurrentChange: function(pageNum) {
+    handleCurrentChange: function (pageNum) {
       this.pageNum = pageNum;
       this.$emit("page-change", this.pageNum, this.pageSize);
     },
@@ -399,7 +406,7 @@ export default {
     },
     //表格单击
     rowClick(row) {
-      const radios = this.rowHeader.filter(item => item.name === "radio");
+      const radios = this.rowHeader.filter((item) => item.name === "radio");
       if (radios.length === 0) {
         this.toggleRowSelection(row);
       }
@@ -415,12 +422,12 @@ export default {
     //给row附上index值
     tableRowClassName(row, index) {
       row.row.index = row.rowIndex;
-    }
+    },
   },
 
   mounted() {
     if (this.isScrollX) {
-      this.$refs.multipleTable.handleFixedMousewheel = function() {}; // 观察源码发现，此方法会使得在right-fixed上滚动同时，wrapper也滚动
+      this.$refs.multipleTable.handleFixedMousewheel = function () {}; // 观察源码发现，此方法会使得在right-fixed上滚动同时，wrapper也滚动
       // 监听事件
       window.addEventListener("mousemove", this.scrollBarFixedHandle, true);
       window.addEventListener("scroll", this.scrollBarFixedHandle, true);
@@ -440,8 +447,8 @@ export default {
     "ex-slot": exSlot,
     MyColumn,
     ElImageViewer,
-    SharedComponents
-  }
+    SharedComponents,
+  },
 };
 </script>
 

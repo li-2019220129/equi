@@ -186,6 +186,16 @@ export function findBorrowedDev(data) {
     arrType:true
   });
 }
+
+export function hasOverTimeApi(data) {
+  return service({
+    url: "/borrow/hasOverTime",
+    method: "post",
+    data,
+    arrType:true
+  });
+}
+
 //已审批or待借出
 export function pageBorrowWait(data) {
   return service({

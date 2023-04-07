@@ -35,6 +35,7 @@ import Menu from "../system/components/Menu.vue";
 import Role from "../system/components/Role.vue";
 import Global from "../system/components/Global.vue";
 import ApprovalForm from "../system/components/ApprovalForm.vue";
+import DataDistribution from "./components/DataDistribution.vue";
 export default {
   name: "Equipment",
   components: {
@@ -53,6 +54,7 @@ export default {
     DataDeliver,
     DataDestory,
     DataAccount,
+    DataDistribution,
     ToApprove,
     ApprovalProcess,
     Menu,
@@ -109,6 +111,9 @@ export default {
           break;
         case "资料登记":
           this.componentsName = "DataRegister";
+          break;
+        case "资料分发":
+          this.componentsName = "DataDistribution";
           break;
         case "资料分类":
           this.componentsName = "DataCategory";

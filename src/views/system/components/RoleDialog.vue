@@ -113,6 +113,7 @@ export default {
               this.$message.success("操作成功");
               this.$emit("refresh", this.mode);
               // this.$emit("closed");
+              this.$emit("closed");
             } else {
               this.$message.success("操作失败");
             }
@@ -122,7 +123,7 @@ export default {
             if (res.status === 200) {
               this.$message.success("操作成功");
               this.$emit("refresh", this.mode);
-              // this.$emit("closed");
+              this.$emit("closed");
             } else {
               this.$message.success("操作失败");
             }
@@ -166,7 +167,7 @@ export default {
     },
     handleSave() {
       this.submitRoles();
-      this.$emit("closed");
+
     },
   },
 };

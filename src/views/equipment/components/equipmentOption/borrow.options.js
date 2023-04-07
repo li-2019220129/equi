@@ -18,6 +18,7 @@ export const tableOptions2 = [
   ...commTableOptions,
   { value: "applyContent", label: "标题" },
   { value: "reason", label: "申请内容" },
+  { value: "borrowTimeLabel", label: "借用时间",type: "slot", name: "borrowTimeLabel" },
   { value: "applyTime", label: "申请时间" },
   { value: "dealTime", label: "审批时间" },
   { value: "isAudit", label: "审批状态" },

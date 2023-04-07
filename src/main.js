@@ -9,6 +9,7 @@ import router from "./router";
 import vuescroll from "vuescroll";
 import Util from "@/utils/util.js";
 import echarts from "echarts";
+import ElSelectTree from 'el-select-tree';
 
 import "normalize.css/normalize.css";
 import "./styles/element-variables.scss";
@@ -18,14 +19,16 @@ import "./icons";
 import "./permission";
 import "./utils/error-log";
 import "@/assets/font/font.css";
-
+// import DtTree from '@/components/DtTree';
 import "@/directive/directive.js";
+
 /** 全局方法挂载 **/
 Vue.prototype.$cloneDeep = cloneDeep;
 Vue.prototype.$echarts = echarts;
-
+// Vue.use(DtTree)
 Vue.use(Util);
 Vue.use(Element);
+Vue.use(ElSelectTree);
 Vue.use(vuescroll);
 // register global utility filters
 

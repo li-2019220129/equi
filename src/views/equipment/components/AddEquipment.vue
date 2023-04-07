@@ -2,8 +2,14 @@
   <div>
     <span
       v-show="!isDetail"
-      style="display:inline-block;color:red;font-size:20px;margin-top:10px"
-    >提示：保密室资产用于设备借用</span>
+      style="
+        display: inline-block;
+        color: red;
+        font-size: 20px;
+        margin-top: 10px;
+      "
+      >提示：保密室资产用于设备借用</span
+    >
     <div class="dialog-btn-layout" v-show="!isDetail">
       <div class="handle send" @click="handleSave(true)">保存并送审</div>
       <div class="handle save" @click="handleSave(false)">保存</div>
@@ -21,7 +27,11 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="设备类别" prop="classify">
-            <el-select v-model="form.classify" placeholder="请选择" class="form-styles">
+            <el-select
+              v-model="form.classify"
+              placeholder="请选择"
+              class="form-styles"
+            >
               <el-option
                 v-for="item in classifyOptions"
                 :key="item.value"
@@ -91,12 +101,9 @@
         <el-col :span="12">
           <el-form-item label prop="sn">
             <template slot="label">
-              <div
-                style="
-                  display:inline-block;
-                  letter-spacing: 5px;
-                "
-              >序列号</div>
+              <div style="display: inline-block; letter-spacing: 5px">
+                序列号
+              </div>
             </template>
             <el-input v-model="form.sn" class="form-styles"></el-input>
           </el-form-item>
@@ -128,7 +135,11 @@
 
         <el-col :span="12">
           <el-form-item label="设备密级" prop="secret">
-            <el-select v-model="form.secret" placeholder="请选择" class="form-styles">
+            <el-select
+              v-model="form.secret"
+              placeholder="请选择"
+              class="form-styles"
+            >
               <el-option
                 v-for="item in secretOptions"
                 :key="item.value"
@@ -147,7 +158,10 @@
 
         <el-col :span="12">
           <el-form-item label="保密编号" prop="secretRoomCode">
-            <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
+            <el-input
+              v-model="form.secretRoomCode"
+              class="form-styles"
+            ></el-input>
           </el-form-item>
         </el-col>
 
@@ -159,20 +173,24 @@
 
         <el-col :span="12">
           <el-form-item label="存放位置" prop="storagePlace">
-            <el-input v-model="form.storagePlace" class="form-styles"></el-input>
+            <el-input
+              v-model="form.storagePlace"
+              class="form-styles"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label prop="camp">
             <template slot="label">
-              <div
-                style="
-                  display:inline-block;
-                  letter-spacing: 12px;
-                "
-              >营区</div>
+              <div style="display: inline-block; letter-spacing: 12px">
+                营区
+              </div>
             </template>
-            <el-select v-model="form.camp" placeholder="请选择" class="form-styles">
+            <el-select
+              v-model="form.camp"
+              placeholder="请选择"
+              class="form-styles"
+            >
               <el-option
                 v-for="item in campOptions"
                 :key="item.value"
@@ -184,7 +202,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="所属部门" prop="ownerOrganId">
-            <el-cascader
+            <!-- <el-cascader
               :value="form.ownerOrganId"
               class="form-styles"
               size="mini"
@@ -192,7 +210,15 @@
               :props="props"
               @change="change"
               :show-all-levels="false"
-            ></el-cascader>
+            ></el-cascader> -->
+            <ElSelectTree
+              v-model="form.ownerOrganId"
+              :data="options"
+              class="form-styles"
+              :props="props"
+              check-strictly
+              clearable
+            ></ElSelectTree>
             <!-- <el-input
               v-model="form.organName"
               class="form-styles"
@@ -211,7 +237,7 @@
             ></el-input>
           </el-form-item>
         </el-col>-->
-        <el-col v-if="active===3" :span="24">
+        <el-col v-if="active === 3" :span="24">
           <el-form-item label="审批意见" prop="option">
             <el-input
               type="textarea"
@@ -231,37 +257,39 @@
 import {
   saveDirectly,
   loadEditData,
-  loadRecordByInfoId
+  loadRecordByInfoId,
 } from "@/api/equipment/index";
 import { createId } from "@/api/common/index";
 import { organTreeApi } from "@/api/audit/index";
 import TreeSlot from "@/components/TreeSlot/index.vue";
+import ElSelectTree from "el-select-tree";
 import moment from "moment";
 export default {
   components: {
-    TreeSlot
+    TreeSlot,
+    ElSelectTree,
   },
   props: {
     treeData: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     formLine: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     type: {
       type: String,
-      default: "add"
+      default: "add",
     },
     isDetail: {
       type: Boolean,
-      default: false
+      default: false,
     },
     infoId: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   inject: ["root"],
   data() {
@@ -292,14 +320,14 @@ export default {
         ownerOrganName: "",
         option: null,
         ownerOrganId: null,
-        camp: null //营区
+        camp: null, //营区
       },
       rules: {
         categoryLabel: [
-          { required: true, message: "请选择设备分类", trigger: "change" }
+          { required: true, message: "请选择设备分类", trigger: "change" },
         ],
         secretRoomCode: [
-          { required: true, message: "请输入载体编号", trigger: "blur" }
+          { required: true, message: "请输入载体编号", trigger: "blur" },
         ],
         // code: [
         //   { required: true, message: "请输入保密系统编号", trigger: "blur" }
@@ -309,57 +337,56 @@ export default {
         brand: [{ required: true, message: "请输入设备品牌", trigger: "blur" }],
         sn: [{ required: true, message: "请输入序列号", trigger: "blur" }],
         storagePlace: [
-          { required: true, message: "请输入存放位置", trigger: "blur" }
+          { required: true, message: "请输入存放位置", trigger: "blur" },
         ],
         ownerOrganId: [
-          { required: true, message: "请选择部门", trigger: "blur" }
+          { required: true, message: "请选择部门", trigger: "blur" },
         ],
         classify: [
-          { required: true, message: "请选择设备类型", trigger: "change" }
+          { required: true, message: "请选择设备类型", trigger: "change" },
         ],
         secret: [
-          { required: true, message: "请选择设备密级", trigger: "change" }
-        ]
+          { required: true, message: "请选择设备密级", trigger: "change" },
+        ],
       },
       classifyOptions: [
         {
           value: 4,
-          label: "个人资产"
+          label: "个人资产",
         },
         {
           value: 8,
-          label: "保密室资产"
-        }
+          label: "保密室资产",
+        },
       ],
       tabList: [],
       tabOptions: this.$store.state.login.equipmentTab,
       secretOptions: this.$store.state.login.equipmentSecret,
-      campOptions:[
+      campOptions: [
         {
-          name:'万寿路营区',
-          value:1
+          name: "万寿路营区",
+          value: 1,
         },
         {
-          name:'昌平营区',
-          value:2
+          name: "昌平营区",
+          value: 2,
         },
         {
-          name:'六里桥营区',
-          value:3
-        }
+          name: "六里桥营区",
+          value: 3,
+        },
       ],
       defaultProps: {
         children: "children",
-        label: "caption"
+        label: "caption",
       },
       options: [],
       props: {
         value: "id",
         label: "caption",
         children: "childs",
-        checkStrictly: true,
-        emitPath: false
-      }
+        emitPath: false,
+      },
     };
   },
   async mounted() {
@@ -375,16 +402,16 @@ export default {
             this.loading = true;
             if (this.infoId) {
               const params1 = {
-                infoId: this.infoId
+                infoId: this.infoId,
               };
-              loadRecordByInfoId(params1).then(res => {
+              loadRecordByInfoId(params1).then((res) => {
                 Object.assign(this.form, res.data);
               });
             } else {
               const params2 = {
-                deviceRecordId: this.formLine.deviceRecordId
+                deviceRecordId: this.formLine.deviceRecordId,
               };
-              loadEditData(params2).then(res => {
+              loadEditData(params2).then((res) => {
                 Object.assign(this.form, res.data);
 
                 this.form.categoryLabel = res.data.categoryLabel
@@ -405,16 +432,16 @@ export default {
           });
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
-    change(value) {
-      console.log(value, "12456");
-      this.form.ownerOrganId = value;
-    },
+    // change(value) {
+    //   console.log(value, "12456");
+    //   this.form.ownerOrganId = value;
+    // },
     createIdData() {
-      createId().then(res => {
+      createId().then((res) => {
         this.createId = res.data;
       });
     },
@@ -435,7 +462,7 @@ export default {
 
     handleSave(flag) {
       if (this.networkLoading) return;
-      this.$refs["form"].validate(async valid => {
+      this.$refs["form"].validate(async (valid) => {
         if (valid) {
           const params = {
             id: this.type === "add" ? this.createId : this.form.id, //任务主键
@@ -457,36 +484,36 @@ export default {
             ownerOrganId: this.form.ownerOrganId, //所属部门
             tab: this.form.tab, //设备标签
             reason: this.form.reason,
-            camp:this.form.camp,
+            camp: this.form.camp,
             extList: [
               {
                 fieldName: "enabledTime", //英文名称
                 fieldLabel: "启用时间", //中文名称
                 fieldValue: ["", null].includes(this.form.enabledTime)
                   ? ""
-                  : moment(this.form.enabledTime).format("YYYY-MM-DD")
+                  : moment(this.form.enabledTime).format("YYYY-MM-DD"),
               },
               {
                 fieldName: "secretRoomCode", //英文名称
                 fieldLabel: "载体编号", //中文名称
-                fieldValue: String(this.form.secretRoomCode)
+                fieldValue: String(this.form.secretRoomCode),
               },
               {
                 fieldName: "entranceGuardCode", //英文名称
                 fieldLabel: "门禁编号", //中文名称
-                fieldValue: String(this.form.entranceGuardCode)
+                fieldValue: String(this.form.entranceGuardCode),
               },
               {
                 fieldName: "storagePlace", //英文名称
                 fieldLabel: "存放位置", //中文名称
-                fieldValue: this.form.storagePlace
+                fieldValue: this.form.storagePlace,
               },
               {
                 fieldName: "reason", //英文名称
                 fieldLabel: "原因用途", //中文名称
-                fieldValue: this.form.reason
-              }
-            ]
+                fieldValue: this.form.reason,
+              },
+            ],
           };
           this.networkLoading = true;
           const { status, msg } = await saveDirectly(params);
@@ -494,7 +521,7 @@ export default {
           this.$message({
             type: "success",
             duration: 1000,
-            message: msg
+            message: msg,
           });
           if (status == 200) {
             this.networkLoading = false;
@@ -503,7 +530,7 @@ export default {
             this.$message({
               type: "error",
               duration: 1000,
-              message: msg
+              message: msg,
             });
             this.networkLoading = false;
           }
@@ -517,8 +544,8 @@ export default {
           return false;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

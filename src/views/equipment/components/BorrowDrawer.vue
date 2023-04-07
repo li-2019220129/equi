@@ -172,6 +172,8 @@ export default {
         storageWay: p.storageWay,
         useRange: p.useRange,
         borrowTime: p.borrowTime,
+        plainGiveDate:p.plainGiveDate,
+        plainBeginDate:p.plainBeginDate,
         categoryLabel: p.categoryLabel,
         categoryId: p.categoryId,
         tab: p.tab,

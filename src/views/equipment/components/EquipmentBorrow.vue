@@ -6,71 +6,122 @@
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
           v-has="'xts_borrow'"
-        >借用登记</div>
+        >
+          借用登记
+        </div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
           v-has="'xtsB_auditing'"
-        >审批中</div>
+        >
+          审批中
+        </div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
           v-has="'xtsB_audited'"
         >
-          <el-badge :value="auditedNum" :hidden="auditedNum === 0" class="badge-item">已审批</el-badge>
+          <el-badge
+            :value="auditedNum"
+            :hidden="auditedNum === 0"
+            class="badge-item"
+            >已审批</el-badge
+          >
         </div>
         <div
           :class="['table-menu-item', activeTab === 4 ? 'selected' : '']"
           @click="handleActiveTab(4)"
           v-has="'xts_borrowing'"
         >
-          <el-badge :value="borrowNum" :hidden="borrowNum === 0" class="badge-item">待借出</el-badge>
+          <el-badge
+            :value="borrowNum"
+            :hidden="borrowNum === 0"
+            class="badge-item"
+            >待借出</el-badge
+          >
         </div>
         <div
           :class="['table-menu-item', activeTab === 5 ? 'selected' : '']"
           @click="handleActiveTab(5)"
           v-has="'xts_borrowed'"
         >
-          <el-badge :value="revertNum" :hidden="revertNum === 0" class="badge-item">待归还</el-badge>
+          <el-badge
+            :value="revertNum"
+            :hidden="revertNum === 0"
+            class="badge-item"
+            >待归还</el-badge
+          >
         </div>
         <div
           :class="['table-menu-item', activeTab === 6 ? 'selected' : '']"
           @click="handleActiveTab(6)"
           v-has="'xts_reverted'"
-        >已归还</div>
+        >
+          已归还
+        </div>
         <div
           :class="['table-menu-item', activeTab === 7 ? 'selected' : '']"
           @click="handleActiveTab(7)"
           v-has="'xts_total'"
-        >设备借用统计表</div>
+        >
+          设备借用统计表
+        </div>
       </div>
       <div class="equipment-header-right">
         <div class="equipment-button">
-          <div class="equipment-button_btn" v-if="activeTab === 1" @click="equipmentBorrow">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 1"
+            @click="equipmentBorrow"
+          >
             <img src="@/assets/icon/借出@2x.png" />
             <span>设备借用</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 1" @click="sendApproval">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 1"
+            @click="sendApproval"
+          >
             <img src="@/assets/icon/发布排班@2x.png" />
             <span>送审</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 1" @click="edit">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 1"
+            @click="edit"
+          >
             <img src="@/assets/icon/编辑@2x.png" />
             <span>编辑</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 1" @click="deleteBorrow">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 1"
+            @click="deleteBorrow"
+          >
             <img src="@/assets/icon/icon-delete.png" />
             <span>删除</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 2" @click="recall">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 2"
+            @click="recall"
+          >
             <img src="@/assets/icon/撤回@2x.png" />
             <span>撤回</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 4" @click="borrow">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 4"
+            @click="borrow"
+          >
             <img src="@/assets/icon/借出-确认借出@2x.png" />
             <span>借出</span>
           </div>
-          <div class="equipment-button_btn" v-if="activeTab === 5" @click="back">
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 5"
+            @click="back"
+          >
             <img src="@/assets/icon/借出-确认借出@2x.png" />
             <span>归还</span>
           </div>
@@ -191,7 +242,26 @@
               v-model="radio"
               @change.stop="changeRadio(scope.row)"
               class="none-radio-label"
-            >{{ "" }}</el-radio>
+              >{{ "" }}</el-radio
+            >
+          </template>
+        </el-table-column>
+      </template>
+      <template #borrowTimeLabel="{ data }">
+        <el-table-column
+          label="借用时间"
+          :prop="data.value"
+          header-align="center"
+          align="center"
+          width="350"
+        >
+          <template slot-scope="scope">
+            <div :class="{ outTime: scope.row.hasOverTime }">
+              <span v-if="scope.row.hasOverTime" style="margin-right: 4px"
+                >【超期】</span
+              >
+              {{ scope.row.borrowTimeLabel }}
+            </div>
           </template>
         </el-table-column>
       </template>
@@ -243,10 +313,10 @@ import {
   pageRevertData,
   pageBorrowed,
   pageBorrowDataTotal,
-  borrow,
   revert,
   deleteBorrow,
-  recallBorrow
+  recallBorrow,
+  hasOverTimeApi,
 } from "@/api/equipment";
 import {
   tableOptions1,
@@ -254,7 +324,7 @@ import {
   tableOptions3,
   tableOptions4,
   tableOptions5,
-  tableOptions6
+  tableOptions6,
 } from "./equipmentOption/borrow.options";
 import { messageLookBorrow } from "@/api/common";
 import { mapState } from "vuex";
@@ -265,17 +335,17 @@ export default {
     LeadalDrawer,
     BorrowDrawer,
     LeadalDialog,
-    PersonDialog
+    PersonDialog,
   },
   props: {
     componentsId: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   provide() {
     return {
-      root: this
+      root: this,
     };
   },
   data() {
@@ -291,17 +361,17 @@ export default {
         loading: false,
         page: 1,
         size: 10,
-        total: 0
+        total: 0,
       },
       searchForm: {
         applyContent: "", //标题
         reason: "", //申请事由
-        applyUserName: "" // 申请人
+        applyUserName: "", // 申请人
       },
       borrowDate: [], //借用时间
       borrowDrawer: {
         visible: false,
-        title: "设备借用"
+        title: "设备借用",
       }, //借用抽屉
       visible: false, //送审对话框
       formLine: {},
@@ -311,7 +381,7 @@ export default {
       content: "", //搜索内容
       mode: "", //是否编辑模式
       btnTitle: "", //申请 、 确认借出、确认归还
-      isDetail: false
+      isDetail: false,
     };
   },
   watch: {
@@ -341,8 +411,8 @@ export default {
             this.tableObj.tableOptions = tableOptions6;
             break;
         }
-      }
-    }
+      },
+    },
   },
   created() {
     this.getData();
@@ -357,7 +427,7 @@ export default {
     },
     revertNum() {
       return this.equipmentBorrowBadge.countWaitRevert;
-    }
+    },
   },
   methods: {
     //分页切换
@@ -387,7 +457,7 @@ export default {
         currentPage: this.tableObj.page,
         pageSize: this.tableObj.size,
         content: this.content,
-        userId: this.loginData.userId
+        userId: this.loginData.userId,
       };
       if (this.activeTab === 1) {
         params.status = 5;
@@ -412,7 +482,7 @@ export default {
         this.$delete(params, "content");
         const totalParams = {
           ...params,
-          ...this.searchForm
+          ...this.searchForm,
         };
         if (this.borrowDate) {
           this.$set(totalParams, "beginTime", this.borrowDate[0]);
@@ -426,8 +496,8 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map(item => {
-          item.isAudit = this.switchIsAudit(item.status);
+        this.tableObj.tableData = res.data.data.map((item) => {
+          item.isAudit = this.switchIsAudit(item.isAudit);
           return item;
         });
         this.tableObj.total = res.data.total;
@@ -438,14 +508,27 @@ export default {
     },
     switchIsAudit(num) {
       switch (num) {
-        case 4:
-          return "未通过";
-        case 8:
+        case 2:
+          return "不通过";
+        case 1:
           return "通过";
       }
     },
     //借用
-    equipmentBorrow() {
+    async equipmentBorrow() {
+      let formData = new FormData();
+      formData.append("userId", this.$store.state.login.loginData.userId);
+      const { status, data } = await hasOverTimeApi(formData);
+      if (status === 200) {
+        if (data) {
+          this.$confirm(`您有设备逾期未归还，请归还设备后再发起借用申请`,{
+            showCancelButton: false,
+          })
+            .then((_) => {})
+            .catch((_) => {});
+          return;
+        }
+      }
       this.formLine = {};
       this.radio = "";
       this.applyId = "";
@@ -510,10 +593,10 @@ export default {
         return;
       }
       this.mode = "edit";
-     this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
+      this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.borrowDrawer = {
         title: "设备借用",
-        visible: true
+        visible: true,
       };
     },
 
@@ -526,25 +609,25 @@ export default {
       this.$confirm("是否撤回该申请?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId
+            idStr: this.applyId,
           };
           const res = await recallBorrow(params);
           // this.$message.success(res.msg);
           this.$message({
             type: "success",
             duration: 1000,
-            message: res.msg
+            message: res.msg,
           });
           this.getData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消撤回"
+            message: "已取消撤回",
           });
         });
     },
@@ -558,25 +641,25 @@ export default {
       this.$confirm("此操作将永久删除该申请, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           const params = {
-            idStr: this.applyId
+            idStr: this.applyId,
           };
           const res = await deleteBorrow(params);
           // this.$message.success(res.msg);
           this.$message({
             type: "success",
             duration: 1000,
-            message: res.msg
+            message: res.msg,
           });
           this.getData();
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
@@ -601,19 +684,19 @@ export default {
       this.$confirm("是否确认归还?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           const params = {
-            borrowId: this.applyId
+            borrowId: this.applyId,
           };
-          revert(params).then(res => {
+          revert(params).then((res) => {
             // this.$message.success(res.msg);
             // this.$message.success(res.msg);
             this.$message({
               type: "success",
               message: res.msg,
-              duration: 1000
+              duration: 1000,
             });
             this.$store.dispatch("login/getBorrowBadge"); //获取设备借用角标
             this.getData();
@@ -622,13 +705,16 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消归还",
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+.outTime {
+  color: red;
+}
 </style>

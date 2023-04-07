@@ -23,7 +23,7 @@
         @node-click="loadCategory"
       >
         <div class="custom-tree-node" slot-scope="{ node, data }">
-          <tree-slot :node="node" :data="data" class="tree-span" />
+          <tree-slot :showIcon="false" :node="node" :data="data" class="tree-span" />
           <div class="tree-operate">
             <img
               src="@/assets/icon/选择设备@2x.png"
@@ -292,6 +292,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-tree-node__content > label.el-checkbox {
+  margin-right: -18px;
+  margin-left: 20px;
+  margin-top: -3px;
+}
+
+// 对树的样式进行修改
+::v-deep .el-tree-node__content {
+  height: 38px;
+  // padding-left: 20px !important;
+}
+
+.custom-tree-node {
+  width: 100%;
+  height: 100%;
+}
+
+// 树形控件
+
+.leadal-menu-tree .el-tree {
+  color: #3b3b3b;
+}
+.leadal-menu-tree .el-tree-node__label {
+  font-size: 20px;
+}
+.leadal-menu-tree .el-tree-node__content:hover {
+  background-color: #dff1ff;
+}
+.leadal-menu-tree
+  .el-tree--highlight-current
+  .el-tree-node.is-current
+  > .el-tree-node__content {
+  background-color: #dff1ff;
+}
+
+// 树样式
+
+::v-deep .el-tree-node__expand-icon {
+  /* display: none;
+  color: rgba(16, 127, 201, 0.438);*/
+  font-size: 24px;
+}
 .equipment-container {
   display: flex;
   height: 100vh;

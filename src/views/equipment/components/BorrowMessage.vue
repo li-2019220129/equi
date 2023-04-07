@@ -252,6 +252,8 @@ export default {
         secret: "", //设备密级
         devCount: 1, //设备数量
         option:null,
+        plainBeginDate:'',
+        plainGiveDate:''
       },
       cloneDorrowTime: [],
       editId: "", //编辑id
@@ -312,9 +314,10 @@ export default {
 
           //借用时间回显
           if (editObj.recordData.borrowTime) {
-            const beginTime = editObj.recordData.borrowTime.substr(0, 10);
-            const endTime = editObj.recordData.borrowTime.substr(0, 10);
-            this.applyForm.borrowTime = [beginTime, endTime];
+            // const beginTime = editObj.recordData.borrowTime.substr(0, 10);
+            // const endTime = editObj.recordData.borrowTime.substr(10);
+
+            this.applyForm.borrowTime = [editObj.recordData.plainBeginDate, editObj.recordData.plainGiveDate];
           }
           //已选设备回显
           this.applyForm.devIds = editObj.devInfo
@@ -366,6 +369,8 @@ export default {
       this.cloneDorrowTime = this.$cloneDeep(this.applyForm.borrowTime);
       if (this.applyForm.borrowTime) {
         console.log(this.applyForm, "66666666");
+        this.applyForm.plainBeginDate = this.applyForm.borrowTime[0]
+        this.applyForm.plainGiveDate = this.applyForm.borrowTime[1]
         this.applyForm.borrowTime = Array.isArray(this.applyForm.borrowTime)
           ? this.applyForm.borrowTime.join("-")
           : [];

@@ -24,7 +24,13 @@
         @node-click="loadCategory"
       >
         <div class="custom-tree-node" slot-scope="{ node, data }">
-          <tree-slot :node="node" :data="data" class="tree-span" />
+          <tree-slot
+            :showIcon="false"
+            :node="node"
+            :data="data"
+            class="tree-span"
+          />
+          <!-- <span>{{ data }}</span> -->
           <div class="tree-operate">
             <img
               src="@/assets/icon/选择设备@2x.png"
@@ -109,6 +115,7 @@ import {
   loadDataKind,
   pageDataCategory,
 } from "@/api/data";
+import { cloneDeep } from "lodash";
 export default {
   name: "EquipmentCategory",
   components: {
@@ -119,11 +126,11 @@ export default {
   },
   data() {
     return {
-      _node:null,
-      _resolve:null,
+      _node: null,
+      _resolve: null,
       activeTab: 1,
-      keyEl:+new Date().getTime(),
       keyWord: "", //输入框
+      keyEl: +new Date().getTime(),
       tableObj: {
         tableData: [],
         tableOptions: [
@@ -141,6 +148,7 @@ export default {
       defaultProps: {
         label: "label",
         children: "children",
+        isLeaf: "leaf",
       },
       title: "新增分类",
       visible: false,
@@ -166,48 +174,75 @@ export default {
     add() {
       this.title = "新增种类";
       this.parentId = null;
-      this.deviceKindData={
+      this.deviceKindData = {
         name: "",
         sequence: 0,
         id: "",
         enabled: true, //是否启用
-      }
+      };
       this.visible = true;
-
     },
 
     addDataKind(data) {
+      console.log(data, "我是你大爷");
       this.title = "新增种类";
       this.parentId = data.id;
-      this.deviceKindData={
+      this.deviceKindData = {
         name: "",
         sequence: 0,
         id: "",
         enabled: true, //是否启用
-      }
+      };
       this.visible = true;
-
     },
 
     //获取资料种类树
     loadNode(node, resolve) {
       //加载用户数据
-      if (node.level > 1) return;
-      if (node.level === 0) {
-        this._node = node;
-        this._resolve = resolve;
-      }
       treeView({
         id: node.level === 0 ? null : node.data.id,
       }).then((res) => {
-        resolve(res.data);
+        resolve(
+          res.data.map((item) => {
+            return { ...item, leaf: !item.hasChild };
+          })
+        );
       });
     },
 
     //保存关闭弹窗
-    closeDialog(visible) {
+    closeDialog(visible, params) {
+      params.id = +new Date().getTime();
+      if (!this.parentId || this.title === "编辑种类") {
+        this.keyEl = +new Date().getTime();
+        this.visible = visible;
+        return;
+      }
+      if (this.title === "新增种类") {
+        // const nodes = this.$refs.navTree.store.nodesMap;
+        // for (let i in nodes) {
+        //   if (nodes[i].data.id === this.parentId) {
+        //     let node = cloneDeep(nodes[i].childNodes[0]);
+        //     node.id =
+        //       nodes[i].childNodes[nodes[i].childNodes.length - 1].id + 1;
+        //     node.data = params;
+        //     node.data.label = params.name;
+        //     nodes[i].childNodes.push(node);
+        //     console.log(nodes,node, "我手机哦你妹");
+        //   }
+        // }
+        treeView({
+          id: this.parentId,
+        }).then((res) => {
+          const arr = res.data.map((item) => {
+            return { ...item, leaf: !item.hasChild };
+          });
+
+          this.$refs.navTree.updateKeyChildren(this.parentId, arr);
+        });
+      }
       this.visible = visible;
-      this.keyEl = +new Date().getTime()
+      // this.keyEl = +new Date().getTime();
       // const node = {
       //   id: this.parentId,
       // };
@@ -233,7 +268,8 @@ export default {
         .then(() => {
           deleteCategory({ idStr: data.id }).then((res) => {
             this.$message.success(res.msg);
-            this.keyEl = +new Date().getTime()
+            // this.keyEl = +new Date().getTime();
+            this.$refs.navTree.remove(data);
           });
         })
         .catch(() => {
@@ -272,12 +308,12 @@ export default {
         return;
       }
       this.title = "新增分类";
-       this.deviceKindData={
+      this.deviceKindData = {
         name: "",
         sequence: 0,
         id: "",
         enabled: true, //是否启用
-      }
+      };
       this.visible = true;
     },
 
@@ -287,6 +323,14 @@ export default {
 
     //删除
     deleteDataCategory() {
+      if (this.selectionList.length === 0) {
+        this.$message({
+          type: "warning",
+          duration: 2000,
+          message: "请选择需要删除的数据！",
+        });
+        return;
+      }
       const parmas = this.selectionList.map((item) => item.id).join(",");
       this.$confirm("此操作将删除该分类, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -312,6 +356,78 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 树的样式 修改大集合
+
+::v-deep .el-tree-node__content > label.el-checkbox {
+  margin-right: -18px;
+  margin-left: 20px;
+  margin-top: -3px;
+}
+
+// 对树的样式进行修改
+::v-deep .el-tree-node__content {
+  height: 38px;
+  // padding-left: 20px !important;
+}
+
+.custom-tree-node {
+  width: 100%;
+  height: 100%;
+}
+
+// 树形控件
+
+.leadal-menu-tree .el-tree {
+  color: #3b3b3b;
+}
+.leadal-menu-tree .el-tree-node__label {
+  font-size: 20px;
+}
+.leadal-menu-tree .el-tree-node__content:hover {
+  background-color: #dff1ff;
+}
+.leadal-menu-tree
+  .el-tree--highlight-current
+  .el-tree-node.is-current
+  > .el-tree-node__content {
+  background-color: #dff1ff;
+}
+
+// 树样式
+
+::v-deep .el-tree-node__expand-icon {
+  /* display: none; */
+  font-size: 24px;
+}
+
+// .el-tree-node__content {
+//   margin-left: 20px;
+// }
+
+.child-triangle {
+  transition: all 0.3s;
+  margin-left: -20px;
+  &.rodge {
+    transform: rotate(90deg);
+  }
+  &.treeTriangle {
+    margin: 0 30px !important;
+    margin-left: -50px !important;
+  }
+  &.treeTriangleSelect {
+    margin: 0 30px !important;
+    margin-left: -40px !important;
+  }
+}
+
+::v-deep .el-tree-node__loading-icon {
+  /* margin-right: 8px; */
+  font-size: 14px;
+  margin: 0 0 0 3px;
+  color: #c0c4cc;
+  position: absolute;
+  // left: 0;
+}
 .equipment-container {
   display: flex;
   height: 100vh;

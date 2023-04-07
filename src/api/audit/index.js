@@ -47,16 +47,24 @@ export function findWorkDataAndUser(params) {
 
 export function organTreeApi() {
   return service({
-    url:'/device/common/allOrganTree',
+    url: "/device/common/allOrganTree",
     method: "post",
   });
 }
 
+export function findUsersByOrganIdApi(data) {
+  return service({
+    url: "/device/common/findUsersByOrganId",
+    method: "post",
+    data,
+    arrType:true
+  });
+}
 
 export function allOrganTreeApi(data) {
   return service({
-    url:'/device/common/organTree',
+    url: "/device/common/organTree",
     method: "post",
-    params:data
+    params: data,
   });
 }

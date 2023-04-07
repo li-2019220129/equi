@@ -22,5 +22,4 @@ selenium-debug.log
 *.local
 
 package-lock.json
-vue.config.js
 yarn.lock

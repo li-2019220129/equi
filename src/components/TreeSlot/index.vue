@@ -2,7 +2,7 @@
   <div>
     <template v-if="data.parentId === ''">
       <div @click="triangle(data)" class="tree-slot-node">
-        <span :class="{ 'tree-patent': data.flag }">
+        <span v-if="showIcon" :class="{ 'tree-patent': data.flag }">
           <i
             v-if="data.flag"
             class="el-icon-caret-right parent-triangle"
@@ -18,10 +18,11 @@
           class="tree-text"
           style="font-size: 20px"
           :class="{
-            'terr-margin': !data.flag,
+            'terr-margin': !data.flag && showIcon,
             'tree-margin-select': isSelect && !data.flag,
           }"
-        >{{ node.label }}</span>
+          >{{ node.label }}</span
+        >
 
         <div class="permission-position">{{ data.permission }}</div>
       </div>
@@ -42,7 +43,12 @@
         }"
       ></i>
       <template v-if="isOnLine">
-        <img :src="iconHeader(data)" v-if="data.isOnLine !== undefined" width="13px" height="13px" />
+        <img
+          :src="iconHeader(data)"
+          v-if="data.isOnLine !== undefined"
+          width="13px"
+          height="13px"
+        />
       </template>
       {{ node.label }}
       <div class="tree-child-click" @click="triangle(data)" />
@@ -62,6 +68,29 @@
 </template>
 
 <style lang="scss" scoped>
+.parent-triangle {
+  color: #3984e8;
+  margin-left: -20px;
+  transition: all 0.3s;
+  font-size: 20px;
+  &.rodge {
+    transform: rotate(90deg);
+  }
+  &.treeTriangle {
+    margin: 0 30px !important;
+    margin-left: -50px !important;
+  }
+  &.treeTriangleSelect {
+    margin: 0 30px !important;
+    margin-left: -40px !important;
+  }
+}
+.tree-slot-node {
+  line-height: 100%;
+  height: 38px;
+  padding-top: 8px;
+  // line-height: 38px;
+}
 .tree-patent {
   padding-left: 20px !important;
 }
@@ -98,41 +127,48 @@
 <script>
 export default {
   props: {
+    showIcon: {
+      type: Boolean,
+      default: true,
+    },
     node: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     data: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     lazy: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkbox: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isOnLine: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isSelect: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isNumber: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     countAudtit() {
-      return str => {
-        
-        let store = this.$store.state.login
-        console.log(store.equipmentAuditBadge.total,store.dataAuditBadge.total,'垃圾代码')
+      return (str) => {
+        let store = this.$store.state.login;
+        console.log(
+          store.equipmentAuditBadge.total,
+          store.dataAuditBadge.total,
+          "垃圾代码"
+        );
         if (str === "设备登记" && store.equipmentRegisterBadge > 0) {
           return store.equipmentRegisterBadge;
         } else if (str === "设备借用" && store.equipmentBorrowBadge.total > 0) {
@@ -170,7 +206,7 @@ export default {
           return store.dataDestoryBadge.total;
         }
       };
-    }
+    },
   },
   filters: {
     filterNumber(store, str) {
@@ -200,7 +236,7 @@ export default {
       } else if (str === "资料销毁" && store.dataDestoryBadge.total > 0) {
         return store.dataDestoryBadge.total;
       }
-    }
+    },
   },
   methods: {
     triangle(data) {
@@ -211,7 +247,7 @@ export default {
           }
         }, 0);
       });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -6,18 +6,28 @@
           :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
           @click="handleActiveTab(1)"
           v-has="'xts_alone'"
-        >个人设备</div>
+        >
+          个人设备
+        </div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
           v-has="'dev_organ'"
-        >本部门设备</div>
+        >
+          本部门设备
+        </div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
           v-has="'dev_zone'"
-        >本单位设备</div>
-        <img :src="setImg" class="equipment-search-icon" @click="isMore = !isMore" />
+        >
+          本单位设备
+        </div>
+        <img
+          :src="setImg"
+          class="equipment-search-icon"
+          @click="isMore = !isMore"
+        />
       </div>
 
       <div class="equipment-header-right">
@@ -30,7 +40,12 @@
       </div>
     </div>
     <div class="equipment-account-search" v-show="isMore">
-      <el-form :model="searchForm" inline ref="form" style="margin-top: 20px; margin-bottom: -10px">
+      <el-form
+        :model="searchForm"
+        inline
+        ref="form"
+        style="margin-top: 20px; margin-bottom: -10px"
+      >
         <el-form-item prop="content">
           <el-input
             placeholder="请输入品牌/型号/序列号关键字"
@@ -56,7 +71,7 @@
             @change="moreSearch('categoryId')"
           >
             <el-option
-              v-for="(item,index) in treeData"
+              v-for="(item, index) in treeData"
               :key="index"
               :label="item.caption"
               style="height: auto"
@@ -99,7 +114,7 @@
             v-model="searchForm.applyType"
             placeholder="请选择设备状态"
             clearable
-            v-if="activeTab === 1||activeTab===2"
+            v-if="activeTab === 1 || activeTab === 2"
             @change="moreSearch"
           >
             <el-option
@@ -128,11 +143,60 @@
             ></i>
           </el-input>
         </el-form-item>
-        <!-- <el-form-item prop="storagePlace">
+        <el-form-item prop="ownerOrganIds">
+          <!-- <el-cascader
+            v-if="activeTab === 3"
+            v-model="searchForm.ownerOrganIds"
+            class="form-styles"
+            :options="options"
+            :props="props"
+            @change="moreSearch"
+            placeholder="请选择可属科室"
+            :show-all-levels="false"
+            clearable
+          ></el-cascader> -->
+          <ElSelectTree
+            v-if="activeTab === 3"
+            v-model="searchForm.ownerOrganIds"
+            :data="technicalOptions"
+            class="form-styles"
+            :props="props"
+            check-strictly
+            show-checkbox
+            placeholder="请选择可属科室"
+            @change="moreSearch"
+            multiple
+            clearable
+          ></ElSelectTree>
+          <!-- <el-cascader
+            :options="options"
+            :props="props"
+            clearable
+          ></el-cascader> -->
+        </el-form-item>
+        <el-form-item prop="ownerUserIds">
+          <el-select
+            v-if="activeTab === 3"
+            @focus="handleUserFocus"
+            v-model="searchForm.ownerUserIds"
+            multiple
+            clearable
+            @change="moreSearch"
+            placeholder="请选择责任人"
+          >
+            <el-option
+              v-for="item in userOptions"
+              :key="item.userId"
+              :label="item.userName"
+              :value="item.userId"
+            >
+            </el-option> </el-select
+        ></el-form-item>
+        <el-form-item>
           <el-input
-            placeholder="存放位置"
+            placeholder="请输入存放地址"
             v-model="searchForm.storagePlace"
-            style="width: 300px"
+            style="width: 200px; margin-left: 5px"
             class="equipment-search"
             @keyup.enter.native="moreSearch"
           >
@@ -140,24 +204,9 @@
               slot="suffix"
               style="cursor: pointer"
               class="el-input__icon el-icon-search"
-              @click="moreSearch"
+              @click="getData"
             ></i>
           </el-input>
-        </el-form-item>-->
-        <el-form-item prop="ownerOrganId">
-          <el-cascader
-            v-if="activeTab===3"
-            v-model="searchForm.ownerOrganId"
-            class="form-styles"
-            size="mini"
-            :options="options"
-            :props="props"
-            @change="moreSearch"
-            style="height:40px"
-            placeholder="请选择可属科室"
-            :show-all-levels="false"
-            clearable
-          ></el-cascader>
         </el-form-item>
       </el-form>
     </div>
@@ -175,7 +224,12 @@
       ref="leadalTable"
     >
       <template slot="operate">
-        <el-table-column label="操作" header-align="center" align="center" width="200">
+        <el-table-column
+          label="操作"
+          header-align="center"
+          align="center"
+          width="200"
+        >
           <template slot-scope="scope">
             <el-button @click="detail(scope.row)">详情</el-button>
             <!-- <el-button
@@ -205,10 +259,15 @@
     >
       <template #content>
         <span style="font-size: 16px">状态：</span>
-        <el-select v-model="updateStatus" placeholder="请选择要修改的设备状态" clearable style="width: 300px">
+        <el-select
+          v-model="updateStatus"
+          placeholder="请选择要修改的设备状态"
+          clearable
+          style="width: 300px"
+        >
           <el-option
             v-for="item in statusOptions"
-            :key="item.value"
+            :key="item"
             :label="item.label"
             :value="item.value"
           ></el-option>
@@ -226,7 +285,7 @@ import TreeSlot from "@/components/TreeSlot/index.vue";
 import AccountDetailDrawer from "./AccountDetailDrawer.vue";
 import {
   tableOptions1,
-  tableOptions2
+  tableOptions2,
 } from "./equipmentOption/account.options";
 import {
   pageMyselfAll,
@@ -234,9 +293,9 @@ import {
   pageZoneUse,
   getDeviceKindTree,
   downloadExist,
-  updateStatus
+  updateStatus,
 } from "@/api/equipment";
-import { organTreeApi } from "@/api/audit";
+import { organTreeApi, findUsersByOrganIdApi } from "@/api/audit";
 import moment from "moment";
 import { mapState } from "vuex";
 export default {
@@ -246,10 +305,12 @@ export default {
     TreeSlot,
     LeadalDrawer,
     LeadalDialog,
-    AccountDetailDrawer
+    AccountDetailDrawer,
   },
   data() {
     return {
+      technicalOptions: [], //所属科室数据
+      userOptions: [], //所选责任人数据
       activeTab: 1,
       nodeCount: 0, //树双击收缩
       isMore: false,
@@ -263,14 +324,15 @@ export default {
         loading: true,
         page: 1,
         size: 10,
-        total: 0
+        total: 0,
       },
       props: {
         value: "id",
         label: "caption",
         children: "childs",
-        checkStrictly: true,
-        emitPath: false
+        // checkStrictly: true,
+        emitPath: false,
+        // multiple: true,
       },
       searchForm: {
         content: "", //关键字搜索
@@ -282,30 +344,31 @@ export default {
         applyType: "", //设备状态
         kindId: "",
         storagePlace: "",
-        ownerOrganId: ""
+        ownerOrganIds: [],
+        ownerUserIds: [],
       },
       updateStatus: "", //修改后的状态
       defaultProps: {
         children: "children",
-        label: "caption"
+        label: "caption",
       },
       treeData: [], //设备分类树
       //设备类别
       classifyOptions: [
         {
           value: 4,
-          label: "个人资产"
+          label: "个人资产",
         },
         {
           value: 8,
-          label: "保密室资产"
-        }
+          label: "保密室资产",
+        },
       ],
       //设备状态
       equipmentStatusList: [
         {
           id: 1,
-          label: "登记中"
+          label: "登记中",
         },
         // {
         //   id: 2,
@@ -313,7 +376,7 @@ export default {
         // },
         {
           id: 4,
-          label: "已登记"
+          label: "已登记",
         },
         // {
         //   id: 16,
@@ -321,11 +384,11 @@ export default {
         // },
         {
           id: 32,
-          label: "已销毁"
+          label: "已销毁",
         },
         {
           id: 64,
-          label: "已借用"
+          label: "已借用",
         },
         // {
         //   id: 128,
@@ -333,39 +396,47 @@ export default {
         // },
         {
           id: 256,
-          label: "已外送"
+          label: "已外送",
         },
         {
           id: 512,
-          label: "已回执"
-        }
+          label: "已回执",
+        },
       ],
       //设备类别
       statusOptions: [],
       initStatusOptions: [
         {
           value: 4,
-          label: "已登记"
+          label: "已登记",
         },
         {
           value: 16,
-          label: "已报废"
+          label: "已报废",
         },
         {
           value: 128,
-          label: "已维修"
-        }
+          label: "已维修",
+        },
       ],
       detailObj: {}, //详情
       deviceRecordId: "", //编辑id
       updateParams: {
         applyUserName: "",
         applyUserId: "",
-        devId: ""
-      }
+        devId: "",
+      },
     };
   },
   watch: {
+    "searchForm.ownerOrganIds"(newValue) {
+      if (newValue.length === 0 || !newValue) {
+        this.searchForm.ownerUserIds = "";
+      }
+      findUsersByOrganIdApi(newValue).then((res) => {
+        this.userOptions = res.data;
+      });
+    },
     activeTab: {
       immediate: true,
       handler(val) {
@@ -380,8 +451,8 @@ export default {
             this.tableObj.tableOptions = tableOptions2;
             break;
         }
-      }
-    }
+      },
+    },
   },
   computed: {
     ...mapState("login", ["userAuth"]),
@@ -392,18 +463,55 @@ export default {
       return require(`@/assets/icon/${
         this.isMore ? "icon_system_搜索收起@2x" : "icon_system_搜索展开@2x"
       }.png`);
-    }
+    },
   },
   created() {
     this.setInitActiveTab();
     this.resetForm();
     this.getData();
     this.getDeviceKindTreeData();
-    organTreeApi().then(res => {
-      this.options = res.data;
-    });
+    this.loadOrganTree();
+    // this.loadUserOption();
   },
   methods: {
+    //选择责任人获取焦点后触发的事件
+    handleUserFocus() {
+      console.log(this.searchForm.ownerOrganIds);
+      if (
+        !this.searchForm.ownerOrganIds ||
+        this.searchForm.ownerOrganIds.length === 0
+      ) {
+        this.$message({
+          type: "warning",
+          message: "请先选择所属科室！",
+          duration: 1000,
+        });
+      }
+    },
+    loadUserOption() {
+      findUsersByOrganIdApi().then((res) => {
+        this.userOptions = res.data;
+      });
+    },
+    loadOrganTree() {
+      organTreeApi({
+        userId: this.$store.state.login.loginData.userId,
+      }).then((res) => {
+        this.deep(res.data);
+        console.log(res.data, "909090");
+        this.technicalOptions = res.data;
+      });
+    },
+    deep(arr) {
+      for (let key of arr) {
+        if (!key.childs) return;
+        if (key.childs.length === 0) {
+          delete key.childs;
+        } else {
+          this.deep(key.childs);
+        }
+      }
+    },
     setInitActiveTab() {
       if (this.userAuth.childMenu.includes("xts_alone")) {
         this.activeTab = 1;
@@ -475,7 +583,13 @@ export default {
         currentPage: this.tableObj.page,
         pageSize: this.tableObj.size,
         userId: this.$store.state.login.loginData.userId,
-        ...this.searchForm
+        ...this.searchForm,
+        ownerOrganIds: this.searchForm.ownerOrganIds
+          ? this.searchForm.ownerOrganIds.join(";")
+          : "",
+        ownerUserIds: this.searchForm.ownerUserIds
+          ? this.searchForm.ownerUserIds.join(";")
+          : "",
       };
       if (this.activeTab === 1) {
         this.loadData(pageMyselfAll(params));
@@ -490,7 +604,7 @@ export default {
       try {
         this.tableObj.loading = true;
         const res = await promise;
-        this.tableObj.tableData = res.data.data.map(item => {
+        this.tableObj.tableData = res.data.data.map((item) => {
           item.statusLabel = this.switchStatus(item.status);
           return item;
         });
@@ -533,10 +647,10 @@ export default {
       // const ids = this.selection.map((item) => item.id).join(",");
       const res = await downloadExist({
         type: this.activeTab,
-        ...this.searchForm
+        ...this.searchForm,
       });
       let blob = new Blob([res], {
-        type: "application/vnd.ms-excel"
+        type: "application/vnd.ms-excel",
       });
       let objectUrl = URL.createObjectURL(blob);
       let a = document.createElement("a");
@@ -558,10 +672,10 @@ export default {
       this.updateParams = {
         applyUserName: row.ownerUserName,
         applyUserId: row.ownerUserId,
-        devId: row.id
+        devId: row.id,
       };
       this.statusOptions = this.initStatusOptions.filter(
-        item => item.value !== row.status
+        (item) => item.value !== row.status
       );
       this.dialogVisible = true;
     },
@@ -570,14 +684,14 @@ export default {
     async handleSubmit() {
       const params = {
         ...this.updateParams,
-        status: this.updateStatus
+        status: this.updateStatus,
       };
       const res = await updateStatus(params);
       this.$message.success(res.msg);
       this.dialogVisible = false;
       this.getData();
-    }
-  }
+    },
+  },
 };
 </script>
 
