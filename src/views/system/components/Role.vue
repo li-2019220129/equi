@@ -139,7 +139,6 @@ export default {
       this.tableObj.size = pageSize;
       this.getData();
     },
-
     loadBaseData() {
       roleFindAll().then((res) => {
         if (res.status === 200) {

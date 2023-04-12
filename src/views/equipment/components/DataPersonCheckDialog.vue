@@ -1,22 +1,21 @@
 <template>
   <div class="person-layout">
     <div class="dialog-btn-layout">
-      <div class="handle send" @click="handleSend">确认送审</div>
+      <div class="handle send" @click="handleSave">确认</div>
     </div>
     <hr />
     <div class="person-dialog-layout">
       <div class="layout-box">
-        <div class="title">机关单位</div>
+        <div class="title">可选人员</div>
         <div class="content">
           <el-tree
-            :data="data"
-            :props="defaultProps"
-            class="trees"
+            ref="tree"
             node-key="id"
-            ref="trees"
+            @check="menusTreeCheck"
+            :props="props"
+            :load="fetchUserTree"
+            lazy
             show-checkbox
-            v-loading="loading"
-            @node-click="handleNodeClick"
           >
             <div class="custom-tree-node" slot-scope="{ node, data }">
               <tree-slot :node="node" :data="data"></tree-slot>
@@ -27,11 +26,7 @@
       <div class="layout-box">
         <div class="title">已选人员</div>
         <div class="content">
-          <div
-            v-for="(item, index) of arrays"
-            :key="index"
-            class="content-chosen"
-          >
+          <div v-for="user of arrays" :key="user.id" class="content-chosen">
             <div>
               <img
                 src="@/assets/icon/人员 在位@2x.png"
@@ -39,11 +34,11 @@
                 height="20px"
               />
             </div>
-            <div>{{ item.label }}</div>
+            <div>{{ user.caption }}</div>
             <div class="del">
               <img
                 src="@/assets/icon/移除@2x.png"
-                @click="handleDel(item.id)"
+                @click="handleRemove(user)"
                 width="18px"
                 height="18px"
               />
@@ -57,256 +52,118 @@
 
 <script>
 import TreeSlot from "@/components/TreeSlot/index.vue";
-import {
-  findParticipatorsGroundByOrgan,
-  sendAuditMedia,
-  sendAuditBorrow,
-  sendAuditHander,
-  sendAuditTakeout,
-  sendAuditRecycle,
-} from "@/api/data";
+import { roleSaveApi, userTree, updateXts } from "@/api/system";
 export default {
   components: {
     TreeSlot,
   },
   props: {
-    pArams: {
-      type: Object,
-      default: () => {},
-    },
-    selection: {
-      type: Array,
-      default: () => [],
-    },
-    sendType: {
-      type: String,
-      default: "register",
-    },
+    mode: String,
+    node: Object,
+    users: Array,
   },
   data() {
     return {
-      sendClick: true,
-      arrays: [],
-      checkedNodes: [],
-      data: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1",
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1",
-            },
-            {
-              id: 6,
-              label: "二级 2-2",
-            },
-          ],
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1",
-            },
-            {
-              id: 8,
-              label: "二级 3-2",
-            },
-          ],
-        },
-      ],
-      defaultProps: {
-        children: "children",
-        label: "label",
+      props: {
+        label: "caption",
+        isLeaf: "isLeaf",
       },
-      nodeId: "", //节点id
-      form: {
-        caption: "",
-        id: "",
-      },
-      type: 1, //1登记  4外送  32移交  64销毁  128借用
-      loading: false,
+      menuTreeSelected: [],
     };
   },
-  created() {
-    this.switchType(this.sendType);
-    this.findParticipatorsGroundByOrgan();
+  computed: {
+    arrays() {
+      return this.menuTreeSelected.filter((r) => r.caption !== "root");
+    },
   },
   methods: {
-    switchType(sendType) {
-      switch (sendType) {
-        case "register":
-          return (this.type = 1);
-        case "borrow":
-          return (this.type = 128);
-        case "transfer":
-          return (this.type = 32);
-        case "deliver":
-          return (this.type = 4);
-        case "destory":
-          return (this.type = 64);
-      }
-    },
-    findParticipatorsGroundByOrgan() {
-      try {
-        this.loading = true;
+    submitRoles() {
+
+        const menuIds = this.menuTreeSelected.map((cur) => cur.id).join(",");
         const params = {
-          type: this.type,
-          secretLevelStr: "",
-          userId: this.$store.state.login.loginData.userId,
+          ...this.form,
+          enabled: true,
+          userIds: menuIds,
         };
-        findParticipatorsGroundByOrgan(params).then((res) => {
-          this.loading = false;
-          // this.data = res.data;
-        });
-      } catch (error) {
-        this.loading = false;
-      }
-    },
-
-    handleSend() {
-      if (!this.sendClick) return;
-      this.sendClick = false;
-      if (this.nodeId === "") {
-        this.$message.info("请先选中送审人员");
-        return;
-      }
-
-      const common = {
-        id: this.pArams.id, //任务主键
-        nodeId: this.nodeId, //节点主键
-      };
-      if (this.sendType === "register") {
-        let paramsArray = this.selection?.map((item) => {
-          return {
-            id: item.id,
-            createUserId: this.$store.state.login.loginData.userId, //申请人主键
-            createUserName: this.$store.state.login.loginData.userName, //申请人名称
-            nodeId: this.nodeId, //节点主键
-            auditUserId: this.form.id, //审批人主键
-            auditUserName: this.form.caption,
-          };
-        });
-        if (Object.keys(this.pArams).length) {
-          paramsArray = [
-            {
-              id: this.pArams.id,
-              createUserId: this.$store.state.login.loginData.userId, //申请人主键
-              createUserName: this.$store.state.login.loginData.userName, //申请人名称
-              nodeId: this.nodeId, //节点主键
-              auditUserId: this.form.id, //审批人主键
-              auditUserName: this.form.caption,
-            },
-          ];
+        if (this.mode === "edit") {
+          params.id = this.node.id;
+          params.sequence = this.node.sequence;
+          updateXts(params).then((res) => {
+            if (res.status === 200) {
+              this.$message.success("操作成功");
+              this.$emit("refresh", this.mode);
+              // this.$emit("closed");
+              this.$emit("closed");
+            } else {
+              this.$message.success("操作失败");
+            }
+          });
+        } else {
+          roleSaveApi(params).then((res) => {
+            if (res.status === 200) {
+              this.$message.success("操作成功");
+              this.$emit("refresh", this.mode);
+              this.$emit("closed");
+            } else {
+              this.$message.success("操作失败");
+            }
+          });
         }
-        // const params1 = {
-        //   ...common,
-        //   createUserId: this.$store.state.login.loginData.userId, //申请人主键
-        //   createUserName: this.$store.state.login.loginData.userName, //申请人名称
-        //   auditUserId: this.form.id, //审批人主键
-        //   auditUserName: this.form.caption,
-        // };
-        this.applyByType(sendAuditMedia(paramsArray));
-      } else if (this.sendType === "borrow") {
-        const params2 = {
-          ...common,
-          userId: this.$store.state.login.loginData.userId, //申请人主键
-          userName: this.$store.state.login.loginData.userName, //申请人名称
-          auditUserId: this.form.id, //审批人主键
-          auditUserName: this.form.caption,
-        };
-        this.applyByType(sendAuditBorrow(params2));
-      } else if (this.sendType === "transfer") {
-        const params3 = {
-          ...common,
-          userId: this.$store.state.login.loginData.userId, //申请人主键
-          userName: this.$store.state.login.loginData.userName, //申请人名称
-          toUserId: this.form.id, //审批人主键
-          toUserName: this.form.caption,
-        };
-        this.applyByType(sendAuditHander(params3));
-      } else if (this.sendType === "deliver") {
-        const params4 = {
-          ...common,
-          toUserId: this.form.id, //审批人主键
-          toUserName: this.form.caption,
-        };
-        this.applyByType(sendAuditTakeout(params4));
-      } else if (this.sendType === "destory") {
-        const params5 = {
-          ...common,
-          applyUserId: this.$store.state.login.loginData.userId, //申请人主键
-          applyUserName: this.$store.state.login.loginData.userName, //申请人名称
-          toUserId: this.form.id, //审批人主键
-          toUserName: this.form.caption,
-        };
-        this.applyByType(sendAuditRecycle(params5));
+    },
+    handleRemove(user) {
+      const index = this.menuTreeSelected.indexOf(user);
+      if (index !== -1) {
+        this.menuTreeSelected.splice(index, 1);
+        this.$refs.tree.setCheckedKeys(
+          this.menuTreeSelected.map((r) => {
+            return r.id;
+          })
+        );
       }
     },
-    async applyByType(promise) {
-      const res = await promise;
-      // this.$message.success(res.msg);
-      this.$message({
-        type: "success",
-        duration: 1000,
-        message: res.msg,
+    menusTreeCheck(cur, all) {
+      this.menuTreeSelected = all.checkedNodes.filter((r) => !r.hasChild);
+    },
+    async fetchUserTree(node, resolve) {
+      let id = null;
+      if (node.level !== 0) {
+        id = node.data.id;
+      }
+      userTree(id).then((res) => {
+        if (res.status == 200) {
+          this.$refs.tree.setCheckedKeys(
+            this.menuTreeSelected.map((r) => {
+              return r.id;
+            })
+          );
+          resolve(
+            res.data.map((r) => {
+              return { ...r, isLeaf: !r.hasChild };
+            })
+          );
+        }
       });
-      this.sendClick = true;
-      this.$store.dispatch("login/getDataAuditBadge"); //获取资料待审批角标
-      this.arrays = [];
-      this.$emit("close");
     },
-
-    handleNodeClick(node) {
-      this.arrays = [];
-      if (node.ntype === "User") {
-        this.nodeId = node.nodeId;
-        this.form.caption = node.label;
-        this.form.id = node.id;
-        this.arrays.push(node);
-      }
-    },
-
-    handleDel(id) {
-      this.arrays = this.arrays.filter((item) => item.id !== id);
+    handleSave() {
+      this.submitRoles();
     },
   },
 };
 </script>
 
-<style lang="scss" src="./headerScss.scss" scoped></style>
-
+<style
+  lang="scss"
+  src="../../equipment//components/headerScss.scss"
+  scoped
+></style>
 <style lang="scss" scoped>
 @import "~@/styles/mixin.scss";
-
-::v-deep .el-tree-node__content{
-  height: 33px;
+::v-deep .el-tree-node__content > label.el-checkbox {
+  margin-right: 0px;
+  margin-left: 10px;
 }
-::v-deep .el-icon-caret-right{
-  font-size: 20px;
+::v-deep .el-tree-node__expand-icon {
+  font-size: 22px;
 }
 .person-layout {
   margin-bottom: 50px;
@@ -330,7 +187,6 @@ export default {
         height: 39px;
         width: 100%;
         background: #e7e7e7;
-        position: absolute;
         top: 0;
         left: 0;
         font-size: 18px;

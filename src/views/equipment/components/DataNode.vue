@@ -35,6 +35,7 @@
         >
           <div class="custom-tree-node" slot-scope="{ node, data }">
             <tree-slot
+              :showIcon="false"
               :node="node"
               :data="data"
               :isSelect="true"
@@ -169,6 +170,74 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-icon-arrow-right {
+  display: none;
+}
+
+// 对树的样式进行修改
+::v-deep .el-tree-node__content {
+  height: 38px;
+  // padding-left: 20px !important;
+}
+.custom-tree-node{
+  width: 100%;
+  height: 100%;
+}
+
+
+
+// 树形控件
+
+.leadal-menu-tree .el-tree {
+  color: #3b3b3b;
+}
+.leadal-menu-tree .el-tree-node__label {
+  font-size: 20px;
+}
+.leadal-menu-tree .el-tree-node__content:hover {
+  background-color: #dff1ff;
+}
+.leadal-menu-tree
+  .el-tree--highlight-current
+  .el-tree-node.is-current
+  > .el-tree-node__content {
+  background-color: #dff1ff;
+}
+
+// 树样式
+
+::v-deep .el-tree-node__expand-icon {
+  /* display: none; */
+  font-size:20px;
+}
+
+
+
+
+.child-triangle {
+  transition: all 0.3s;
+  margin-left: -20px;
+  &.rodge {
+    transform: rotate(90deg);
+  }
+  &.treeTriangle {
+    margin: 0 30px !important;
+    margin-left: -50px !important;
+  }
+  &.treeTriangleSelect{
+    margin: 0 30px !important;
+    margin-left: -40px !important;
+  }
+}
+
+::v-deep .el-tree-node__loading-icon {
+  /* margin-right: 8px; */
+  font-size: 14px;
+  margin: 0 0 0 3px;
+  color: #c0c4cc;
+  position: absolute;
+  // left: 0;
+}
 .full-node {
   text-align: center;
   width: 100px;
@@ -215,7 +284,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   color: white;
-  padding: 12px 2px 12px 12px;
+  padding: 12px 12px 12px 12px;
   height: 40px;
   position: relative;
   background: #00a0f0;

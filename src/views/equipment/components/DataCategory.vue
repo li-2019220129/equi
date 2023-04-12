@@ -35,12 +35,12 @@
             <img
               src="@/assets/icon/选择设备@2x.png"
               v-if="data.parentId === ''"
-              @click="addDataKind(data)"
+              @click.stop="addDataKind(data)"
             />
-            <img src="@/assets/icon/编辑@2x.png" @click="editDataKind(data)" />
+            <img src="@/assets/icon/编辑@2x.png" @click.stop="editDataKind(data)" />
             <img
               src="@/assets/icon/icon-delete.png"
-              @click="deleteDataKind(data)"
+              @click.stop="deleteDataKind(data)"
             />
           </div>
         </div>
@@ -219,25 +219,28 @@ export default {
         return;
       }
       if (this.title === "新增种类") {
-        // const nodes = this.$refs.navTree.store.nodesMap;
-        // for (let i in nodes) {
-        //   if (nodes[i].data.id === this.parentId) {
-        //     let node = cloneDeep(nodes[i].childNodes[0]);
-        //     node.id =
-        //       nodes[i].childNodes[nodes[i].childNodes.length - 1].id + 1;
-        //     node.data = params;
-        //     node.data.label = params.name;
-        //     nodes[i].childNodes.push(node);
-        //     console.log(nodes,node, "我手机哦你妹");
-        //   }
-        // }
+        const nodes = this.$refs.navTree.store.nodesMap;
+        for (let i in nodes) {
+          if (nodes[i].data.id === this.parentId) {
+            if (nodes[i].childNodes.length === 0) {
+              this.keyEl = +new Date().getTime();
+            }
+            // let node = cloneDeep(nodes[i].childNodes[0]);
+            // node.id =
+            //   nodes[i].childNodes[nodes[i].childNodes.length - 1].id + 1;
+            // node.data = params;
+            // node.data.label = params.name;
+            // nodes[i].childNodes.push(node);
+            // console.log(nodes,node, "我手机哦你妹");
+          }
+        }
         treeView({
           id: this.parentId,
         }).then((res) => {
           const arr = res.data.map((item) => {
             return { ...item, leaf: !item.hasChild };
           });
-
+          console.log(arr, this.parentId, this.$refs.navTree);
           this.$refs.navTree.updateKeyChildren(this.parentId, arr);
         });
       }

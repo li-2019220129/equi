@@ -240,6 +240,79 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-tree-node__content > label.el-checkbox {
+  margin-right: -18px;
+  margin-left: 20px;
+  margin-top: -3px;
+}
+
+
+// 对树的样式进行修改
+::v-deep .el-tree-node__content {
+  height: 38px;
+  // padding-left: 20px !important;
+}
+.custom-tree-node{
+  width: 100%;
+  height: 100%;
+}
+
+
+
+// 树形控件
+
+.leadal-menu-tree .el-tree {
+  color: #3b3b3b;
+}
+.leadal-menu-tree .el-tree-node__label {
+  font-size: 20px;
+}
+.leadal-menu-tree .el-tree-node__content:hover {
+  background-color: #dff1ff;
+}
+.leadal-menu-tree
+  .el-tree--highlight-current
+  .el-tree-node.is-current
+  > .el-tree-node__content {
+  background-color: #dff1ff;
+}
+
+// 树样式
+
+::v-deep .el-tree-node__expand-icon {
+  display: none;
+}
+
+// .el-tree-node__content {
+//   margin-left: 20px;
+// }
+
+
+
+.child-triangle {
+  transition: all 0.3s;
+  margin-left: -20px;
+  &.rodge {
+    transform: rotate(90deg);
+  }
+  &.treeTriangle {
+    margin: 0 30px !important;
+    margin-left: -50px !important;
+  }
+  &.treeTriangleSelect{
+    margin: 0 30px !important;
+    margin-left: -40px !important;
+  }
+}
+
+::v-deep .el-tree-node__loading-icon {
+  /* margin-right: 8px; */
+  font-size: 14px;
+  margin: 0 0 0 3px;
+  color: #c0c4cc;
+  position: absolute;
+  // left: 0;
+}
 .equipment-container {
   display: flex;
   height: 100vh;

@@ -256,8 +256,8 @@
           width="350"
         >
           <template slot-scope="scope">
-            <div :class="{ outTime: scope.row.hasOverTime }">
-              <span v-if="scope.row.hasOverTime" style="margin-right: 4px"
+            <div v-if="scope.row.hasOverTime" :class="{ outTime: scope.row.hasOverTime }">
+              <span  style="margin-right: 4px"
                 >【超期】</span
               >
               {{ scope.row.borrowTimeLabel }}

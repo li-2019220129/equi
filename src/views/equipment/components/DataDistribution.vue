@@ -27,7 +27,7 @@
         </div>
 
         <div
-          :class="['table-menu-item', activeTab === 5 ? 'selected' : '']"
+          :class="['table-menu-item', activeTab === 4 ? 'selected' : '']"
           @click="handleActiveTab(4)"
         >
           已接收
@@ -42,6 +42,14 @@
           >
             <img src="@/assets/icon/外送申请@2x.png" />
             <span>分发</span>
+          </div>
+          <div
+            class="equipment-button_btn"
+            v-if="activeTab === 3"
+            @click="handleDistribution"
+          >
+            <img src="@/assets/icon/外送申请@2x.png" />
+            <span>确认分发</span>
           </div>
         </div>
       </div>
@@ -128,7 +136,7 @@ import LeadalTable from "@/components/LeadalTable";
 import LeadalDrawer from "@/components/LeadalDrawer";
 import DataApplyDrawer from "./DataApplyDrawer.vue";
 import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
-import DataPersonCheckDialogVue from './DataPersonCheckDialog.vue';
+import DataPersonCheckDialogVue from "./DataPersonCheckDialog.vue";
 import { tableOptions1, tableOptions2 } from "./dataOption/destory.options";
 import {
   pageApplyRecycle,
