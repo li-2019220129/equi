@@ -153,7 +153,9 @@ export default {
       this.tableObj.size = pageSize;
       this.loadContent({ id: this.kindId });
     },
-
+        /**
+         * 
+         */
     //获取配置类型
     async findGlobalConfigType() {
       const res = await findGlobalConfigType();
@@ -186,6 +188,7 @@ export default {
     closeDialog() {
       this.visible = false;
       this.loadContent({ id: this.kindId });
+      this.$store.dispatch('login/getEquipmentSecret')
     },
 
     changeRadio(row) {

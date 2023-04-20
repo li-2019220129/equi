@@ -200,7 +200,6 @@ export default {
       });
       return arr;
     },
-
     async handleSubmit() {
       // 设备移交
       const moveObj = {};

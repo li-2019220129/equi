@@ -46,16 +46,16 @@
           <div
             class="equipment-button_btn"
             v-if="activeTab === 3"
-            @click="handleDistribution"
+            @click="handleSureReceive"
           >
             <img src="@/assets/icon/外送申请@2x.png" />
-            <span>确认分发</span>
+            <span>确认接收</span>
           </div>
         </div>
       </div>
     </div>
 
-    <el-input
+    <!-- <el-input
       placeholder="请输入标题关键字"
       v-model="content"
       style="width: 300px; margin: 20px 0 10px 0"
@@ -68,7 +68,7 @@
         class="el-input__icon el-icon-search"
         @click="getData(status)"
       ></i>
-    </el-input>
+    </el-input> -->
 
     <leadal-table
       :data="tableObj.tableData"
@@ -77,12 +77,13 @@
       :total="tableObj.total"
       :page="tableObj.page"
       :size="tableObj.size"
+      :key="keyEl"
       v-loading="tableObj.loading"
       @page-change="handleChangePage"
       @handleRowDblCick="handleRowDblCick"
-      @row-click="changeRadio"
       :height="'calc(70vh - 25px)'"
       ref="leadalTable"
+      :selection.sync="selection"
     >
       <template slot="radio">
         <el-table-column label header-align="center" align="center" width="50">
@@ -99,33 +100,26 @@
       </template>
     </leadal-table>
 
-    <LeadalDrawer :visible.sync="applyDrawerVisible">
+    <leadal-dialog
+      title="数据详情信息"
+      @close="applyDrawerVisible = false"
+      :visible="applyDrawerVisible"
+    >
       <template #content>
-        <data-apply-drawer
-          :visible.sync="applyDrawerVisible"
-          :formLine="formLine"
-          :applyId="applyId"
-          @saveApply="getData()"
-          :mode="mode"
-          @handleParams="handleParams"
-        />
+        <DistributionDetail :formLine="formLine" />
       </template>
-    </LeadalDrawer>
+    </leadal-dialog>
 
     <leadal-dialog
       :visible="visible"
-      :title="'人员选择'"
+      :title="'分发'"
       width="1280px"
       class="dialog"
       :footer="false"
       @close="visible = false"
     >
       <template #content>
-        <DataPersonCheckDialogVue
-          @close="handleClose"
-          :pArams="pArams"
-          :sendType="'destory'"
-        />
+        <DataPersonCheckDialog @close="handleClose" @handleSave="handleSave" />
       </template>
     </leadal-dialog>
   </div>
@@ -136,18 +130,18 @@ import LeadalTable from "@/components/LeadalTable";
 import LeadalDrawer from "@/components/LeadalDrawer";
 import DataApplyDrawer from "./DataApplyDrawer.vue";
 import LeadalDialog from "@/components/LeadalDialog/Dialog.vue";
-import DataPersonCheckDialogVue from "./DataPersonCheckDialog.vue";
-import { tableOptions1, tableOptions2 } from "./dataOption/destory.options";
+import DataPersonCheckDialog from "./DataPersonCheckDialog.vue";
+import { tableOptions1 } from "./dataOption/distribution";
 import {
-  pageApplyRecycle,
-  pageAllWaitRecycle,
-  pageAllAlreadyRecycle,
-  recallRecycle,
-  recycleRecycle,
-  rubbishRecycle,
-  messageLookRecycle,
+  pageWaitDistributeApi,
+  pageDistributedApi,
+  pageReceiveApi,
+  pageReceivedApi,
+  savePersionApi,
+  receiveApi,
 } from "@/api/data";
 import { mapState } from "vuex";
+import DistributionDetail from "./DistributionDetail.vue";
 export default {
   name: "EquipmentDestory",
   components: {
@@ -155,7 +149,8 @@ export default {
     LeadalDrawer,
     DataApplyDrawer,
     LeadalDialog,
-    DataPersonCheckDialogVue,
+    DistributionDetail,
+    DataPersonCheckDialog,
   },
   provide() {
     return {
@@ -164,6 +159,8 @@ export default {
   },
   data() {
     return {
+      keyEl: +new Date().getTime(),
+      selection: [],
       isDetail: false,
       title: "销毁",
       mode: null,
@@ -192,14 +189,14 @@ export default {
     this.getData();
   },
   watch: {
-    activeTab: {
-      immediate: true,
-      handler(val) {
-        val === 3
-          ? (this.tableObj.tableOptions = tableOptions2)
-          : (this.tableObj.tableOptions = tableOptions1);
-      },
-    },
+    // activeTab: {
+    //   immediate: true,
+    //   handler(val) {
+    //     val === 3
+    //       ? (this.tableObj.tableOptions = tableOptions2)
+    //       : (this.tableObj.tableOptions = tableOptions1);
+    //   },
+    // },
   },
   computed: {
     ...mapState("login", ["loginData", "dataDestoryBadge"]),
@@ -211,6 +208,50 @@ export default {
     },
   },
   methods: {
+    async handleSureReceive() {
+      if (this.selection.length === 0) {
+        this.$message({
+          type: "warning",
+          duration: 1000,
+          message: "请选择要接收的数据！",
+        });
+        return;
+      }
+      this.$confirm(`是否确认接收？`)
+        .then(async (_) => {
+          const { status, msg } = await receiveApi({
+            mediaIdList: this.selection.map((item) => item.copyMediaId),
+            receiveUserId:this.$store.state.login.loginData.userId
+          });
+          if (status === 200) {
+            this.$message({
+              type: "success",
+              duration: 1000,
+              message: msg,
+            });
+            this.keyEl = +new Date().getTime();
+            this.getData()
+          }
+        })
+        .catch((_) => {});
+    },
+    //分发选择人员后向父组件抛出的事件
+    async handleSave(params) {
+      const { status, msg } = await savePersionApi({
+        mediaIdList: this.selection.map((item) => item.id),
+        receiveUserIdList: params.map((item) => item.id),
+        distributeUserId: this.$store.state.login.loginData.userId,
+      });
+      if (status === 200) {
+        this.$message({
+          type: "success",
+          message: msg,
+        });
+        this.visible = false;
+        this.keyEl = +new Date().getTime();
+        this.getData();
+      }
+    },
     //分页切换
     handleChangePage(pageNum, pageSize) {
       this.tableObj.page = pageNum;
@@ -220,51 +261,39 @@ export default {
 
     handleActiveTab(num) {
       this.activeTab = num;
-      this.radio = "";
       this.formLine = {};
-      if (num === 1) {
-        this.status = 2;
-      } else if (num === 2) {
-        this.status = 4;
-      } else if (num === 3) {
-        this.status = 8;
-      } else {
-        this.status = null;
-      }
-      this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
+      this.keyEl = +new Date().getTime();
+      // if (num === 1) {
+      //   this.status = 2;
+      // } else if (num === 2) {
+      //   this.status = 4;
+      // } else if (num === 3) {
+      //   this.status = 8;
+      // } else {
+      //   this.status = null;
+      // }
+      // this.activeTab === 1 ? (this.isDetail = false) : (this.isDetail = true);
       this.content = "";
       this.getData();
     },
-    changeRadio(row) {
-      this.radio = row.id;
-      this.applyId = row.id;
-      this.formLine = row;
-      this.pArams = row;
-    },
     getData() {
-      const params2 = {
+      const params = {
         currentPage: this.tableObj.page,
         pageSize: this.tableObj.size,
         content: this.content,
+        ownerDeptName: null,
+        currentUserId: this.$store.state.login.loginData.userId,
       };
-      if ([1, 2, 3].includes(this.activeTab)) {
-        const params1 = {
-          currentPage: this.tableObj.page,
-          pageSize: this.tableObj.size,
-          status: this.status,
-          content: this.content,
-          currentUserId: this.$store.state.login.loginData.userId,
-        };
-        this.getDataByType(pageApplyRecycle(params1));
-      } else if (this.activeTab === 4) {
-        params2.applyUserId = this.$store.state.login.loginData.userId;
-        this.getDataByType(pageAllWaitRecycle(params2));
+      if (this.activeTab === 1) {
+        this.getDataByType(pageWaitDistributeApi(params));
+      } else if (this.activeTab === 2) {
+        this.getDataByType(pageDistributedApi(params));
+      } else if (this.activeTab === 3) {
+        this.getDataByType(pageReceiveApi(params));
       } else {
-        params2.applyUserId = this.$store.state.login.loginData.userId;
-        this.getDataByType(pageAllAlreadyRecycle(params2));
+        this.getDataByType(pageReceivedApi(params));
       }
     },
-
     async getDataByType(promise) {
       try {
         this.tableObj.loading = true;
@@ -295,142 +324,34 @@ export default {
     },
 
     handleClose() {
+      this.keyEl = +new Date().getTime();
       this.visible = false;
       this.getData();
     },
 
     //申请
     handleDistribution() {
-      // this.formLine = {};
-      // this.radio = "";
-      // this.applyId = "";
-      // this.mode = "add";
-      // this.applyDrawerVisible = true;
-      this.visible = true;
-    },
-
-    //送审
-    send() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
+      if (this.selection.length === 0) {
+        this.$message({
+          type: "warning",
+          duration: 1000,
+          message: "请选择要分发的数据！",
+        });
         return;
       }
       this.visible = true;
     },
 
     handleRowDblCick(row) {
+      if (this.activeTab === 1 || this.activeTab === 2) return;
       this.formLine = row;
-      this.applyId = row.id;
-
-      if ([3, 4].includes(this.activeTab)) {
-        this.messageLookDestory(row.id);
-      }
-      this.edit();
+      this.applyDrawerVisible = true;
     },
 
     //消息标记已读
     async messageLookDestory(id) {
       const res = await messageLookRecycle({ id });
       this.$store.dispatch("login/getDataDestoryBadge"); //获取设备销毁角标
-    },
-
-    edit() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
-        return;
-      }
-      this.mode = "";
-      this.applyDrawerVisible = true;
-    },
-
-    //撤回
-    recall() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
-        return;
-      }
-      this.$confirm("是否撤回该申请?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(async () => {
-          const params = {
-            idStr: this.applyId,
-          };
-          const res = await recallRecycle(params);
-          this.$message({
-            type: "success",
-            duration: 1000,
-            message: res.msg,
-          });
-          this.$store.dispatch("login/getDataDestoryBadge");
-
-          // this.$message.success(res.msg);
-          this.getData();
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消撤回",
-          });
-        });
-    },
-
-    //销毁
-    recive() {
-      if (JSON.stringify(this.formLine) === "{}") {
-        this.$message.info("请先选中数据");
-        return;
-      }
-      this.$confirm("是否销毁该资料?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(async () => {
-          const params = {
-            idStr: this.applyId,
-          };
-          const res = await recycleRecycle(params);
-          this.$message({
-            type: "success",
-            duration: 1000,
-            message: res.msg,
-          });
-          this.$store.dispatch("login/getDataDestoryBadge");
-
-          this.getData();
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消撤回",
-          });
-        });
-    },
-
-    //删除
-    deleteDestory() {
-      this.$confirm("是否删除该申请?, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(async () => {
-          const params = {
-            idStr: this.applyId,
-          };
-          const res = await rubbishRecycle(params);
-          this.$message.success(res.msg);
-          this.getData(this.status);
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
     },
   },
 };

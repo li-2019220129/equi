@@ -1,3 +1,13 @@
+/*
+ * @Author: li-2019220129 3312202467@qq.com
+ * @Date: 2023-04-03 10:40:32
+ * @LastEditors: li-2019220129 3312202467@qq.com
+ * @LastEditTime: 2023-04-20 16:31:13
+ * @FilePath: \equi\src\permission.js
+ * @Description:
+ *
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ */
 import router from "./router";
 import store from "./store";
 import { Message } from "element-ui";
@@ -18,11 +28,11 @@ router.beforeEach(async (to, from, next) => {
       next();
     } else {
       try {
-        const accessRoutes = await store.dispatch("permission/generateRoutes", [
-          "admin",
-        ]);
-        router.addRoutes(accessRoutes);
-        next({ ...to, replace: true });
+        // const accessRoutes = await store.dispatch("permission/generateRoutes", [
+        //   "admin",
+        // ]);
+        // router.addRoutes(accessRoutes);
+        // next({ ...to, replace: true });
         // store.dispatch("login/userAuth").then(async (res) => {
 
         //   if (res?.length > 0) {
@@ -34,20 +44,20 @@ router.beforeEach(async (to, from, next) => {
         //     next({ ...to, replace: true });
         //   }
         // });
-        // store.dispatch("login/loginAction").then((res) => {
-        //   if (res) {
-        //     store.dispatch("login/userAuth").then(async (res) => {
-        //       if (res?.length > 0) {
-        //         const accessRoutes = await store.dispatch(
-        //           "permission/generateRoutes",
-        //           ["admin"]
-        //         );
-        //         router.addRoutes(accessRoutes);
-        //         next({ ...to, replace: true });
-        //       }
-        //     }); //获取用户权限
-        //   }
-        // });
+        store.dispatch("login/loginAction").then((res) => {
+          if (res) {
+            store.dispatch("login/userAuth").then(async (res) => {
+              if (res?.length > 0) {
+                const accessRoutes = await store.dispatch(
+                  "permission/generateRoutes",
+                  ["admin"]
+                );
+                router.addRoutes(accessRoutes);
+                next({ ...to, replace: true });
+              }
+            }); //获取用户权限
+          }
+        });
       } catch (error) {
         await store.dispatch("user/resetToken");
         Message.error(error || "Has Error");

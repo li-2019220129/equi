@@ -111,7 +111,7 @@ export function sendAuditMedia(data) {
   return service2({
     url: `${devUrl}/media/media/sendAudit`,
     method: "post",
-    arrType:true,
+    arrType: true,
     data,
   });
 }
@@ -507,7 +507,7 @@ export function loadTakeout(params) {
   return service2({
     url: `${devUrl}/takeout/load`,
     method: "post",
-    data:params,
+    data: params,
   });
 }
 
@@ -783,7 +783,7 @@ export function auditAgreeBatch(data) {
     url: `${devUrl}/integration/auditAgreeBatch`,
     method: "post",
     data,
-    arrType:true
+    arrType: true,
   });
 }
 //
@@ -793,7 +793,7 @@ export function auditDisAgreeBatch(data) {
     url: `${devUrl}/integration/auditDisAgreeBatch`,
     method: "post",
     data,
-    arrType:true
+    arrType: true,
   });
 }
 
@@ -912,7 +912,7 @@ export function recallApi(data) {
   return service2({
     url: `${devUrl}/media/media/recall`,
     method: "post",
-    params:data,
+    params: data,
   });
 }
 // 设备借用上传
@@ -928,8 +928,8 @@ export function mucdownLoadApi(id) {
   return service2({
     url: `${devUrl}/muc/downLoad?id=${id}`,
     method: "post",
-    download:true,
-    responseType:'blob'
+    download: true,
+    responseType: "blob",
   });
 }
 
@@ -941,12 +941,12 @@ export function mucdeleteFileApi(id) {
   });
 }
 // 设备借用上传
-export function mucuploadApi(id,type,data) {
+export function mucuploadApi(id, type, data) {
   return service2({
     url: `${devUrl}/muc/upload?id=${id}&type=${type}`,
     method: "post",
     data,
-    arrType:true
+    arrType: true,
   });
 }
 //流程单条
@@ -973,7 +973,7 @@ export function uploadFileMode(data) {
     url: `${devUrl}/media/register/uploadFile`,
     method: "post",
     data,
-    arrType:true
+    arrType: true,
   });
 }
 
@@ -983,5 +983,67 @@ export function recallBorrow(params) {
     url: `${devUrl}/borrow/recall`,
     method: "post",
     params,
+  });
+}
+//待分发列表
+export function pageWaitDistributeApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/pageWaitDistribute`,
+    method: "post",
+    data,
+  });
+}
+//已分发列表
+export function pageDistributedApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/pageDistributed`,
+    method: "post",
+    data,
+  });
+}
+
+//待接收列表
+export function pageReceiveApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/pageReceive`,
+    method: "post",
+    data,
+  });
+}
+
+//已接收列表
+export function pageReceivedApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/pageReceived`,
+    method: "post",
+    data,
+  });
+}
+//已接收列表
+export function savePersionApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/save`,
+    method: "post",
+    data,
+  });
+}
+
+//查询分数据详情
+export function distributeDetailApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/detail`,
+    method: "post",
+    params: data,
+    arrType: true,
+  });
+}
+
+//确认接收
+export function receiveApi(data) {
+  return service2({
+    url: `${devUrl}/distribute/receive`,
+    method: "post",
+    data,
+    arrType: true,
   });
 }

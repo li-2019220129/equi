@@ -1,12 +1,12 @@
 <template>
   <div class="person-layout">
     <div class="dialog-btn-layout">
-      <div class="handle send" @click="handleSave">确认</div>
+      <div class="handle send" @click="handleSave">确认分发</div>
     </div>
     <hr />
     <div class="person-dialog-layout">
       <div class="layout-box">
-        <div class="title">可选人员</div>
+        <div class="title">机关单位</div>
         <div class="content">
           <el-tree
             ref="tree"
@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="layout-box">
-        <div class="title">已选人员</div>
+        <div class="title">接收人</div>
         <div class="content">
           <div v-for="user of arrays" :key="user.id" class="content-chosen">
             <div>
@@ -77,39 +77,6 @@ export default {
     },
   },
   methods: {
-    submitRoles() {
-
-        const menuIds = this.menuTreeSelected.map((cur) => cur.id).join(",");
-        const params = {
-          ...this.form,
-          enabled: true,
-          userIds: menuIds,
-        };
-        if (this.mode === "edit") {
-          params.id = this.node.id;
-          params.sequence = this.node.sequence;
-          updateXts(params).then((res) => {
-            if (res.status === 200) {
-              this.$message.success("操作成功");
-              this.$emit("refresh", this.mode);
-              // this.$emit("closed");
-              this.$emit("closed");
-            } else {
-              this.$message.success("操作失败");
-            }
-          });
-        } else {
-          roleSaveApi(params).then((res) => {
-            if (res.status === 200) {
-              this.$message.success("操作成功");
-              this.$emit("refresh", this.mode);
-              this.$emit("closed");
-            } else {
-              this.$message.success("操作失败");
-            }
-          });
-        }
-    },
     handleRemove(user) {
       const index = this.menuTreeSelected.indexOf(user);
       if (index !== -1) {
@@ -145,7 +112,14 @@ export default {
       });
     },
     handleSave() {
-      this.submitRoles();
+      if (this.menuTreeSelected.length === 0) {
+        this.$message({
+          type: "warning",
+          message: "请选择接收人！",
+        });
+        return
+      }
+      this.$emit("handleSave", this.menuTreeSelected);
     },
   },
 };
