@@ -23,6 +23,7 @@
       @row-click="rowClick"
       @row-dblclick="rowDblCick"
       @selection-change="handleSelectChange"
+      @sort-change="sortChange"
     >
       <!-- :header-cell-style="headerCellStyle"
       :row-style="rowStyle"-->
@@ -37,7 +38,7 @@
           :label="col.label"
           :align="col.align || 'center'"
           :width="col.width ? col.width : '80'"
-          :sortable="Boolean(col.sort) ? true : false"
+          :sortable="Boolean(col.sort) ? (col.sort ? true : 'custom') : false"
           :prop="col.value"
         />
 
@@ -299,6 +300,9 @@ export default {
   },
 
   methods: {
+    sortChange(val){
+      this.$emit('sortChange',val)
+    },
     getHeight(height) {
       if (!height) return;
       if (height.indexOf("calc")) {

@@ -1,13 +1,4 @@
-/*
- * @Author: li-2019220129 3312202467@qq.com
- * @Date: 2023-04-03 10:40:32
- * @LastEditors: li-2019220129 3312202467@qq.com
- * @LastEditTime: 2023-04-20 16:31:13
- * @FilePath: \equi\src\permission.js
- * @Description:
- *
- * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
- */
+
 import router from "./router";
 import store from "./store";
 import { Message } from "element-ui";

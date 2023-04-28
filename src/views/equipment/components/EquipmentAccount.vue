@@ -222,6 +222,7 @@
       @page-change="handleChangePage"
       :height="setHeight"
       ref="leadalTable"
+      @sortChange="sortChange"
     >
       <template slot="operate">
         <el-table-column
@@ -309,6 +310,7 @@ export default {
   },
   data() {
     return {
+      order: null,
       technicalOptions: [], //所属科室数据
       userOptions: [], //所选责任人数据
       activeTab: 1,
@@ -474,6 +476,16 @@ export default {
     // this.loadUserOption();
   },
   methods: {
+    sortChange(row) {
+      console.log(row);
+      this.order =
+        row.order === "ascending"
+          ? "record.code asc"
+          : !row.order
+          ? null
+          : "record.code asc";
+      this.getData();
+    },
     //选择责任人获取焦点后触发的事件
     handleUserFocus() {
       console.log(this.searchForm.ownerOrganIds);
@@ -578,12 +590,13 @@ export default {
       this.getData();
     },
 
-    getData() {
+    getData(sort) {
       const params = {
         currentPage: this.tableObj.page,
         pageSize: this.tableObj.size,
         userId: this.$store.state.login.loginData.userId,
         ...this.searchForm,
+        sort: this.order,
         ownerOrganIds: this.searchForm.ownerOrganIds
           ? this.searchForm.ownerOrganIds.join(";")
           : "",
@@ -648,6 +661,13 @@ export default {
       const res = await downloadExist({
         type: this.activeTab,
         ...this.searchForm,
+        ownerOrganIds: this.searchForm.ownerOrganIds
+          ? this.searchForm.ownerOrganIds.join(";")
+          : "",
+        ownerUserIds: this.searchForm.ownerUserIds
+          ? this.searchForm.ownerUserIds.join(";")
+          : "",
+        currentUserId: this.$store.state.login.loginData.userId,
       });
       let blob = new Blob([res], {
         type: "application/vnd.ms-excel",

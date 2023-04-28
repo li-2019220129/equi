@@ -103,6 +103,7 @@
       @page-change="handleChangePage"
       :height="'75vh'"
       ref="leadalTable"
+      @sortChange="sortChange"
     >
       <template slot="operate">
         <el-table-column
@@ -144,6 +145,7 @@ export default {
   },
   data() {
     return {
+      order: null,
       activeTab: 1,
       selection: [], //选中数据
       tableObj: {
@@ -249,6 +251,15 @@ export default {
     this.getData();
   },
   methods: {
+    sortChange(row) {
+      this.order =
+        row.order === "ascending"
+          ? "code asc"
+          : !row.order
+          ? null
+          : "code asc";
+      this.getData();
+    },
     //分页切换
     handleChangePage(pageNum, pageSize) {
       this.tableObj.page = pageNum;
@@ -263,6 +274,7 @@ export default {
           currentPage: this.tableObj.page,
           pageSize: this.tableObj.size,
           ...this.searchForm,
+          sort: this.order,
         };
         const res = await pageAll(params);
         this.tableObj.tableData = res.data.data;
@@ -333,12 +345,10 @@ export default {
   height: 38px;
   // padding-left: 20px !important;
 }
-.custom-tree-node{
+.custom-tree-node {
   width: 100%;
   height: 100%;
 }
-
-
 
 // 树形控件
 
@@ -362,11 +372,8 @@ export default {
 
 ::v-deep .el-tree-node__expand-icon {
   /* display: none; */
-  font-size:20px;
+  font-size: 20px;
 }
-
-
-
 
 .child-triangle {
   transition: all 0.3s;
@@ -378,7 +385,7 @@ export default {
     margin: 0 30px !important;
     margin-left: -50px !important;
   }
-  &.treeTriangleSelect{
+  &.treeTriangleSelect {
     margin: 0 30px !important;
     margin-left: -40px !important;
   }

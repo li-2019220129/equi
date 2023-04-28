@@ -1047,3 +1047,12 @@ export function receiveApi(data) {
     arrType: true,
   });
 }
+
+
+//资料分类树
+export function categoryAllTreeApi() {
+  return service2({
+    url: `${devUrl}/dict/category/categoryAllTree`,
+    method: "post",
+  });
+}
