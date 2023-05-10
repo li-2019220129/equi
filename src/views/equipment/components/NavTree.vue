@@ -39,6 +39,12 @@ export default {
               parentId: "1",
             },
             {
+              id: "1-2",
+              label: "设备分类",
+              parentId: "1",
+              code: "xtsType",
+            },
+            {
               id: "1-3",
               label: "设备借用",
               parentId: "1",
@@ -176,12 +182,7 @@ export default {
               parentId: "4",
               code:"xtsAudit"
             },
-            {
-              id: "4-6",
-              label: "设备分类",
-              parentId: "4",
-              code: "xtsType",
-            },
+
           ],
         },
       ],

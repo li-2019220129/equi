@@ -20,10 +20,17 @@
         highlight-current
         node-key="id"
         ref="navTree"
+        draggable
+        :allow-drop="allowDrop"
         @node-click="loadCategory"
       >
         <div class="custom-tree-node" slot-scope="{ node, data }">
-          <tree-slot :showIcon="false" :node="node" :data="data" class="tree-span" />
+          <tree-slot
+            :showIcon="false"
+            :node="node"
+            :data="data"
+            class="tree-span"
+          />
           <div class="tree-operate">
             <img
               src="@/assets/icon/选择设备@2x.png"
@@ -161,6 +168,18 @@ export default {
     this.getDeviceKindTree();
   },
   methods: {
+    allowDrop(draggingNode, dropNode, type) {
+      if (draggingNode.data.level === dropNode.data.level) {
+        if (draggingNode.data.parentId === dropNode.data.parentId) {
+          return type === "prev" || type === "next";
+        } else {
+          return false;
+        }
+      } else {
+        // 不同级进行处理
+        return false;
+      }
+    },
     //分页切换
     handleChangePage(pageNum, pageSize) {
       this.tableObj.page = pageNum;

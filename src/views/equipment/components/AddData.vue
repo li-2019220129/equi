@@ -54,19 +54,23 @@
             <el-input class="form-styles" v-model="form.code"></el-input>
           </el-form-item>
         </el-col>
-
         <el-col :span="12">
-          <el-form-item label="所在机构" prop="ownerDeptName">
+          <el-form-item label="资料密级" prop="secretLevel">
             <el-select
-              v-model="form.ownerDeptName"
-              placeholder="请选择申请部门"
-              disabled
+              v-model="form.secretLevel"
+              placeholder="请选择"
               class="form-styles"
             >
+              <el-option
+                v-for="item in secretOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-
         <el-col :span="12">
           <el-form-item label="申请人" prop="ownerUserName">
             <!-- <template slot="label">
@@ -87,24 +91,18 @@
             ></el-input>
           </el-form-item>
         </el-col>
-
         <el-col :span="12">
-          <el-form-item label="资料密级" prop="secretLevel">
+          <el-form-item label="所在机构" prop="ownerDeptName">
             <el-select
-              v-model="form.secretLevel"
-              placeholder="请选择"
+              v-model="form.ownerDeptName"
+              placeholder="请选择申请部门"
+              disabled
               class="form-styles"
             >
-              <el-option
-                v-for="item in secretOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
+
         <el-col :span="12">
           <el-form-item label="保密期限" prop="dealLine">
             <el-select
@@ -216,7 +214,7 @@ export default {
           { required: true, message: "请选择所在机构", trigger: "change" },
         ],
         secretLevel: [
-          { required: true, message: "请选择文件密级", trigger: "blur" },
+          { required: true, message: "请选择资料密级", trigger: "blur" },
         ],
         ownerUserName: [
           { required: true, message: "请选择申请人", trigger: "blur" },

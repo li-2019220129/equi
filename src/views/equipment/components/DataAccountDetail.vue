@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <div class="leader-line"></div>
     <div class="detail-drawer">
       <div class="detail-equipment-message">
@@ -9,7 +9,7 @@
           :model="form"
           label-width="120px"
           disabled
-          style="margin-top: 20px; margin-left: -20px"
+          style="margin-top: 20px; margin-left: -20px;padding: 0 20px 0 0;"
         >
           <el-row>
             <el-col :span="12">
@@ -34,7 +34,7 @@
             </el-col>
 
             <el-col :span="24">
-              <el-form-item label="文件标题" prop="heading">
+              <el-form-item label="资料名称" prop="heading">
                 <el-input
                   v-model="form.heading"
                 ></el-input>
@@ -42,13 +42,13 @@
             </el-col>
 
             <el-col :span="24">
-              <el-form-item label="文件编号" prop="code">
+              <el-form-item label="资料编号" prop="code">
                 <el-input v-model="form.code" ></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="文件密级" prop="secretLevel">
+              <el-form-item label="资料密级" prop="secretLevel">
                 <el-select
                   v-model="form.secretLevelLabel"
                   placeholder="请选择"
@@ -78,16 +78,16 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <!-- <el-col :span="12">
               <el-form-item label="来文单位" prop="fromZone">
                 <el-input
                   v-model="form.fromZone"
                   class="form-styles"
                 ></el-input>
               </el-form-item>
-            </el-col>
+            </el-col> -->
 
-            <el-col :span="12">
+            <!-- <el-col :span="12">
               <el-form-item label="发往单位" prop="toZone">
                 <el-input v-model="form.toZone" class="form-styles"></el-input>
               </el-form-item>
@@ -97,7 +97,7 @@
               <el-form-item label="见证人" prop="witness">
                 <el-input v-model="form.witness" class="form-styles"></el-input>
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="12">
               <el-form-item label="资料类别" prop="classifyType">
                 <el-select
@@ -244,10 +244,10 @@ export default {
     margin-left: 20px;
   }
 }
-// .form-styles {
-//   width: 200px;
-//   height: 32px;
-// }
+.form-styles {
+   width: 100%;
+   height: 32px;
+ }
 ::v-deep .el-timeline {
   padding-left: 50%;
   padding-top: 20px;

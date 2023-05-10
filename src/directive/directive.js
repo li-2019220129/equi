@@ -44,7 +44,7 @@ function checkKey(key) {
   // store.dispatch("login/userAuth").then((res) => {
   let permissionData = store.state.login.userAuth.childMenu;
   //如果传入的元素key不在权限数组里，则不可显示
-  let index = permissionData.indexOf(key);
+  let index = permissionData && permissionData.indexOf(key);
   if (index > -1) {
     return true;
   } else {

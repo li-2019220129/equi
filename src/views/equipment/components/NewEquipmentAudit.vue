@@ -87,7 +87,7 @@
       @close="detailVisible = false"
     >
       <template #content>
-        <add-equipment :formLine="formLine" :isDetail="true" :infoId="infoId" />
+        <add-equipment :treeData="treeData" :formLine="formLine" :isDetail="true" :infoId="infoId" />
       </template>
     </leadal-dialog>
   </div>
@@ -101,6 +101,7 @@ import { tableOptions2 } from "./equipmentOption/toApprove.options";
 import { pageDeviceWait, pageDeviceAudited } from "@/api/audit";
 import { mapState } from "vuex";
 import {
+  getDeviceKindTree,
   batchDeviceRegistration, // 设备登记批量审批同意
   batchDeviceDisAgree, // 设备登记批量审批不同意
 } from "@/api/equipment/index.js";
@@ -141,7 +142,7 @@ export default {
         desc: "",
       },
       applyType: "",
-
+      treeData:[],
       pageWaitList: [],
       pageAuditedList: [],
       deviceApproval: [], // 设备审批
@@ -166,8 +167,13 @@ export default {
   },
   created() {
     this.getData();
+    this.getDeviceKindTreeData();
   },
   methods: {
+    async getDeviceKindTreeData() {
+      const res = await getDeviceKindTree({ type: 1 });
+      this.treeData = res.data;
+    },
     filterData(num) {
       return this.selection.filter((item) => item.applyType === num);
     },

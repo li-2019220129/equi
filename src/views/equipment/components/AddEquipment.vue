@@ -43,8 +43,17 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="设备分类" prop="categoryLabel">
-            <el-select
+          <el-form-item label="设备分类" prop="categoryId">
+            <ElSelectTree
+              v-model="form.categoryId"
+              placeholder="请选择"
+              :data="treeData"
+              class="form-styles"
+              :props="defaultProps"
+              check-strictly
+              clearable
+            ></ElSelectTree>
+            <!-- <el-select
               v-model="form.categoryLabel"
               placeholder="请选择"
               class="form-styles"
@@ -64,7 +73,7 @@
                   </div>
                 </el-tree>
               </el-option>
-            </el-select>
+            </el-select> -->
           </el-form-item>
         </el-col>
 
@@ -323,7 +332,7 @@ export default {
         camp: null, //营区
       },
       rules: {
-        categoryLabel: [
+        categoryId: [
           { required: true, message: "请选择设备分类", trigger: "change" },
         ],
         secretRoomCode: [
@@ -379,6 +388,8 @@ export default {
       defaultProps: {
         children: "children",
         label: "caption",
+        value: "id",
+        emitPath: false,
       },
       options: [],
       props: {

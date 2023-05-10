@@ -8,7 +8,7 @@
           ref="form"
           :model="form"
           label-width="120px"
-          style="margin-top: 20px"
+          style="margin-top: 20px;padding: 0 20px 0 0;"
           :disabled="true"
           v-loading="loading"
         >

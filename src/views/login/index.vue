@@ -103,10 +103,10 @@ export default {
             .then((res) => {
               this.loading = false;
               if (res.status === 200) {
-                sessionStorage.setItem(
-                  "loginUserData",
-                  JSON.stringify(res.data)
-                );
+                // sessionStorage.setItem(
+                //   "loginUserData",
+                //   JSON.stringify(res.data)
+                // );
                 // if (res) {
                 //   this.$router.push({ path: "/equipment" });
                 // }

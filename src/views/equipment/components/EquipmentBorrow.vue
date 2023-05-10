@@ -262,6 +262,9 @@
               >
               {{ scope.row.borrowTimeLabel }}
             </div>
+             <div v-else>
+              {{ scope.row.borrowTimeLabel }}
+            </div>
           </template>
         </el-table-column>
       </template>

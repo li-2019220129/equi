@@ -277,6 +277,10 @@ export default {
           sort: this.order,
         };
         const res = await pageAll(params);
+        this.tableObj.tableData = res.data.data.map((item) => {
+          item.classifyType = this.swithClassifyType(item.classifyType);
+          return item;
+        });
         this.tableObj.tableData = res.data.data;
         this.tableObj.total = res.data.total;
         this.tableObj.loading = false;
@@ -284,7 +288,14 @@ export default {
         this.tableObj.loading = false;
       }
     },
-
+    swithClassifyType(num) {
+      switch (num) {
+        case 1:
+          return "个人资产";
+        case 2:
+          return "保密室资产";
+      }
+    },
     async loadNode(node, resolve) {
       const params = {
         id: node.level === 0 ? null : node.data.id,
