@@ -11,13 +11,38 @@
       label-width="120px"
       style="margin: 100px"
     >
+      <!-- <el-form-item
+        v-if="nodeData.kind === 'secret'"
+        label="密级设置"
+        prop="value"
+      >
+        <el-select
+          v-model="form.value"
+          placeholder="请选择密级"
+          class="form-styles"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in secretOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item> -->
       <el-form-item label="配置名称" prop="name">
         <el-input v-model="form.name" class="form-styles"></el-input>
       </el-form-item>
-      <!--
+
       <el-form-item label="排序号" prop="sequence">
-        <el-input v-model="form.sequence" class="form-styles"></el-input>
-      </el-form-item> -->
+        <el-input-number
+          v-model="form.sequence"
+          class="form-styles"
+          style="width: 100%"
+          controls-position="right"
+        ></el-input-number>
+      </el-form-item>
 
       <el-form-item label="是否启用" prop="enabled" class="form-styles">
         <el-switch v-model="form.enabled"> </el-switch>
@@ -39,19 +64,47 @@ export default {
       type: String,
       default: "",
     },
+    nodeData: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
       form: {
         name: "",
-        // sequence: "",
+        sequence: null,
         enabled: true,
+        value: null,
       },
+      // secretOptions: [
+      //   {
+      //     value: 1,
+      //     label: "level 1",
+      //   },
+      //   {
+      //     value: 2,
+      //     label: "level 2",
+      //   },
+      //   {
+      //     value: 4,
+      //     label: "level 3",
+      //   },
+      //   {
+      //     value: 8,
+      //     label: "level 4",
+      //   },
+      //   {
+      //     value: 16,
+      //     label: "level 5",
+      //   },
+      // ],
       rules: {
         name: [{ required: true, message: "名称不能为空", trigger: "blur" }],
         sequence: [
           { required: true, message: "排序号不能为空", trigger: "blur" },
-          { pattern: /^[0-9]*$/, message: "排序号需为数字", trigger: "blur" },
         ],
         enabled: [{ required: true, message: "启用不能为空", trigger: "blur" }],
       },
@@ -66,7 +119,9 @@ export default {
             id: this.configId,
           };
           const res = await loadGlobalConfigContent(params);
+          console.log(res);
           Object.assign(this.form, res.data);
+          console.log(this.form);
         } else {
           this.$nextTick(() => {
             this.$refs["form"].resetFields();
@@ -79,8 +134,10 @@ export default {
     save() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
+          console.log(this.form);
           const params = {
             ...this.form,
+            kind: this.nodeData.kind,
             parentId: this.kindId,
           };
           saveGlobalConfigContent(params).then((res) => {
@@ -94,5 +151,8 @@ export default {
 };
 </script>
 
-<style lang="scss" src="../../equipment/components/headerScss.scss" scoped >
-</style>
+<style
+  lang="scss"
+  src="../../equipment/components/headerScss.scss"
+  scoped
+></style>

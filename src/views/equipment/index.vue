@@ -71,6 +71,7 @@ export default {
   mounted() {
     this.$store.dispatch("login/userTreeData"); //获取用户树
     this.$store.dispatch("login/getEquipmentSecret"); //获取设备密级
+    this.$store.dispatch("login/getDataTerm"); // 获取设备资料保密期限
     this.$store.dispatch("login/getEquipmentTab"); //获取设备密级
     this.$store.dispatch("login/getRegisterBadge"); //获取设备登记角标
     this.$store.dispatch("login/getBorrowBadge"); //获取设备借用角标

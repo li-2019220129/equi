@@ -26,7 +26,11 @@
         </div>
         <div class="equipment-header-right">
           <div class="equipment-button" v-show="kindId">
-            <div class="equipment-button_btn" @click="handleAdd">
+            <div
+              v-if="nodeData.kind !== 'secret'"
+              class="equipment-button_btn"
+              @click="handleAdd"
+            >
               <img src="@/assets/icon/选择设备@2x.png" />
               <span>新增</span>
             </div>
@@ -34,7 +38,11 @@
               <img src="@/assets/icon/编辑@2x.png" />
               <span>编辑</span>
             </div>
-            <div class="equipment-button_btn" @click="handleDelete">
+            <div
+              v-if="nodeData.kind !== 'secret'"
+              class="equipment-button_btn"
+              @click="handleDelete"
+            >
               <img src="@/assets/icon/icon-delete.png" />
               <span>删除</span>
             </div>
@@ -87,6 +95,7 @@
           <global-config
             @closeDialog="closeDialog"
             :kindId="kindId"
+            :nodeData="nodeData"
             :configId="configId"
           />
         </template>
@@ -118,6 +127,7 @@ export default {
   },
   data() {
     return {
+      nodeData: {},
       tableObj: {
         tableData: [],
         tableOptions: [
@@ -153,9 +163,9 @@ export default {
       this.tableObj.size = pageSize;
       this.loadContent({ id: this.kindId });
     },
-        /**
-         * 
-         */
+    /**
+     *
+     */
     //获取配置类型
     async findGlobalConfigType() {
       const res = await findGlobalConfigType();
@@ -167,6 +177,8 @@ export default {
       try {
         this.tableObj.loading = true;
         this.kindId = node ? node.id : null;
+        this.nodeData = node;
+        console.log(this.nodeData, "ahhaah");
         const params = {
           parentId: this.kindId,
           currentPage: this.tableObj.page,
@@ -187,8 +199,13 @@ export default {
 
     closeDialog() {
       this.visible = false;
-      this.loadContent({ id: this.kindId });
-      this.$store.dispatch('login/getEquipmentSecret')
+      this.loadContent(this.nodeData);
+
+      this.nodeData.kind === "secret"
+        ? this.$store.dispatch("login/getEquipmentSecret")
+        : this.nodeData.kind === "term"
+        ? this.$store.dispatch("login/getDataTerm")
+        : "";
     },
 
     changeRadio(row) {
@@ -249,18 +266,15 @@ export default {
   margin-top: -3px;
 }
 
-
 // 对树的样式进行修改
 ::v-deep .el-tree-node__content {
   height: 38px;
   // padding-left: 20px !important;
 }
-.custom-tree-node{
+.custom-tree-node {
   width: 100%;
   height: 100%;
 }
-
-
 
 // 树形控件
 
@@ -290,8 +304,6 @@ export default {
 //   margin-left: 20px;
 // }
 
-
-
 .child-triangle {
   transition: all 0.3s;
   margin-left: -20px;
@@ -302,7 +314,7 @@ export default {
     margin: 0 30px !important;
     margin-left: -50px !important;
   }
-  &.treeTriangleSelect{
+  &.treeTriangleSelect {
     margin: 0 30px !important;
     margin-left: -40px !important;
   }

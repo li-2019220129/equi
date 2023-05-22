@@ -1056,3 +1056,30 @@ export function categoryAllTreeApi() {
     method: "post",
   });
 }
+
+//个人资料查询
+export function pagePersonApi(data) {
+  return service2({
+    url: `${devUrl}/media/media/pagePerson`,
+    method: "post",
+    data
+  });
+}
+
+//本部门资料查询
+export function pageOrganApi(data) {
+  return service2({
+    url: `${devUrl}/media/media/pageOrgan`,
+    method: "post",
+    data
+  });
+}
+
+//本单位资料查询
+export function pageZoneApi(data) {
+  return service2({
+    url: `${devUrl}/media/media/pageZone`,
+    method: "post",
+    data
+  });
+}

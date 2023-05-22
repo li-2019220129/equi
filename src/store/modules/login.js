@@ -30,6 +30,7 @@ const state = {
     : [],
   // userAuth: [],
   equipmentSecret: [],
+  dataTerm: [],
   equipmentTab: [],
 
   equipmentRegisterBadge: 0, //设备登记角标
@@ -63,7 +64,9 @@ const mutations = {
   SET_EQUIPMENTSECRET: (state, data) => {
     state.equipmentSecret = data;
   },
-
+  SET_DATATERM(state, data) {
+    state.dataTerm = data;
+  },
   SET_EQUIPMENTTAB: (state, data) => {
     state.equipmentTab = data;
   },
@@ -181,7 +184,16 @@ const actions = {
     const res = await findSecretOrTab(params);
     commit("SET_EQUIPMENTSECRET", res.data);
   },
-
+  /**
+   * 获取设备资料保密期限
+   */
+  async getDataTerm({ commit }) {
+    const params = {
+      kind: "term",
+    };
+    const res = await findSecretOrTab(params);
+    commit("SET_DATATERM", res.data);
+  },
   /**
    * 获取设备标签配置
    */
@@ -190,6 +202,7 @@ const actions = {
       kind: "tab",
     };
     const res = await findSecretOrTab(params);
+    console.log(res,'我是你打奶')
     commit("SET_EQUIPMENTTAB", res.data);
   },
 
@@ -270,7 +283,7 @@ const actions = {
     const params = {
       userId: state.loginData.userId,
     };
-    console.log('23232323','垃圾代码')
+    console.log("23232323", "垃圾代码");
     const res = await countDataHander(params);
     commit("SET_DATATRANSFERBADGE", res.data);
   },

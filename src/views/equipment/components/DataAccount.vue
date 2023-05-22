@@ -1,6 +1,45 @@
 <template>
   <div>
-    <div class="equipment-account-header">
+    <div class="equipment-header">
+      <div class="equipment-header-left">
+        <div
+          :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
+          @click="handleActiveTab(1)"
+          v-has="'xts_alone'"
+        >
+          个人设备
+        </div>
+        <div
+          :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
+          @click="handleActiveTab(2)"
+          v-has="'dev_organ'"
+        >
+          本部门设备
+        </div>
+        <div
+          :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
+          @click="handleActiveTab(3)"
+          v-has="'dev_zone'"
+        >
+          本单位设备
+        </div>
+        <img
+          :src="setImg"
+          class="equipment-search-icon"
+          @click="isMore = !isMore"
+        />
+      </div>
+
+      <div class="equipment-header-right">
+        <div class="equipment-button">
+          <div class="equipment-button_btn" @click="downloadExist">
+            <img src="@/assets/icon/保存并送审@2x.png" />
+            <span>导出</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="equipment-account-header" v-show="isMore">
       <div class="equipment-account-search">
         <el-form
           :model="searchForm"
@@ -101,7 +140,7 @@
       :selection.sync="selection"
       v-loading="tableObj.loading"
       @page-change="handleChangePage"
-      :height="'75vh'"
+      :height="setHeight"
       ref="leadalTable"
       @sortChange="sortChange"
     >
@@ -133,8 +172,17 @@ import LeadalDrawer from "@/components/LeadalDrawer";
 import DataAccountDetail from "./DataAccountDetail.vue";
 import TreeSlot from "@/components/TreeSlot/index.vue";
 import { tableOptions1 } from "./dataOption/account.options";
-import { pageAll, downloadAllMedia, organTree } from "@/api/data";
+import {
+  pageAll,
+  downloadAllMedia,
+  organTree,
+  pageOrganApi,
+  pagePersonApi,
+  pageZoneApi,
+} from "@/api/data";
 import moment from "moment";
+import { mapState } from "vuex";
+
 export default {
   name: "DataAccount",
   components: {
@@ -145,7 +193,9 @@ export default {
   },
   data() {
     return {
+      activeTab: 1,
       order: null,
+      isMore: false,
       activeTab: 1,
       selection: [], //选中数据
       tableObj: {
@@ -250,14 +300,37 @@ export default {
   created() {
     this.getData();
   },
+  computed: {
+    ...mapState("login", ["userAuth"]),
+    setHeight() {
+      return this.isMore ? "calc(75vh - 73px)" : "75vh";
+    },
+    setImg() {
+      return require(`@/assets/icon/${
+        this.isMore ? "icon_system_搜索收起@2x" : "icon_system_搜索展开@2x"
+      }.png`);
+    },
+  },
   methods: {
+    handleActiveTab(num) {
+      if (this.activeTab === num) {
+        return;
+      }
+      this.selection = [];
+      console.log(this.selection);
+      this.activeTab = num;
+      this.resetForm();
+      this.getData();
+    },
+    resetForm() {
+      this.$nextTick(() => {
+        this.$refs["form"].resetFields();
+        this.$refs["leadalTable"].clearSelection();
+      });
+    },
     sortChange(row) {
       this.order =
-        row.order === "ascending"
-          ? "code asc"
-          : !row.order
-          ? null
-          : "code asc";
+        row.order === "ascending" ? "code asc" : !row.order ? null : "code asc";
       this.getData();
     },
     //分页切换
@@ -273,10 +346,15 @@ export default {
         const params = {
           currentPage: this.tableObj.page,
           pageSize: this.tableObj.size,
+          userId: this.$store.state.login.loginData.userId,
           ...this.searchForm,
           sort: this.order,
         };
-        const res = await pageAll(params);
+        const res = await (this.activeTab === 1
+          ? pagePersonApi(params)
+          : this.activeTab === 2
+          ? pageOrganApi(params)
+          : pageZoneApi(params));
         this.tableObj.tableData = res.data.data.map((item) => {
           item.classifyType = this.swithClassifyType(item.classifyType);
           return item;
@@ -414,6 +492,7 @@ export default {
   margin-left: 24px;
 }
 .equipment-account-header {
+  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;

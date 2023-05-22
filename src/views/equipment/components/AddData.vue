@@ -64,7 +64,7 @@
               <el-option
                 v-for="item in secretOptions"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value"
               >
               </el-option>
@@ -113,7 +113,7 @@
               <el-option
                 v-for="item in dealLineOptions"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value"
               >
               </el-option>
@@ -245,58 +245,8 @@ export default {
         },
       ],
       treeOptions: [],
-      dealLineOptions: [
-        {
-          value: 1,
-          label: "公开",
-        },
-        {
-          value: 2,
-          label: "5年",
-        },
-        {
-          value: 4,
-          label: "10年",
-        },
-        {
-          value: 8,
-          label: "20年",
-        },
-        {
-          value: 16,
-          label: "30年",
-        },
-        {
-          value: 32,
-          label: "长期",
-        },
-      ],
-      secretOptions: [
-        {
-          value: 1,
-          label: "公开",
-        },
-        {
-          value: 2,
-          label: "内部",
-        },
-        {
-          value: 4,
-          label: "秘密",
-        },
-        {
-          value: 8,
-          label: "机密",
-        },
-        // {
-        //   value: 8,
-        //   label: "绝密",
-        // },
-        // {
-        //   value: 16,
-        //   label: "核心秘密",
-        // },
-      ],
+      dealLineOptions: this.$store.state.login.dataTerm,
+      secretOptions: this.$store.state.login.equipmentSecret,
     };
   },
   created() {
