@@ -14,6 +14,18 @@
         >
           <el-row>
             <el-col :span="12">
+              <el-form-item label="设备类别" prop="classify">
+                <el-select v-model="form.classify" placeholder="请选择" class="form-styles">
+                  <el-option
+                    v-for="item in classifyOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
               <el-form-item label="设备分类" prop="categoryLabel">
                 <el-select v-model="form.categoryLabel" placeholder="请选择" class="form-styles"></el-select>
               </el-form-item>
@@ -45,7 +57,38 @@
                 <el-input v-model="form.sn" class="form-styles"></el-input>
               </el-form-item>
             </el-col>
-
+            <el-col :span="12">
+              <el-form-item label="启用时间" prop="enabledTime">
+                <el-date-picker
+                  v-model="form.enabledTime"
+                  type="date"
+                  placeholder="选择日期"
+                  class="form-styles"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="设备密级" prop="secret">
+                <el-select v-model="form.secret" placeholder="请选择" class="form-styles">
+                  <el-option
+                    v-for="item in secretOptions"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="保密编号" prop="secretRoomCode">
+                <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="存放位置" prop="storagePlace">
+                <el-input v-model="form.storagePlace" class="form-styles"></el-input>
+              </el-form-item>
+            </el-col>
             <el-col :span="12">
               <el-form-item label prop="camp">
                 <template slot="label">
@@ -67,35 +110,11 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="12">
-              <el-form-item label="启用时间" prop="enabledTime">
-                <el-date-picker
-                  v-model="form.enabledTime"
-                  type="date"
-                  placeholder="选择日期"
-                  class="form-styles"
-                ></el-date-picker>
-              </el-form-item>
-            </el-col>
 
-            <el-col :span="12">
-              <el-form-item label="设备密级" prop="secret">
-                <el-select v-model="form.secret" placeholder="请选择" class="form-styles">
-                  <el-option
-                    v-for="item in secretOptions"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
 
-            <el-col :span="12">
-              <el-form-item label="保密编号" prop="secretRoomCode">
-                <el-input v-model="form.secretRoomCode" class="form-styles"></el-input>
-              </el-form-item>
-            </el-col>
+
+
+
 
             <!-- <el-col :span="12">
               <el-form-item label="保密系统编号" prop="code">
@@ -109,24 +128,9 @@
               </el-form-item>
             </el-col>-->
 
-            <el-col :span="12">
-              <el-form-item label="存放位置" prop="storagePlace">
-                <el-input v-model="form.storagePlace" class="form-styles"></el-input>
-              </el-form-item>
-            </el-col>
 
-            <el-col :span="12">
-              <el-form-item label="设备类别" prop="classify">
-                <el-select v-model="form.classify" placeholder="请选择" class="form-styles">
-                  <el-option
-                    v-for="item in classifyOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
+
+
 
             <el-col :span="12">
               <el-form-item label="所属部门" prop="ownerOrganName">

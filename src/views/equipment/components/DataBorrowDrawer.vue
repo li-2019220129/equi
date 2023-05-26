@@ -41,6 +41,7 @@
           :applyId="applyId"
           :id="id"
           type="2"
+          :isDetail="isDetail"
           ref="borrowMessage"
           @saveBorrow="saveBorrow"
           @pdfSrcDelete="pdfSrcDelete"
@@ -79,6 +80,10 @@ export default {
     mode: {
       type: String,
       default: ""
+    },
+    isDetail:{
+      type:Boolean,
+      default:false
     }
   },
   created() {},
@@ -88,7 +93,7 @@ export default {
       id: null,
       drawerTitle: this.root.drawerTitle,
       title: this.root.title,
-      isDetail: this.root.isDetail,
+      // isDetail: this.root.isDetail,
       btnTitle: this.root.btnTitle,
       activeTab: 1,
       componentName: "DataBorrowMessage",

@@ -164,11 +164,6 @@ export default {
     countAudtit() {
       return (str) => {
         let store = this.$store.state.login;
-        console.log(
-          store.equipmentAuditBadge.total,
-          store.dataAuditBadge.total,
-          "垃圾代码"
-        );
         if (str === "设备登记" && store.equipmentRegisterBadge > 0) {
           return store.equipmentRegisterBadge;
         } else if (str === "设备借用" && store.equipmentBorrowBadge.total > 0) {

@@ -97,7 +97,6 @@
             v-model="searchForm.classify"
             placeholder="请选择设备类别"
             clearable
-            v-if="activeTab === 1"
             @change="moreSearch"
           >
             <el-option
@@ -114,7 +113,6 @@
             v-model="searchForm.applyType"
             placeholder="请选择设备状态"
             clearable
-            v-if="activeTab === 1 || activeTab === 2"
             @change="moreSearch"
           >
             <el-option
@@ -132,7 +130,6 @@
             v-model="searchForm.code"
             style="width: 300px; margin-left: 20px"
             class="equipment-search"
-            v-if="activeTab === 2 || activeTab === 3"
             @keyup.enter.native="moreSearch"
           >
             <i
@@ -156,14 +153,13 @@
             clearable
           ></el-cascader> -->
           <ElSelectTree
-            v-if="activeTab === 3"
             v-model="searchForm.ownerOrganIds"
             :data="technicalOptions"
             class="form-styles"
             :props="props"
             check-strictly
             show-checkbox
-            placeholder="请选择可属科室"
+            placeholder="请选择所属部门"
             @change="moreSearch"
             multiple
             clearable
@@ -176,7 +172,6 @@
         </el-form-item>
         <el-form-item prop="ownerUserIds">
           <el-select
-            v-if="activeTab === 3"
             @focus="handleUserFocus"
             v-model="searchForm.ownerUserIds"
             multiple
@@ -378,7 +373,7 @@ export default {
         // },
         {
           id: 4,
-          label: "已登记",
+          label: "在位中",
         },
         // {
         //   id: 16,
@@ -495,7 +490,7 @@ export default {
       ) {
         this.$message({
           type: "warning",
-          message: "请先选择所属科室！",
+          message: "请先选择所属部门！",
           duration: 1000,
         });
       }
@@ -619,6 +614,7 @@ export default {
         const res = await promise;
         this.tableObj.tableData = res.data.data.map((item) => {
           item.statusLabel = this.switchStatus(item.status);
+          item.secretLabels = this.$store.state.login.equipmentSecret?.find(item1=>item1.value === item.secret)?.name
           return item;
         });
         this.tableObj.total = res.data.total;
@@ -635,7 +631,7 @@ export default {
         case 2:
           return "已入库";
         case 4:
-          return "已登记";
+          return "在位中";
         case 16:
           return "已报废";
         case 32:
@@ -657,10 +653,11 @@ export default {
       //   this.$message.error(`请选择要导出的数据！`);
       //   return;
       // }
-      // const ids = this.selection.map((item) => item.id).join(",");
+      const ids = this.selection.map((item) => item.id).join(",");
       const res = await downloadExist({
         type: this.activeTab,
         ...this.searchForm,
+        ids,
         ownerOrganIds: this.searchForm.ownerOrganIds
           ? this.searchForm.ownerOrganIds.join(";")
           : "",

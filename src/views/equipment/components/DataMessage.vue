@@ -151,30 +151,31 @@ export default {
     },
 
     async selectData(selection) {
+      console.log(selection,'9999');
       const mediaIdStr = selection.map(item => item.id).join(",");
 
       if (this.drawerTitle === "资料借阅") {
         const borrowParams = {
           mediaIdStr,
-          id: this.currentApplyId
+          id: this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(addMediaBorrow(borrowParams));
       } else if (this.drawerTitle === "资料移交") {
         const transferParams = {
           mediaIdStr,
-          id: this.currentApplyId
+          id: this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(addMediaHander(transferParams));
       } else if (this.drawerTitle === "资料外送") {
         const borrowParams = {
           mediaStr: mediaIdStr,
-          takeoutId: this.currentApplyId
+          takeoutId:this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(saveTakeout2Media(borrowParams));
       } else if (this.drawerTitle === "资料销毁") {
         const borrowParams = {
           mediaIdStr: mediaIdStr,
-          id: this.currentApplyId
+          id:this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(addMediaRecycle(borrowParams));
       }
@@ -212,25 +213,25 @@ export default {
       if (this.drawerTitle === "资料借阅") {
         const borrowParams = {
           mediaIdStr,
-          id: this.currentApplyId
+          id: this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(removeMediaBorrow(borrowParams));
       } else if (this.drawerTitle === "资料移交") {
         const transferParams = {
           mediaIdStr,
-          id: this.currentApplyId
+          id: this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(removeMediaHander(transferParams));
       } else if (this.drawerTitle === "资料外送") {
         const borrowParams = {
           mediaIdStr,
-          takeoutId: this.currentApplyId
+          takeoutId: this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(deleteTakeout2Media(borrowParams));
       } else if (this.drawerTitle === "资料销毁") {
         const borrowParams = {
           mediaIdStr,
-          takeoutId: this.currentApplyId
+          takeoutId:this.applyId ? this.applyId : this.currentApplyId
         };
         this.selectDataByType(removeMediaRecycle(borrowParams));
       }

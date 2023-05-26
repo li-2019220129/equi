@@ -63,6 +63,7 @@ module.exports = {
       '/api1': {
         // target: "http://11.6.1.129:8901/device/api/",
         target: 'http://11.6.1.124:8901/muc',
+        // target: 'http://dftdm.netiler.com/xtsmuc/',
         // target: 'https://27c1-240e-467-f88-25e3-f174-151f-6212-10b0.jp.ngrok.io',
         changeOrigin: true,
         ws: false,
@@ -75,6 +76,7 @@ module.exports = {
         // target:
         // 'https://821d-240e-467-f70-8b5-6570-3262-a4af-77ba.jp.ngrok.io/api',
         target: 'http://11.6.1.124:8901/device/api',
+        // target: 'http://dftdm.netiler.com/xtsdevice/api',
         changeOrigin: true,
         ws: false,
         pathRewrite: {

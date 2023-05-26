@@ -180,6 +180,7 @@
       <template #content>
         <data-borrow-drawer
           :applyId="applyId"
+          :isDetail="isDetail"
           :drawerTitle="borrowDrawer.title"
           @reloadData="getData"
           @handleParams="handleParams"
@@ -257,6 +258,7 @@ export default {
       title: "借阅",
       drawerTitle: "资料借阅",
       activeTab: 1,
+      isDetail:false,
       keyWord: "", //输入框
       tableObj: {
         tableData: [],

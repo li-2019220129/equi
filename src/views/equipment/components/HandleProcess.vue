@@ -54,6 +54,10 @@ export default {
     type:{
       type:String,
       default:'1'
+    },
+    isDetail:{
+      type:Boolean,
+      default:false
     }
   },
   data() {

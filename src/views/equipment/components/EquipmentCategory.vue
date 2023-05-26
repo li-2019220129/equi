@@ -211,7 +211,7 @@ export default {
       const node = {
         id: this.kindId,
       };
-      this.loadCategory(node);
+      // this.loadCategory(node);
     },
 
     //编辑设备种类

@@ -182,6 +182,7 @@ const actions = {
       kind: "secret",
     };
     const res = await findSecretOrTab(params);
+    console.log(res.data)
     commit("SET_EQUIPMENTSECRET", res.data);
   },
   /**
@@ -202,7 +203,7 @@ const actions = {
       kind: "tab",
     };
     const res = await findSecretOrTab(params);
-    console.log(res,'我是你打奶')
+    console.log(res,'我是数据');
     commit("SET_EQUIPMENTTAB", res.data);
   },
 
@@ -283,7 +284,6 @@ const actions = {
     const params = {
       userId: state.loginData.userId,
     };
-    console.log("23232323", "垃圾代码");
     const res = await countDataHander(params);
     commit("SET_DATATRANSFERBADGE", res.data);
   },

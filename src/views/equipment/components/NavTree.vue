@@ -1,18 +1,20 @@
 <template>
-  <el-tree
-    :data="navTreeList"
-    default-expand-all
-    :current-node-key="currentLivingId"
-    :props="defaultProps"
-    highlight-current
-    node-key="id"
-    ref="navTree"
-    @node-click="changeComponents"
-  >
-    <div class="custom-tree-node" slot-scope="{ node, data }">
-      <tree-slot :node="node" :data="data" :isNumber="true" />
-    </div>
-  </el-tree>
+  <el-scrollbar style="height: 100%">
+    <el-tree
+      :data="navTreeList"
+      default-expand-all
+      :current-node-key="currentLivingId"
+      :props="defaultProps"
+      highlight-current
+      node-key="id"
+      ref="navTree"
+      @node-click="changeComponents"
+    >
+      <div class="custom-tree-node" slot-scope="{ node, data }">
+        <tree-slot :node="node" :data="data" :isNumber="true" />
+      </div>
+    </el-tree>
+  </el-scrollbar>
 </template>
 <script>
 import TreeSlot from "@/components/TreeSlot";
@@ -84,7 +86,7 @@ export default {
               label: "资料登记",
               parentId: "2",
             },
-             {
+            {
               id: "2-2",
               label: "资料分发",
               parentId: "2",
@@ -99,16 +101,21 @@ export default {
               label: "资料借阅",
               parentId: "2",
             },
-            {
+             {
               id: "2-5",
-              label: "资料移交",
+              label: "资料外送",
               parentId: "2",
             },
             {
               id: "2-6",
-              label: "资料外送",
+              label: "资料移交",
               parentId: "2",
             },
+            // {
+            //   id: "2-6",
+            //   label: "资料外送",
+            //   parentId: "2",
+            // },
             {
               id: "2-7",
               label: "资料销毁",
@@ -180,9 +187,8 @@ export default {
               id: "4-5",
               label: "审批单配置",
               parentId: "4",
-              code:"xtsAudit"
+              code: "xtsAudit",
             },
-
           ],
         },
       ],
@@ -249,15 +255,11 @@ export default {
 <style lang="scss" scoped>
 // 树的样式 修改大集合
 
-
-
-
 ::v-deep .el-tree-node__content > label.el-checkbox {
   margin-right: -18px;
   margin-left: 20px;
   margin-top: -3px;
 }
-
 
 // 对树的样式进行修改
 ::v-deep .el-tree-node__content {
@@ -265,12 +267,10 @@ export default {
   // padding-left: 20px !important;
 }
 
-.custom-tree-node{
+.custom-tree-node {
   width: 100%;
   height: 100%;
 }
-
-
 
 // 树形控件
 
@@ -300,8 +300,6 @@ export default {
 //   margin-left: 20px;
 // }
 
-
-
 .child-triangle {
   transition: all 0.3s;
   margin-left: -20px;
@@ -312,7 +310,7 @@ export default {
     margin: 0 30px !important;
     margin-left: -50px !important;
   }
-  &.treeTriangleSelect{
+  &.treeTriangleSelect {
     margin: 0 30px !important;
     margin-left: -40px !important;
   }
@@ -326,5 +324,4 @@ export default {
   position: absolute;
   // left: 0;
 }
-
 </style>

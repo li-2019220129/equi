@@ -277,6 +277,7 @@
           :visible.sync="borrowDrawer.visible"
           :formLine="formLine"
           :applyId="applyId"
+          :isDetail="isDetail"
           @reloadData="getData"
           @handleParams="handleParams"
           :mode="mode"

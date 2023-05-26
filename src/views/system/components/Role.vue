@@ -31,7 +31,12 @@
       >
         <div class="custom-tree-node" slot-scope="{ node, data }">
           <!-- <div v-if="node.level === 1" class="tree-header"> -->
-          <tree-slot :showIcon="false" :node="node" :data="data" class="tree-span" />
+          <tree-slot
+            :showIcon="false"
+            :node="node"
+            :data="data"
+            class="tree-span"
+          />
           <div class="tree-operate" v-if="currentNode.id === data.id">
             <img
               src="@/assets/icon/编辑@2x.png"
@@ -144,11 +149,11 @@ export default {
         if (res.status === 200) {
           if (res.data.length > 0) {
             const data = res.data
-              .filter((item) =>
-                ["sysadmin", "dept_audadmin", "zone_audadmin"].includes(
-                  item.code
-                )
-              )
+              // .filter((item) =>
+              //   ["sysadmin", "dept_audadmin", "zone_audadmin"].includes(
+              //     item.code
+              //   )
+              // )
               .map((r, index) => {
                 return { ...r, leaf: false, children: [] };
               });
@@ -168,6 +173,7 @@ export default {
               r.name = res.data[index].name;
             });
             this.loadNode(this.currentNode, "refresh");
+            // this.loadBaseData();
           } else {
             const array = this.data.map((r) => {
               return r.id;
@@ -204,6 +210,7 @@ export default {
         const array = this.allMenus[data.id];
         if (array) {
           this.menus = array;
+          this.loadNode(node.data, "first");
         } else {
           this.loadNode(node.data, "first");
         }
@@ -213,7 +220,7 @@ export default {
         if (array) {
           this.menus = array;
         }
-        if(this.$refs.tree)this.$refs.tree.setCurrentKey(node.parent.data.id);
+        if (this.$refs.tree) this.$refs.tree.setCurrentKey(node.parent.data.id);
       }
     },
     loadNode(data, type) {
@@ -305,18 +312,23 @@ export default {
           //删除授权用户
           deleteRoleApi({ idStr: this.currentNode.id }).then((res) => {
             if (res.status === 200) {
+              // console.log(this.$refs.tree)
               this.$message.success("删除成功！");
-              this.$refs.tree.remove(this.currentNode);
-              if (this.$refs.tree.root.childNodes.length > 0) {
-                const data = this.$refs.tree.root.childNodes[0].data;
-                this.currentNode = data;
-                const array = this.allMenus[data.id];
-                if (array) {
-                  this.menus = array;
-                }
-                this.$refs.tree.setCurrentKey(data.id);
-                this.refresh();
-              }
+              this.loadBaseData();
+              // this.refresh()
+              // this.$refs.tree.remove(this.currentNode);
+              // if (this.$refs.tree.root.childNodes.length > 0) {
+              //   const data = this.$refs.tree.root.childNodes[0].data;
+              //   this.currentNode = data;
+              //   const array = this.allMenus[data.id];
+              //   if (array) {
+              //     this.menus = array;
+              //   }
+              //   this.$refs.tree.setCurrentKey(data.id);
+              //   this.refresh();
+              // }else{
+              //   this.loadBaseData()
+              // }
             }
           });
         })
@@ -327,7 +339,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 ::v-deep .el-tree-node__content > label.el-checkbox {
   margin-right: -18px;
   margin-left: 20px;

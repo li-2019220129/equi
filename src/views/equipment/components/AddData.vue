@@ -50,7 +50,7 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="资料编号" prop="code">
+          <el-form-item label="保密编号" prop="code">
             <el-input class="form-styles" v-model="form.code"></el-input>
           </el-form-item>
         </el-col>
@@ -251,18 +251,21 @@ export default {
   },
   created() {
     // this.getOrganTree();
-    this.getAllTree();
   },
   watch: {
     formLine: {
       immediate: true,
-      handler() {
+      async handler() {
         if (JSON.stringify(this.formLine) !== "{}") {
           try {
             this.loading = true;
             const params = {
               id: this.formLine.id ? this.formLine.id : this.formLine.applyId,
             };
+            const res = await categoryAllTreeApi();
+            if (res.status === 200) {
+              this.treeOptions = res.data;
+            }
             loadDetail(params).then((res) => {
               Object.assign(this.form, res.data);
               !this.form.dealLine && (this.form.dealLine = null);
@@ -272,6 +275,7 @@ export default {
             this.loading = false;
           }
         } else {
+          this.getAllTree();
           this.$nextTick(() => {
             this.$refs.form.resetFields();
           });

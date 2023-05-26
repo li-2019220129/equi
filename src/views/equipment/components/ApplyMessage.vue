@@ -235,7 +235,6 @@ export default {
 
     //申请
     saveApply() {
-      console.log("外卖少儿阿瓦我");
       if (this.applySuccess) {
         // this.$message.warning("已经保存了无需再次保存！");
         this.$message({

@@ -110,9 +110,9 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="文件标题" prop="heading">
+      <el-form-item label="资料名称" prop="heading">
         <el-input
-          placeholder="请输入文件标题"
+          placeholder="请输入资料名称"
           v-model="searchForm.heading"
           class="equipment-search"
           @keyup.enter.native="getData"
@@ -126,9 +126,9 @@
         </el-input>
       </el-form-item>
 
-      <el-form-item label="文件编号" prop="code">
+      <el-form-item label="保密编号" prop="code">
         <el-input
-          placeholder="请输入文件编号"
+          placeholder="请输入保密编号"
           v-model="searchForm.code"
           class="equipment-search"
           @keyup.enter.native="getData"

@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div class="leader-line"></div>
     <div class="detail-drawer">
       <div class="detail-equipment-message">
@@ -9,44 +9,42 @@
           :model="form"
           label-width="120px"
           disabled
-          style="margin-top: 20px; margin-left: -20px;padding: 0 20px 0 0;"
+          style="margin-top: 20px; margin-left: -20px; padding: 0 20px 0 0"
         >
           <el-row>
             <el-col :span="12">
-              <el-form-item label="所在机构" prop="ownerDeptName">
+              <el-form-item label="资料类别" prop="classifyType">
                 <el-select
-                  v-model="form.ownerDeptName"
-                  placeholder="请选择申请部门"
-                  disabled
+                  v-model="form.classifyType"
+                  placeholder="请选择"
                   class="form-styles"
                 >
+                  <el-option
+                    v-for="item in classifyOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
                 </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="资料分类" prop="categoryName">
+                <el-input v-model="form.categoryName"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="资料名称" prop="heading">
+                <el-input v-model="form.heading"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="申请人" prop="ownerUserName">
-                <el-input
-                  v-model="form.ownerUserName"
-                  class="form-styles"
-                ></el-input>
+              <el-form-item label="保密编号" prop="code">
+                <el-input v-model="form.code"></el-input>
               </el-form-item>
             </el-col>
-
-            <el-col :span="24">
-              <el-form-item label="资料名称" prop="heading">
-                <el-input
-                  v-model="form.heading"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="24">
-              <el-form-item label="资料编号" prop="code">
-                <el-input v-model="form.code" ></el-input>
-              </el-form-item>
-            </el-col>
-
             <el-col :span="12">
               <el-form-item label="资料密级" prop="secretLevel">
                 <el-select
@@ -66,6 +64,26 @@
             </el-col>
 
             <el-col :span="12">
+              <el-form-item label="申请人" prop="ownerUserName">
+                <el-input
+                  v-model="form.ownerUserName"
+                  class="form-styles"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="所在机构" prop="ownerDeptName">
+                <el-select
+                  v-model="form.ownerDeptName"
+                  placeholder="请选择申请部门"
+                  disabled
+                  class="form-styles"
+                >
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
               <el-form-item label="产生日期" prop="registerTime">
                 <el-date-picker
                   v-model="form.registerTime"
@@ -78,6 +96,14 @@
               </el-form-item>
             </el-col>
 
+            <el-col :span="12">
+              <el-form-item label="资料来源" prop="fromZone">
+                <el-input
+                  v-model="form.fromZone"
+                  class="form-styles"
+                ></el-input>
+              </el-form-item>
+            </el-col>
             <!-- <el-col :span="12">
               <el-form-item label="来文单位" prop="fromZone">
                 <el-input
@@ -98,23 +124,6 @@
                 <el-input v-model="form.witness" class="form-styles"></el-input>
               </el-form-item>
             </el-col> -->
-            <el-col :span="12">
-              <el-form-item label="资料类别" prop="classifyType">
-                <el-select
-                  v-model="form.classifyType"
-                  placeholder="请选择"
-                  class="form-styles"
-                >
-                  <el-option
-                    v-for="item in classifyOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
           </el-row>
         </el-form>
       </div>
@@ -158,6 +167,7 @@ export default {
       loading: false,
       flowData: [], //流转记录
       form: {
+        categoryName: "",
         heading: "", //标题
         secretLevel: "", //密级数值  1为内文，  2为秘密，4为机密，  8为绝密，16为核心机密
         secretLevelLabel: "", //密级中文值
@@ -245,9 +255,9 @@ export default {
   }
 }
 .form-styles {
-   width: 100%;
-   height: 32px;
- }
+  width: 100%;
+  height: 32px;
+}
 ::v-deep .el-timeline {
   padding-left: 50%;
   padding-top: 20px;

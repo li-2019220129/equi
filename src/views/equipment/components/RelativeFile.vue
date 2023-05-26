@@ -9,6 +9,7 @@
         class="upload-demo"
         action
         accept=".doc"
+        v-if="!isDetail"
       >
         <el-button size="small">上传</el-button>
       </el-upload>
@@ -38,6 +39,7 @@
         class="upload-demo"
         action
         accept=".doc"
+        v-if="!isDetail"
       >
         <el-button size="small">上传</el-button>
       </el-upload>
@@ -89,6 +91,10 @@ export default {
     mode: {
       type: String,
       default: "设备"
+    },
+    isDetail:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -97,7 +103,8 @@ export default {
       annexList: [],
       upId: null,
       pdfSrc: null,
-      showId: null
+      showId: null,
+      // isDetail: this.root.isDetail,
     };
   },
   mounted() {

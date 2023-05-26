@@ -1,12 +1,14 @@
 <template>
   <div>
     <div class="drawer-header">
-      <div class="drawer-header title">{{ drawerTitle }}{{ btnTitle === "确认借出" ? "借出" : "申请" }}</div>
-      <div class="equipment-button" v-if="activeTab===1">
+      <div class="drawer-header title">
+        {{ drawerTitle }}{{ btnTitle === "确认借出" ? "借出" : "申请" }}
+      </div>
+      <div class="equipment-button" v-if="activeTab === 1">
         <div
           class="equipment-button_btn"
           @click="handleSave"
-          v-if="btnTitle === '借用申请'||!isDetail"
+          v-if="btnTitle === '借用申请' || !isDetail"
         >
           <img src="@/assets/icon/保存@2x.png" />
           <span>保存</span>
@@ -14,13 +16,17 @@
         <div
           class="equipment-button_btn"
           @click="send"
-          v-if="btnTitle === '借用申请' ||!isDetail"
+          v-if="btnTitle === '借用申请' || !isDetail"
         >
           <img src="@/assets/icon/发送@2x.png" />
           <span>发送</span>
         </div>
 
-        <div class="equipment-button_btn" @click="borrow" v-if="btnTitle === '确认借出'">
+        <div
+          class="equipment-button_btn"
+          @click="borrow"
+          v-if="btnTitle === '确认借出'"
+        >
           <img src="@/assets/icon/借出-确认借出@2x.png" />
           <span>借出</span>
         </div>
@@ -28,7 +34,7 @@
     </div>
     <div class="drawer-container">
       <div class="drawer-left">
-        <pdf :src="pdfSrc" style="width:100%;height:100%"></pdf>
+        <pdf :src="pdfSrc" style="width: 100%; height: 100%"></pdf>
       </div>
       <el-scrollbar class="drawer-right">
         <div class="equipment-header">
@@ -36,15 +42,21 @@
             <div
               :class="['table-menu-item', activeTab === 1 ? 'selected' : '']"
               @click="activeTab = 1"
-            >基础信息</div>
+            >
+              基础信息
+            </div>
             <div
               :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
               @click="papers"
-            >相关文件</div>
+            >
+              相关文件
+            </div>
             <div
               :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
               @click="activeTab = 3"
-            >办理过程</div>
+            >
+              办理过程
+            </div>
           </div>
         </div>
         <keep-alive>
@@ -53,6 +65,7 @@
             v-bind="$attrs"
             :applyId="applyId"
             :id="id"
+            :isDetail="isDetail"
             ref="borrowMessage"
             @saveBorrow="saveBorrow"
             @pdfSrcDelete="pdfSrcDelete"
@@ -77,17 +90,21 @@ export default {
     BorrowMessage,
     RelativeFile,
     HandleProcess,
-    pdf
+    pdf,
   },
   inject: ["root"],
   props: {
     applyId: {
       type: String,
-      default: ""
+      default: "",
     },
     mode: {
       type: String,
-      default: ""
+      default: "",
+    },
+    isDetail:{
+      type: Boolean,
+      default: false,
     }
   },
 
@@ -97,7 +114,7 @@ export default {
       preserve: false,
       drawerTitle: this.root.drawerTitle,
       title: this.root.title,
-      isDetail: this.root.isDetail,
+      // isDetail: this.root.isDetail,
       btnTitle: this.root.btnTitle,
       activeTab: 1,
       componentName: "BorrowMessage",
@@ -105,7 +122,7 @@ export default {
       pdfSrc: null,
       saveStatus: 0, //是否已保存
       id: "", //申请主键
-      devIds: "" //设备id
+      devIds: "", //设备id
     };
   },
   watch: {
@@ -121,7 +138,7 @@ export default {
           this.componentName = "HandleProcess";
           break;
       }
-    }
+    },
   },
 
   methods: {
@@ -138,7 +155,7 @@ export default {
         this.$message({
           type: "warning",
           duration: 1000,
-          message: "请先保存后在进行操作！"
+          message: "请先保存后在进行操作！",
         });
         return;
       }
@@ -146,13 +163,12 @@ export default {
     },
     //保存
     handleSave() {
-
       if (this.preserve) {
         // this.$message.warning("已经保存了无需再次保存！");
         this.$message({
           type: "warning",
           duration: 1000,
-          message: "已经保存了无需再次保存！"
+          message: "已经保存了无需再次保存！",
         });
         return;
       }
@@ -172,13 +188,14 @@ export default {
         storageWay: p.storageWay,
         useRange: p.useRange,
         borrowTime: p.borrowTime,
-        plainGiveDate:p.plainGiveDate,
-        plainBeginDate:p.plainBeginDate,
-        categoryLabel: p.categoryLabel,
+        plainGiveDate: p.plainGiveDate,
+        plainBeginDate: p.plainBeginDate,
+        // categoryLabel: p.categoryLabel,
         categoryId: p.categoryId,
-        tab: p.tab,
+        // tab: p.tab,
         secret: p.secret,
-        devCount: p.devCount
+        // devCount: p.devCount
+        borrowDeviceConditionList: p.borrowDeviceConditionList,
       };
 
       //如果有申请人id，代表是编辑
@@ -188,13 +205,13 @@ export default {
 
       this.params = params;
 
-      applyBorrow(params).then(res => {
+      applyBorrow(params).then((res) => {
         if (res.status === 200) {
           // this.$message.success("保存成功！");
           this.$message({
             type: "success",
             duration: 1000,
-            message: "保存成功！"
+            message: "保存成功！",
           });
           this.saveStatus = 1;
           this.id = res.data;
@@ -205,7 +222,7 @@ export default {
           this.$message({
             type: "error",
             duration: 1000,
-            message: res.msg
+            message: res.msg,
           });
         }
       });
@@ -213,11 +230,11 @@ export default {
 
     //发送
     send() {
-      if (this.saveStatus === 0) {
+      if (this.saveStatus === 0 && this.mode == "add") {
         this.$message.error("请先保存再进行送审！");
         return;
       }
-      this.$set(this.params, "id", this.id);
+      this.$set(this.params, "id", this.id || this.applyId);
       this.$set(this.params, "secret", 1);
       this.$emit("handleParams", this.params);
     },
@@ -234,19 +251,19 @@ export default {
       }
       const params = {
         borrowId: this.applyId,
-        devIdStr: this.devIds
+        devIdStr: this.devIds,
       };
       const res = await xtsBorrow(params);
       this.borrowSuccess = true;
       // this.$message.success("借出成功！");
       this.$message({
-            type:'success',
-            duration:1000,
-            message:'借出成功!'
-          })
+        type: "success",
+        duration: 1000,
+        message: "借出成功!",
+      });
       this.$emit("reloadData");
-    }
-  }
+    },
+  },
 };
 </script>
 

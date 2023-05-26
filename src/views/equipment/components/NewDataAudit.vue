@@ -37,7 +37,7 @@
       class="dialog"
       :footer="true"
       @submit="handleSubmit"
-      @close="dialogVisible = false"
+      @close="closed"
     >
       <template #content>
         <el-form
@@ -152,13 +152,19 @@ export default {
     this.getData();
   },
   methods: {
+    closed(){
+      this.dialogVisible = false;
+      this.ruleForm.desc = ''
+    },
     handleAgreeOrTakeBack(isToApproved) {
       if (isToApproved) {
         if (this.selection.length === 0) {
           this.$message.info("请先选中数据");
           return;
         }
+        this.ruleForm.desc = ''
         this.dialogVisible = true;
+
       }
     },
     handleSubmit() {
@@ -186,9 +192,11 @@ export default {
     async agreeOrDisAgree(promise) {
       promise.then((res) => {
         this.dialogVisible = false;
-        this.$message.success(res.msg);
+        // this.$message.success(res.msg);
+        this.$message.success("操作成功");
         this.$refs.leadalTable.clearSelection();
         this.getData();
+        this.ruleForm.desc = ''
         this.$store.dispatch("login/getRegisterBadge"); //刷新资料登记角标
         this.$store.dispatch("login/getAuditBadge");
         this.$store.dispatch("login/getDataAuditBadge")

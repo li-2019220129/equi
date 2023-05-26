@@ -197,6 +197,7 @@ export default {
           this.$message.info("请先选中数据");
           return;
         }
+        this.ruleForm.desc = ''
         this.dialogVisible = true;
       }
     },
@@ -226,13 +227,15 @@ export default {
       const res = await promise;
       this.dialogVisible = false;
       // this.$message.success(res.msg);
-      this.$message({
-        duration: 1000,
-        type: "success",
-        message: res.msg
-      });
+      // this.$message({
+      //   duration: 1000,
+      //   type: "success",
+      //   message: res.msg
+      // });
+      this.$message.success("操作成功");
       this.$refs.leadalTable.clearSelection(); //清除选中
       this.getData();
+      this.ruleForm.desc = ''
       this.$store.dispatch("login/getDataAuditBadge"); //获取资料待审批角标
       this.$store.dispatch("login/getDataBorrowBadge");
       this.$store.dispatch("login/getDataTransferBadge");

@@ -184,7 +184,6 @@ export default {
     },
 
     addDataKind(data) {
-      console.log(data, "我是你大爷");
       this.title = "新增种类";
       this.parentId = data.id;
       this.deviceKindData = {

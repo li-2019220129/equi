@@ -184,6 +184,7 @@ export default {
           this.$message.info("请先选中数据");
           return;
         }
+        this.ruleForm.desc = ''
         this.deviceMove = this.filterData(16);
         this.deviceBorrow = this.filterData(64);
         this.deviceDeliver = this.filterData(256);
@@ -303,6 +304,7 @@ export default {
       this.$message.success("操作成功");
       this.$store.dispatch("login/getAuditBadge"); //获取设备待审批角标
       this.getData();
+      this.ruleForm.desc = ''
     },
 
     async handleEquipment(promise) {

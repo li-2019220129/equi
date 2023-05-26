@@ -7,21 +7,21 @@
           @click="handleActiveTab(1)"
           v-has="'xts_alone'"
         >
-          个人设备
+          个人资料
         </div>
         <div
           :class="['table-menu-item', activeTab === 2 ? 'selected' : '']"
           @click="handleActiveTab(2)"
           v-has="'dev_organ'"
         >
-          本部门设备
+          本部门资料
         </div>
         <div
           :class="['table-menu-item', activeTab === 3 ? 'selected' : '']"
           @click="handleActiveTab(3)"
           v-has="'dev_zone'"
         >
-          本单位设备
+          本单位资料
         </div>
         <img
           :src="setImg"
@@ -122,12 +122,59 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item prop="ownerOrganIds">
+          <!-- <el-cascader
+            v-if="activeTab === 3"
+            v-model="searchForm.ownerOrganIds"
+            class="form-styles"
+            :options="options"
+            :props="props"
+            @change="moreSearch"
+            placeholder="请选择可属科室"
+            :show-all-levels="false"
+            clearable
+          ></el-cascader> -->
+          <ElSelectTree
+            v-model="searchForm.ownerOrganIds"
+            :data="technicalOptions"
+            class="form-styles"
+            :props="props"
+            check-strictly
+            show-checkbox
+            placeholder="请选择所在机构"
+            @change="getData"
+            multiple
+            clearable
+          ></ElSelectTree>
+          <!-- <el-cascader
+            :options="options"
+            :props="props"
+            clearable
+          ></el-cascader> -->
+        </el-form-item>
+        <el-form-item prop="ownerUserIds">
+          <el-select
+            @focus="handleUserFocus"
+            v-model="searchForm.ownerUserIds"
+            multiple
+            clearable
+            @change="getData"
+            placeholder="请选择申请人"
+          >
+            <el-option
+              v-for="item in userOptions"
+              :key="item.userId"
+              :label="item.userName"
+              :value="item.userId"
+            >
+            </el-option> </el-select
+        ></el-form-item>
         </el-form>
       </div>
-      <div class="equipment-button_btn" @click="downloadExist">
+      <!-- <div class="equipment-button_btn" @click="downloadExist">
         <img src="@/assets/icon/保存并送审@2x.png" />
         <span style="font-size: 22px">全部导出</span>
-      </div>
+      </div> -->
     </div>
 
     <leadal-table
@@ -182,7 +229,7 @@ import {
 } from "@/api/data";
 import moment from "moment";
 import { mapState } from "vuex";
-
+import { organTreeApi, findUsersByOrganIdApi } from "@/api/audit";
 export default {
   name: "DataAccount",
   components: {
@@ -193,7 +240,8 @@ export default {
   },
   data() {
     return {
-      activeTab: 1,
+      technicalOptions: [], //所属科室数据
+      userOptions: [], //所选责任人数据
       order: null,
       isMore: false,
       activeTab: 1,
@@ -206,11 +254,21 @@ export default {
         size: 10,
         total: 0,
       },
+      props: {
+        value: "id",
+        label: "caption",
+        children: "childs",
+        // checkStrictly: true,
+        emitPath: false,
+        // multiple: true,
+      },
       searchForm: {
         content: "", //标题、编号
         secret: "", //密级
         ownerDeptName: "", //所在机构
         status: "", //状态
+        ownerOrganIds: [],
+        ownerUserIds: [],
       },
       defaultProps: {
         children: "children",
@@ -273,11 +331,11 @@ export default {
           value: 8, //对应数值值
         },
         {
-          label: "部分回收", //中文值
+          label: "部分销毁", //中文值
           value: 16, //对应数值值
         },
         {
-          label: "全部回收", //中文值
+          label: "全部销毁", //中文值
           value: 32, //对应数值值
         },
         {
@@ -299,6 +357,8 @@ export default {
   },
   created() {
     this.getData();
+    this.loadOrganTree();
+
   },
   computed: {
     ...mapState("login", ["userAuth"]),
@@ -311,7 +371,77 @@ export default {
       }.png`);
     },
   },
+  watch:{
+    "searchForm.ownerOrganIds"(newValue) {
+      if (newValue.length === 0 || !newValue) {
+        this.searchForm.ownerUserIds = "";
+      }
+      findUsersByOrganIdApi(newValue).then((res) => {
+        this.userOptions = res.data;
+      });
+    },
+  },
   methods: {
+    //选择责任人获取焦点后触发的事件
+    handleUserFocus() {
+      console.log(this.searchForm.ownerOrganIds);
+      if (
+        !this.searchForm.ownerOrganIds ||
+        this.searchForm.ownerOrganIds.length === 0
+      ) {
+        this.$message({
+          type: "warning",
+          message: "请先选择所属部门！",
+          duration: 1000,
+        });
+      }
+    },
+    loadOrganTree() {
+      organTreeApi({
+        userId: this.$store.state.login.loginData.userId,
+      }).then((res) => {
+        this.deep(res.data);
+        console.log(res.data, "909090");
+        this.technicalOptions = res.data;
+      });
+    },
+    switchStatus(num) {
+      switch (num) {
+        case 1:
+          return "在用中";
+        case 2:
+          return "留用中";
+        case 4:
+          return "已统管";
+        case 8:
+          return "已归档";
+        case 16:
+          return "部分销毁";
+        case 32:
+          return "全部销毁";
+        case 64:
+          return "已外送";
+        case 128:
+          return "已回执";
+        case 256:
+          return "被借阅";
+      }
+    },
+    deep(arr) {
+      for (let key of arr) {
+        if (!key.childs) return;
+        if (key.childs.length === 0) {
+          delete key.childs;
+        } else {
+          this.deep(key.childs);
+        }
+      }
+    },
+    loadUserOption() {
+      findUsersByOrganIdApi().then((res) => {
+        this.userOptions = res.data;
+      });
+    },
     handleActiveTab(num) {
       if (this.activeTab === num) {
         return;
@@ -349,6 +479,12 @@ export default {
           userId: this.$store.state.login.loginData.userId,
           ...this.searchForm,
           sort: this.order,
+          ownerOrganIds: this.searchForm.ownerOrganIds
+          ? this.searchForm.ownerOrganIds.join(";")
+          : "",
+        ownerUserIds: this.searchForm.ownerUserIds
+          ? this.searchForm.ownerUserIds.join(";")
+          : "",
         };
         const res = await (this.activeTab === 1
           ? pagePersonApi(params)
@@ -357,6 +493,7 @@ export default {
           : pageZoneApi(params));
         this.tableObj.tableData = res.data.data.map((item) => {
           item.classifyType = this.swithClassifyType(item.classifyType);
+          item.statusLabel = this.switchStatus(item.status)
           return item;
         });
         this.tableObj.tableData = res.data.data;
@@ -391,12 +528,17 @@ export default {
 
     //导出
     async downloadExist() {
-      if (this.selection.length === 0) {
-        this.$message.error(`请选择要导出的数据！`);
-        return;
-      }
+      // if (this.selection.length === 0) {
+      //   this.$message.error(`请选择要导出的数据！`);
+      //   return;
+      // }
       const ids = this.selection.map((item) => item.id).join(",");
-      const res = await downloadAllMedia({ ids });
+      const res = await downloadAllMedia({
+        ...this.searchForm,
+        ids,
+        type: this.activeTab,
+        currentUserId: this.$store.state.login.loginData.userId,
+      });
       let blob = new Blob([res], {
         type: "application/vnd.ms-excel",
       });

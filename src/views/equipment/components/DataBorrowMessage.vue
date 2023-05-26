@@ -10,31 +10,33 @@
         :disabled="isDetail"
         label-position="right"
       >
-        <el-form-item label prop="serialNum" label-width="80px">
-          <label slot="label">
-            <div style="letter-spacing: 15px; margin-left: 5px">编号</div>
-          </label>
+        <el-form-item label="编号" prop="serialNum" label-width="80px">
           <el-input v-model="applyForm.serialNum"></el-input>
         </el-form-item>
-        <el-form-item label prop="reason" label-width="80px">
-          <label slot="label">
-            <div style="letter-spacing: 15px;  margin-left: 5px">标题</div>
-          </label>
+        <el-form-item label="标题" prop="reason" label-width="80px">
           <el-input v-model="applyForm.reason"></el-input>
         </el-form-item>
 
         <div class="flex-item">
-          <el-form-item label="申请部门" prop="organName">
-            <el-select v-model="organName" placeholder="请选择申请部门" style="width: 300px" disabled></el-select>
+          <el-form-item
+            style="margin-left: 15px"
+            label="申请部门"
+            prop="organName"
+          >
+            <el-select
+              v-model="organName"
+              placeholder="请选择申请部门"
+              style="width: 300px"
+              disabled
+            ></el-select>
           </el-form-item>
-          <el-form-item label="申请人" prop="borrowUserName" label-width="100px">
+          <el-form-item
+            label="申请人"
+            prop="borrowUserName"
+            label-width="100px"
+          >
             <template slot="label">
-              <div
-                style="
-                  letter-spacing: 4px;
-                  margin-left: 5px;
-                "
-              >申请人</div>
+              <div style="letter-spacing: 4px; margin-left: 5px">申请人</div>
             </template>
             <el-select
               v-model="applyForm.borrowUserName"
@@ -60,12 +62,16 @@
           </el-form-item>
         </div>
 
-        <el-form-item label="申请事由" prop="content">
+        <el-form-item label="申请事由" prop="content" label-width="96px">
           <el-input type="textarea" v-model="applyForm.content"></el-input>
         </el-form-item>
 
         <div class="flex-item">
-          <el-form-item label="借用时间" prop="borrowStartTime">
+          <el-form-item
+            label="借用时间"
+            label-width="96px"
+            prop="borrowStartTime"
+          >
             <el-date-picker
               type="date"
               placeholder="选择日期"
@@ -87,12 +93,15 @@
           </el-form-item>
         </div>
 
-        <el-form-item label="保管方式" prop="keepType">
-          <el-input v-model="applyForm.keepType" style="width: 300px"></el-input>
+        <el-form-item label="保管方式" label-width="96px" prop="keepType">
+          <el-input
+            v-model="applyForm.keepType"
+            style="width: 300px"
+          ></el-input>
         </el-form-item>
 
         <div class="flex-item">
-          <el-form-item label="申请时间" prop="applyTime">
+          <el-form-item label="申请时间" label-width="96px" prop="applyTime">
             <el-date-picker
               v-model="applyForm.applyTime"
               type="date"
@@ -101,7 +110,11 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="联系方式" prop="telephone">
-            <el-input v-model="applyForm.telephone" style="width: 300px"></el-input>
+            <el-input
+              type="number"
+              v-model="applyForm.telephone"
+              style="width: 300px"
+            ></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -125,13 +138,17 @@ export default {
   name: "DataBorrowMessage",
   components: {
     DataMessage,
-    TreeSlot
+    TreeSlot,
   },
   inject: ["root"],
   props: {
     formLine: {
       type: Object,
-      default: () => {}
+      default: () => {},
+    },
+    isDetail:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -139,7 +156,7 @@ export default {
       applyId: this.formLine.id,
       title: this.root.title,
       btnTitle: this.root.btnTitle,
-      isDetail: this.root.isDetail,
+      // isDetail: this.root.isDetail,
       treeData: this.$store.state.login.userTreeData, //树
       organName: this.$store.state.login.loginData.organName,
       applyForm: {
@@ -156,22 +173,44 @@ export default {
         userName: this.$store.state.login.loginData.userName, //创建人
         id: "", //登记记录主键
         keepType: "", //保管方式
-        telephone: "" //联系方式
+        telephone: "", //联系方式
       },
       editDevTable: [], //编辑时的借用设备信息
       defaultProps: {
         children: "children",
-        label: "caption"
+        label: "caption",
       },
       rules: {
         telephone: [
           {
-            pattern: /^1[3456789]\d{9}$/,
-            message: "联系方式格式不正确",
-            trigger: "blur"
-          }
-        ]
-      }
+            required: true,
+            message: "请输入联系方式！",
+            trigger: "blur",
+          },
+        ],
+        reason: [
+          {
+            required: true,
+            message: "请输入标题",
+            trigger: "blur",
+          },
+        ],
+        content: [
+          { required: true, message: "请输入申请事由", trigger: "blur" },
+        ],
+        borrowStartTime: [
+          { required: true, message: "请输入借用开始时间", trigger: "blur" },
+        ],
+        borrowEndTime: [
+          { required: true, message: "请输入借用结束时间", trigger: "blur" },
+        ],
+        keepType: [
+          { required: true, message: "请输入保管方式", trigger: "blur" },
+        ],
+        applyTime: [
+          { required: true, message: "请输入申请时间", trigger: "blur" },
+        ],
+      },
     };
   },
   watch: {
@@ -181,7 +220,7 @@ export default {
       async handler() {
         if (JSON.stringify(this.formLine) !== "{}") {
           const params = {
-            id: this.formLine.applyId || this.formLine.id
+            id: this.formLine.applyId || this.formLine.id,
           };
           const res = await loadBorrow(params);
           Object.assign(this.applyForm, res.data);
@@ -191,13 +230,13 @@ export default {
             this.$refs.form.resetFields();
           });
         }
-      }
-    }
+      },
+    },
   },
   createId() {},
   methods: {
     createIdData() {
-      createBorrowId().then(res => {
+      createBorrowId().then((res) => {
         this.applyForm.id = res.data.borrowId;
       });
     },
@@ -215,8 +254,8 @@ export default {
         this.applyForm.id = this.applyId;
       }
       this.$emit("saveBorrow", this.applyForm);
-    }
-  }
+    },
+  },
 };
 </script>
 

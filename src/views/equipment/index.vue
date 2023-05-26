@@ -69,6 +69,7 @@ export default {
     };
   },
   mounted() {
+    console.log('999996666666');
     this.$store.dispatch("login/userTreeData"); //获取用户树
     this.$store.dispatch("login/getEquipmentSecret"); //获取设备密级
     this.$store.dispatch("login/getDataTerm"); // 获取设备资料保密期限

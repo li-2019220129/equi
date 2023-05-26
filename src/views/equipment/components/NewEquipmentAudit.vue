@@ -52,7 +52,7 @@
       class="dialog"
       :footer="true"
       @submit="handleSubmit"
-      @close="dialogVisible = false"
+      @close="dialogVisible= false"
     >
       <template #content>
         <el-form
@@ -87,7 +87,12 @@
       @close="detailVisible = false"
     >
       <template #content>
-        <add-equipment :treeData="treeData" :formLine="formLine" :isDetail="true" :infoId="infoId" />
+        <add-equipment
+          :treeData="treeData"
+          :formLine="formLine"
+          :isDetail="true"
+          :infoId="infoId"
+        />
       </template>
     </leadal-dialog>
   </div>
@@ -142,7 +147,7 @@ export default {
         desc: "",
       },
       applyType: "",
-      treeData:[],
+      treeData: [],
       pageWaitList: [],
       pageAuditedList: [],
       deviceApproval: [], // 设备审批
@@ -170,6 +175,7 @@ export default {
     this.getDeviceKindTreeData();
   },
   methods: {
+
     async getDeviceKindTreeData() {
       const res = await getDeviceKindTree({ type: 1 });
       this.treeData = res.data;
@@ -184,6 +190,7 @@ export default {
           this.$message.info("请先选中数据");
           return;
         }
+        this.ruleForm.desc = ''
         this.deviceApproval = this.filterData(1);
         this.dialogVisible = true;
       }
@@ -235,6 +242,7 @@ export default {
       this.$store.dispatch("login/getAuditBadge"); //获取设备待审批角标
       this.$store.dispatch("login/getRegisterBadge"); //获取登记角标
       this.getData();
+      this.ruleForm.desc = "";
     },
 
     async handleEquipment(promise) {
